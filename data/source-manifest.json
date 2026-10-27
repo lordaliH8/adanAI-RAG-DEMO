@@ -1,0 +1,26 @@
+{
+  "copied_from": "torob-trip-demo public-source archive",
+  "sources": {
+    "alibaba.jsonl": {
+      "sha256": "f30fc2d354a995b20c34c6752cfd96d419eb87a921619d205ccba99707268a85",
+      "rows": 1648
+    },
+    "eghamat24.jsonl": {
+      "sha256": "0eb868b1c9d2df9e570e59a1a3b70e085a7dbeb92ee46be71fab39d5ef1c7711",
+      "rows": 5926
+    },
+    "safarmarket.jsonl": {
+      "sha256": "8d7e7f26b746a06bc460b746b2d8c7538fcbfbf4688d9452c46ae32febe4cd47",
+      "rows": 610
+    },
+    "coverage.jsonl": {
+      "sha256": "76c5e45702b17cc77ccf9b2597fa85065f752f2876be40db99c3559095bffe55",
+      "rows": 9090,
+      "kind": "recorded crawl coverage, not service availability"
+    }
+  },
+  "observed_date": "2026-10-18",
+  "copied_at": "2026-10-27",
+  "note": "Source JSONL and hashed response bodies only; no populated SQLite, embeddings, prebuilt chunks, or answer fixtures.",
+  "raw_response_files": 460
+}

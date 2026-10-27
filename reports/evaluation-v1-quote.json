@@ -1,0 +1,502 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-10-27T17:23:55.418252+00:00",
+  "as_of": "2026-10-27",
+  "mode": "live",
+  "base_url": "http://localhost:8000",
+  "selected_case_ids": [
+    "CALC-01"
+  ],
+  "cases_sha256": "cfa16d17d4c1ac1d031ff2944cc057c5411e61991a70ae3b7b48ef0a7238c5bc",
+  "notes": [
+    "Expected answers and oracle files are never supplied to application requests.",
+    "Each selected live case is attempted once; transport/model retries inside the app remain bounded.",
+    "Automatic pass covers stated mechanical/numeric checks, not full semantic answer quality.",
+    "Retrieval uses the same question for every mode; without explicit filters, context-dependent followups may lack their preceding travel slots.",
+    "Guard/failure executions are offline injections, never presented as live model behavior."
+  ],
+  "live": {
+    "planned": 1,
+    "results": [
+      {
+        "case_id": "CALC-01",
+        "state": "passed",
+        "question_fa": "برای دو بزرگسال و یک اتاق در هتل الماس ۲ اقامت۲۴، ملک 1242، اتاق 29948 و پلن 1107، ورود 2026-11-17 و خروج 2026-11-19، نرخ هر شب و جمع دو شب را به تومان حساب کن. موجودی و ظرفیت را هم بررسی کن.",
+        "actual": {
+          "request_id": "6023a260-622c-4d65-a911-59561a5224ed",
+          "status": "answered",
+          "answer": "نرخ هر شب برای یک اتاق ۱۰٬۴۵۰٬۰۰۰ تومان است و جمع دو شب اقامت ۲۰٬۹۰۰٬۰۰۰ تومان می‌باشد. این محاسبه بر اساس نرخ هر شب ۱۰۴٬۵۰۰٬۰۰۰ ریال (هر شب، هر اتاق) و تبدیل به تومان انجام شده است. ظرفیت و موجودی برای هر دو شب کافی است و محدودیت خاصی برای مدت اقامت در داده‌ها ثبت نشده است، اما نبود مقدار به معنی نبود محدودیت قطعی نیست.",
+          "route": "combined",
+          "sources": [],
+          "sql_results": [
+            {
+              "sql": "SELECT sr.record_id, sr.property_id, sr.room_id, sr.rate_plan_id, sr.service_date, sr.amount_irr, sr.price_basis, sr.availability, sr.occupancy, sr.inventory, sr.closed, sr.min_stay, sr.max_stay, sr.close_to_arrival, sr.close_to_departure, sr.board_type, sr.extra_capacity, sr.cancelable\nFROM stay_rates sr\nJOIN properties p ON sr.property_id = p.record_id\nJOIN records r ON p.record_id = r.id\nWHERE r.source = 'eghamat24' AND r.source_id = '1242' AND sr.room_id = '29948' AND sr.rate_plan_id = '1107' AND sr.service_date IN ('2026-11-17','2026-11-18')\nORDER BY sr.service_date;",
+              "columns": [
+                "record_id",
+                "property_id",
+                "room_id",
+                "rate_plan_id",
+                "service_date",
+                "amount_irr",
+                "price_basis",
+                "availability",
+                "occupancy",
+                "inventory",
+                "closed",
+                "min_stay",
+                "max_stay",
+                "close_to_arrival",
+                "close_to_departure",
+                "board_type",
+                "extra_capacity",
+                "cancelable"
+              ],
+              "rows": [
+                [
+                  "445d61c583c632f1c9d4abad",
+                  "8cb037325c5662bce8b4b605",
+                  "29948",
+                  "1107",
+                  "2026-11-17",
+                  104500000,
+                  "per_room_per_night",
+                  "available",
+                  2,
+                  10,
+                  0,
+                  null,
+                  null,
+                  0,
+                  0,
+                  "bed_and_breakfast",
+                  0,
+                  1
+                ],
+                [
+                  "5fa0ab15301423f9b8090d70",
+                  "8cb037325c5662bce8b4b605",
+                  "29948",
+                  "1107",
+                  "2026-11-18",
+                  104500000,
+                  "per_room_per_night",
+                  "available",
+                  2,
+                  10,
+                  0,
+                  null,
+                  null,
+                  0,
+                  0,
+                  "bed_and_breakfast",
+                  0,
+                  1
+                ]
+              ],
+              "row_count": 2,
+              "truncated": false,
+              "duration_ms": 5.752,
+              "record_sources": [
+                {
+                  "id": "445d61c583c632f1c9d4abad",
+                  "source": "eghamat24",
+                  "source_id": "1242:29948:1107:2026-11-17",
+                  "name_fa": "هتل الماس 2 مشهد — اتاق دوتخته دبل فیروزه اکونومی",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/properties/1242/v2/rooms-rates?from_date=2026-11-15&to_date=2026-11-18&no_special_user=true",
+                  "observed_at": "2026-10-18T09:51:10+00:00"
+                },
+                {
+                  "id": "5fa0ab15301423f9b8090d70",
+                  "source": "eghamat24",
+                  "source_id": "1242:29948:1107:2026-11-18",
+                  "name_fa": "هتل الماس 2 مشهد — اتاق دوتخته دبل فیروزه اکونومی",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/properties/1242/v2/rooms-rates?from_date=2026-11-15&to_date=2026-11-18&no_special_user=true",
+                  "observed_at": "2026-10-18T09:51:10+00:00"
+                },
+                {
+                  "id": "8cb037325c5662bce8b4b605",
+                  "source": "eghamat24",
+                  "source_id": "1242",
+                  "name_fa": "هتل الماس 2 مشهد",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/MashhadHotels/Almas_2Hotel.html",
+                  "observed_at": "2026-10-18T09:48:50+00:00"
+                }
+              ]
+            }
+          ],
+          "calculations": [
+            {
+              "tool": "calculate",
+              "tool_call_id": "call_Cr8JMLoBw0eWCmrqizuLHmmC",
+              "expression": "104500000/10",
+              "value": "10450000",
+              "unit": "تومان",
+              "precision": 0
+            },
+            {
+              "tool": "calculate",
+              "tool_call_id": "call_ys2Ian1skrmStKVg7C38mqPE",
+              "expression": "(104500000+104500000)/10",
+              "value": "20900000",
+              "unit": "تومان",
+              "precision": 0
+            }
+          ],
+          "conversation_state": {
+            "destination": "مشهد",
+            "checkin": "2026-11-17",
+            "checkout": "2026-11-19",
+            "adults": 2,
+            "rooms": 1,
+            "property_id": "8cb037325c5662bce8b4b605",
+            "room_id": "29948",
+            "rate_plan_id": "1107",
+            "selected_transport_ids": [],
+            "selected_stay_ids": [
+              "445d61c583c632f1c9d4abad",
+              "5fa0ab15301423f9b8090d70"
+            ]
+          },
+          "quote_evidence": {
+            "stay": {
+              "blocked": false,
+              "groups": [
+                {
+                  "property_id": "8cb037325c5662bce8b4b605",
+                  "room_id": "29948",
+                  "rate_plan_id": "1107",
+                  "nights": 2,
+                  "rooms": 1,
+                  "complete_observed": true,
+                  "reasons": [],
+                  "unknown_restrictions": [
+                    "checkout_day_restrictions",
+                    "max_stay",
+                    "min_stay"
+                  ],
+                  "nightly_amounts_irr": [
+                    104500000,
+                    104500000
+                  ]
+                }
+              ],
+              "reasons": []
+            }
+          },
+          "snapshot": {
+            "captured_on": "2026-10-18",
+            "as_of": "2026-10-27",
+            "requires_revalidation": true,
+            "live_availability_confirmed": false
+          },
+          "trace": [
+            {
+              "step": "coordinator",
+              "status": "started",
+              "message": "انتخاب مسیر و آماده‌سازی پرس‌وجو آغاز شد.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "entity_linker",
+              "status": "completed",
+              "message": "شناسه و نام کاندیدها از کاتالوگ واقعی بررسی شد.",
+              "duration_ms": 0,
+              "data": {
+                "entities": [
+                  {
+                    "id": "8cb037325c5662bce8b4b605",
+                    "source": "eghamat24",
+                    "source_id": "1242",
+                    "name_fa": "هتل الماس 2 مشهد",
+                    "city_fa": "مشهد"
+                  }
+                ]
+              }
+            },
+            {
+              "step": "coordinator",
+              "status": "completed",
+              "message": "مسیر درخواست مشخص شد.",
+              "duration_ms": 8263.46,
+              "data": {
+                "route": "combined",
+                "needs_documents": false,
+                "requires_calculator": true,
+                "sql_generated": true,
+                "conversation_state": {
+                  "checkin": "2026-11-17",
+                  "checkout": "2026-11-19",
+                  "adults": 2,
+                  "rooms": 1,
+                  "property_id": "8cb037325c5662bce8b4b605",
+                  "room_id": "29948",
+                  "rate_plan_id": "1107",
+                  "selected_transport_ids": [],
+                  "selected_stay_ids": []
+                }
+              }
+            },
+            {
+              "step": "database_specialist",
+              "status": "started",
+              "message": "اعتبارسنجی و اجرای خواندنی SQL آغاز شد.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "database_specialist",
+              "status": "completed",
+              "message": "SQL اعتبارسنجی و اجرا شد.",
+              "duration_ms": 28.69,
+              "data": {
+                "sql": "SELECT sr.record_id, sr.property_id, sr.room_id, sr.rate_plan_id, sr.service_date, sr.amount_irr, sr.price_basis, sr.availability, sr.occupancy, sr.inventory, sr.closed, sr.min_stay, sr.max_stay, sr.close_to_arrival, sr.close_to_departure, sr.board_type, sr.extra_capacity, sr.cancelable\nFROM stay_rates sr\nJOIN properties p ON sr.property_id = p.record_id\nJOIN records r ON p.record_id = r.id\nWHERE r.source = 'eghamat24' AND r.source_id = '1242' AND sr.room_id = '29948' AND sr.rate_plan_id = '1107' AND sr.service_date IN ('2026-11-17','2026-11-18')\nORDER BY sr.service_date;",
+                "row_count": 2,
+                "truncated": false,
+                "repair_used": false,
+                "query_index": 1,
+                "query_count": 1
+              }
+            },
+            {
+              "step": "synthesis",
+              "status": "started",
+              "message": "پاسخ با شواهد و ابزار محاسبه در صورت نیاز ساخته می‌شود.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "calculator",
+              "status": "completed",
+              "message": "ابزار محاسبه واقعی اجرا شد.",
+              "duration_ms": 0.47,
+              "data": {
+                "tool_call_id": "call_Cr8JMLoBw0eWCmrqizuLHmmC",
+                "expression": "104500000/10",
+                "value": "10450000",
+                "unit": "تومان",
+                "precision": 0
+              }
+            },
+            {
+              "step": "calculator",
+              "status": "completed",
+              "message": "ابزار محاسبه واقعی اجرا شد.",
+              "duration_ms": 0.14,
+              "data": {
+                "tool_call_id": "call_ys2Ian1skrmStKVg7C38mqPE",
+                "expression": "(104500000+104500000)/10",
+                "value": "20900000",
+                "unit": "تومان",
+                "precision": 0
+              }
+            },
+            {
+              "step": "synthesis",
+              "status": "completed",
+              "message": "پاسخ نهایی و ارجاع‌ها بررسی شدند.",
+              "duration_ms": 33166.87,
+              "data": {
+                "status": "answered",
+                "source_ids": [],
+                "calculator_calls": 2
+              }
+            },
+            {
+              "step": "workflow",
+              "status": "completed",
+              "message": "پردازش درخواست پایان یافت.",
+              "duration_ms": 0,
+              "data": {
+                "status": "answered",
+                "route": "combined"
+              }
+            }
+          ],
+          "metrics": {
+            "duration_ms": 41473.35,
+            "llm_calls": 4,
+            "prompt_tokens": 12557,
+            "completion_tokens": 917,
+            "responses_with_usage": 4,
+            "as_of": "2026-10-27",
+            "retrieval": {}
+          }
+        },
+        "assessment": {
+          "automatic_pass": true,
+          "checks": [
+            {
+              "criterion": "route",
+              "passed": true,
+              "expected": "combined",
+              "actual": "combined"
+            },
+            {
+              "criterion": "outcome",
+              "passed": true,
+              "expected": [
+                "answered"
+              ],
+              "actual": "answered"
+            },
+            {
+              "criterion": "tool:sql_query",
+              "passed": true
+            },
+            {
+              "criterion": "tool:calculator",
+              "passed": true
+            },
+            {
+              "criterion": "inline_sources_resolve",
+              "passed": true,
+              "actual": []
+            },
+            {
+              "criterion": "SQL_numeric_evidence:0",
+              "passed": true,
+              "expected": "104500000",
+              "observed": [
+                "0",
+                "1",
+                "10",
+                "104500000",
+                "1107",
+                "2",
+                "29948"
+              ]
+            },
+            {
+              "criterion": "native_calculator_value:0",
+              "passed": true,
+              "expected": "20900000",
+              "observed": [
+                "10450000",
+                "20900000"
+              ]
+            },
+            {
+              "criterion": "operational_tables_queried",
+              "passed": true,
+              "expected": [
+                "stay_rates"
+              ],
+              "actual": [
+                "properties",
+                "records",
+                "stay_rates"
+              ],
+              "accepted_equivalences": []
+            },
+            {
+              "criterion": "conversation_slot:destination",
+              "passed": true,
+              "expected": "مشهد",
+              "actual": "مشهد"
+            },
+            {
+              "criterion": "conversation_slot:checkin",
+              "passed": true,
+              "expected": "2026-11-17",
+              "actual": "2026-11-17"
+            },
+            {
+              "criterion": "conversation_slot:checkout",
+              "passed": true,
+              "expected": "2026-11-19",
+              "actual": "2026-11-19"
+            },
+            {
+              "criterion": "conversation_slot:adults",
+              "passed": true,
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "criterion": "conversation_slot:rooms",
+              "passed": true,
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "criterion": "calculator_operand_provenance",
+              "passed": true,
+              "expressions": [
+                {
+                  "expression": "104500000/10",
+                  "operands": [
+                    "104500000",
+                    "10"
+                  ],
+                  "unsupported_literals": [],
+                  "passed": true
+                },
+                {
+                  "expression": "(104500000+104500000)/10",
+                  "operands": [
+                    "10",
+                    "104500000",
+                    "104500000"
+                  ],
+                  "unsupported_literals": [],
+                  "passed": true
+                }
+              ]
+            },
+            {
+              "criterion": "compatible_all_night_stay",
+              "passed": true
+            },
+            {
+              "criterion": "snapshot_not_live_booking",
+              "passed": true
+            }
+          ],
+          "semantic_review_required": true,
+          "semantic_review_notes": [
+            "Literal provenance is checked; review price basis, selected legs/room plan, occupancy and arithmetic meaning separately.",
+            "Check the answer labels observed prices as stale snapshot evidence, preserves IRR/Toman and price basis, and never promises a booking."
+          ],
+          "scope": "observable route/tools, citations, slots, row/numeric equivalence and literal operands; not full semantic fidelity or live availability"
+        },
+        "duration_ms": 41570.06
+      }
+    ]
+  },
+  "offline": {
+    "planned": 0,
+    "results": []
+  },
+  "retrieval": {
+    "planned": 0,
+    "results": []
+  },
+  "summary": {
+    "live": {
+      "planned": 1,
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "not_run": 0
+    },
+    "offline": {
+      "planned": 0,
+      "executed": 0,
+      "passed": 0,
+      "failed": 0,
+      "not_run": 0
+    },
+    "retrieval": {
+      "planned": 0,
+      "executed": 0,
+      "passed": 0,
+      "failed": 0,
+      "not_run": 0
+    }
+  },
+  "finished_at": "2026-10-27T17:24:37.030594+00:00"
+}

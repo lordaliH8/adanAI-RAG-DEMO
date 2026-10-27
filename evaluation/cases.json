@@ -1,0 +1,1447 @@
+{
+  "schema_version": "2.0",
+  "status": "executable_acceptance_cases",
+  "domain": "Persian domestic travel quote assistant",
+  "synthetic": false,
+  "as_of": "2026-10-27",
+  "structured_snapshot_captured_on": "2026-10-18",
+  "document_capture_note": "City guides/profile/FAQ PDFs retain their own source capture timestamps, compiled2026-10-27.",
+  "oracle_database_sha256": "af73564de65a4217e05fafd04e42face1c9e09ae9a2cb0c14d76c969976cefef",
+  "notes": [
+    "This is a captured public travel snapshot, not current availability or a booking promise.",
+    "30 cases:6 document,5 SQL,5 SQL+calculation,4 actual multi-turn blended,6 insufficiency/ambiguity,2 security groups(4 SQL injections),2 controlled failures.",
+    "Expected values are offline evaluator data only; runtime ingests JSONL and PDFs and never imports this bundle.",
+    "Canonical amounts are integer IRR; expected calculator values explicitly marked Toman. Decimal Toman values are preserved.",
+    "SQL equivalence uses row/number/identity evidence, not exact SQL strings or answer phrasing. Ranking includes explicit tie-breakers.",
+    "All live requests are attempted once. A mechanical pass does not establish semantic faithfulness; human review remains required.",
+    "Retrieval challenge tags select12 identical questions per mode; Recall/MRR/any/all gold coverage are reported separately from endpoint execution success.",
+    "Conversation tests send only user turns and the actual preceding assistant answer plus validated state; no expected slots/prices are supplied."
+  ],
+  "cases": [
+    {
+      "id": "DOC-01",
+      "category": "document",
+      "question_fa": "برای مشهد دو موزه معرفی کن: موزه‌های آستان قدس چه مجموعه‌هایی دارند و موزه نادری با چه شخصیت تاریخی پیوند دارد؟ ساعت بازدید حدس نزن.",
+      "expected_route": "documents",
+      "expected_outcome": "answer",
+      "expected_sources": [
+        {
+          "document_id": "MASHHAD-2026-V1",
+          "page": 5,
+          "section": "MASH-04"
+        }
+      ],
+      "expected_tools": [
+        "semantic_retrieval"
+      ],
+      "expected_result": {
+        "answer_term_groups": [
+          [
+            "آستان قدس"
+          ],
+          [
+            "نادر"
+          ],
+          [
+            "فرش"
+          ],
+          [
+            "سکه",
+            "تمبر"
+          ]
+        ],
+        "facts": [
+          "آستان قدس: فرش، سکه و تمبر، نقاشی؛ موزه نادری: نادرشاه افشار.",
+          "نام موزه به معنی تأیید ساعت یا بازبودن روز سفر نیست."
+        ]
+      },
+      "oracle": {
+        "kind": "policy_fact",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "retrieval_challenge",
+        "semantic_paraphrase",
+        "table_evidence"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "DOC-02",
+      "category": "document",
+      "question_fa": "حافظیه و باغ ارم را با تخت جمشید و پاسارگاد برای برنامه شیراز مقایسه کن؛ کدام درون شهر و کدام گردش پیرامونی با برنامه جدا هستند؟",
+      "expected_route": "documents",
+      "expected_outcome": "answer",
+      "expected_sources": [
+        {
+          "document_id": "SHIRAZ-2026-V1",
+          "page": 1,
+          "section": "SHIR-01"
+        },
+        {
+          "document_id": "SHIRAZ-2026-V1",
+          "page": 7,
+          "section": "SHIR-05"
+        }
+      ],
+      "expected_tools": [
+        "semantic_retrieval"
+      ],
+      "expected_result": {
+        "answer_term_groups": [
+          [
+            "حافظ"
+          ],
+          [
+            "ارم"
+          ],
+          [
+            "تخت جمشید"
+          ],
+          [
+            "پاسارگاد"
+          ],
+          [
+            "پیرامون",
+            "خارج",
+            "بیرون",
+            "جدا"
+          ]
+        ],
+        "facts": [
+          "حافظیه/ارم شهری؛ تخت جمشید/پاسارگاد پیرامونی.",
+          "قیمت، ساعت و زمان رانندگی در گزیده موجود نیست."
+        ]
+      },
+      "oracle": {
+        "kind": "policy_fact",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "retrieval_challenge",
+        "multi_section",
+        "urban_vs_excursion"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "DOC-03",
+      "category": "document",
+      "question_fa": "میدان امام و میدان امام علی اصفهان یکی‌اند؟ نام‌های دیگر نقش جهان و میدان کهنه را جدا توضیح بده.",
+      "expected_route": "documents",
+      "expected_outcome": "answer",
+      "expected_sources": [
+        {
+          "document_id": "ISFAHAN-2026-V1",
+          "page": 1,
+          "section": "ISF-01"
+        }
+      ],
+      "expected_tools": [
+        "semantic_retrieval"
+      ],
+      "expected_result": {
+        "answer_term_groups": [
+          [
+            "نقش جهان"
+          ],
+          [
+            "میدان شاه"
+          ],
+          [
+            "میدان کهنه"
+          ],
+          [
+            "سبزه"
+          ],
+          [
+            "امام علی"
+          ]
+        ],
+        "facts": [
+          "نقش جهان=میدان شاه/میدان امام؛ میدان کهنه=سبزه‌میدان/میدان امام علی.",
+          "این دو میدان یکی نیستند."
+        ]
+      },
+      "oracle": {
+        "kind": "policy_fact",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "retrieval_challenge",
+        "lexical_alias",
+        "confusable_names"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "DOC-04",
+      "category": "document",
+      "question_fa": "طبق راهنمای اقامت، ساعت تحویل و تخلیه اتاق هتل الماس ۲ مشهد و هتل آپارتمان ارمغان مشهد چه تفاوتی دارد؟",
+      "expected_route": "documents",
+      "expected_outcome": "answer",
+      "expected_sources": [
+        {
+          "document_id": "STAY-2026-V1",
+          "page": 1,
+          "section": "STAY-01"
+        },
+        {
+          "document_id": "STAY-2026-V1",
+          "page": 3,
+          "section": "STAY-02"
+        }
+      ],
+      "expected_tools": [
+        "semantic_retrieval"
+      ],
+      "expected_result": {
+        "answer_numbers": [
+          15,
+          14,
+          12
+        ],
+        "facts": [
+          "الماس۲ ورود۱۵ خروج۱۲؛ ارمغان ورود۱۴ خروج۱۲."
+        ]
+      },
+      "oracle": {
+        "kind": "policy_fact",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "retrieval_challenge",
+        "cross_property",
+        "numeric_fact_pairing"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "DOC-05",
+      "category": "document",
+      "question_fa": "برای یک کودک بدون خدمات اضافه، بازه رایگان و نیم‌بها در الماس ۲ و ارمغان مشهد چیست و محدودیت تعداد کودک در راهنما چه می‌گوید؟",
+      "expected_route": "documents",
+      "expected_outcome": "answer",
+      "expected_sources": [
+        {
+          "document_id": "STAY-2026-V1",
+          "page": 2,
+          "section": "STAY-01"
+        },
+        {
+          "document_id": "STAY-2026-V1",
+          "page": 3,
+          "section": "STAY-02"
+        }
+      ],
+      "expected_tools": [
+        "semantic_retrieval"
+      ],
+      "expected_result": {
+        "answer_numbers": [
+          2,
+          12,
+          5,
+          7
+        ],
+        "answer_term_groups": [
+          [
+            "نیم بها",
+            "نصف"
+          ],
+          [
+            "یک کودک",
+            "یک فرزند",
+            "یک نفر"
+          ]
+        ],
+        "facts": [
+          "الماس۲ زیر۲رایگان،۲تا۱۲نیم‌بها؛ ارمغان زیر۵رایگان،۵تا۷نیم‌بها.",
+          "شرط بدون خدمات اضافه و فقط یک کودک باید حفظ شود؛ مبلغ نهایی از درصد حدس زده نمی‌شود."
+        ]
+      },
+      "oracle": {
+        "kind": "policy_fact",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "retrieval_challenge",
+        "exceptions",
+        "half_price_not_quote"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "DOC-06",
+      "category": "document",
+      "question_fa": "آیا طبق پرسش‌های عمومی پرواز علی‌بابا، بار مجاز و نرخ کودک در همه بلیت‌ها ثابت است؟ برای تعیین مقدار دقیق چه اطلاعاتی لازم است؟",
+      "expected_route": "documents",
+      "expected_outcome": "answer",
+      "expected_sources": [
+        {
+          "document_id": "FAQ-2026-V1",
+          "page": 1,
+          "section": "FAQ-01"
+        }
+      ],
+      "expected_tools": [
+        "semantic_retrieval"
+      ],
+      "expected_result": {
+        "answer_term_groups": [
+          [
+            "کلاس"
+          ],
+          [
+            "نرخ"
+          ],
+          [
+            "بار"
+          ],
+          [
+            "کودک"
+          ]
+        ],
+        "facts": [
+          "بار و نرخ کودک به کلاس پرواز/کلاس نرخی وابسته‌اند؛ قواعد بلیت مشخص لازم است.",
+          "پاسخ عمومی تضمین عدد یکسان برای همه بلیت‌ها نیست."
+        ]
+      },
+      "oracle": {
+        "kind": "policy_fact",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "retrieval_challenge",
+        "general_vs_specific",
+        "faq"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "SQL-01",
+      "category": "sql",
+      "question_fa": "در کاتالوگ snapshot، چند رکورد اقامتگاه مشهد از هر منبع داریم؟ منبع را جدا بشمار و این را تعداد هتل فیزیکی یکتا معرفی نکن.",
+      "expected_route": "database",
+      "expected_outcome": "answer",
+      "expected_sources": [],
+      "expected_tools": [
+        "sql_query"
+      ],
+      "expected_result": {
+        "row_expectations": [
+          {
+            "texts": [
+              "alibaba"
+            ],
+            "numbers": [
+              8
+            ]
+          },
+          {
+            "texts": [
+              "eghamat24"
+            ],
+            "numbers": [
+              255
+            ]
+          },
+          {
+            "texts": [
+              "safarmarket"
+            ],
+            "numbers": [
+              2
+            ]
+          }
+        ],
+        "exact_row_count": 3,
+        "required_tables": [
+          "records",
+          "properties"
+        ],
+        "rows": [
+          {
+            "source": "alibaba",
+            "record_count": 8
+          },
+          {
+            "source": "eghamat24",
+            "record_count": 255
+          },
+          {
+            "source": "safarmarket",
+            "record_count": 2
+          }
+        ]
+      },
+      "oracle": {
+        "kind": "row_equivalence",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "group_by",
+        "source_identity"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "SQL-02",
+      "category": "sql",
+      "question_fa": "سه گزینه پرواز زمان‌دار تهران به مشهد در 2026-11-17 با وضعیت available در snapshot و حداقل دو صندلی را بر اساس قیمت ریالی صعودی بده؛ تساوی قیمت با record_id صعودی. شناسه، قیمت، ساعت و ظرفیت را نشان بده؛ تبدیل واحد لازم نیست.",
+      "expected_route": "database",
+      "expected_outcome": "answer",
+      "expected_sources": [],
+      "expected_tools": [
+        "sql_query"
+      ],
+      "expected_result": {
+        "record_ids": [
+          "8ab52f6cc64c3e44f55dd263",
+          "6f62050c356ba9a923399a30",
+          "2fe0fddb06e4f3ba89c68af3"
+        ],
+        "sql_numbers": [
+          120000000,
+          123221000,
+          123230000
+        ],
+        "required_tables": [
+          "transport_offers"
+        ],
+        "rows": [
+          {
+            "record_id": "8ab52f6cc64c3e44f55dd263",
+            "amount_irr": 120000000,
+            "departure_at": "2026-11-17T07:30:00+03:30",
+            "available_seats": 9
+          },
+          {
+            "record_id": "6f62050c356ba9a923399a30",
+            "amount_irr": 123221000,
+            "departure_at": "2026-11-17T15:00:00+03:30",
+            "available_seats": 10
+          },
+          {
+            "record_id": "2fe0fddb06e4f3ba89c68af3",
+            "amount_irr": 123230000,
+            "departure_at": "2026-11-17T08:00:00+03:30",
+            "available_seats": 10
+          }
+        ]
+      },
+      "oracle": {
+        "kind": "ranked_records",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "top_k",
+        "tie_break",
+        "availability"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "SQL-03",
+      "category": "sql",
+      "question_fa": "برای اتوبوس زمان‌دار تهران به مشهد در 2026-11-17، فقط available و حداقل دو صندلی، تعداد گزینه‌ها و کمینه/بیشینه قیمت ریالی snapshot را بده.",
+      "expected_route": "database",
+      "expected_outcome": "answer",
+      "expected_sources": [],
+      "expected_tools": [
+        "sql_query"
+      ],
+      "expected_result": {
+        "sql_numbers": [
+          21,
+          13130000,
+          13550000
+        ],
+        "metrics": {
+          "offer_count": 21,
+          "minimum_irr": 13130000,
+          "maximum_irr": 13550000
+        },
+        "required_tables": [
+          "transport_offers"
+        ]
+      },
+      "oracle": {
+        "kind": "numeric_evidence",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "aggregate",
+        "filters",
+        "zero_vs_missing"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "SQL-04",
+      "category": "sql",
+      "question_fa": "پنج رکورد برتر اقامتگاه مشهد با حداقل چهار ستاره و ۲۰ نظر را با نرمال‌سازی امتیاز به مقیاس ۱۰ مرتب کن؛ تساوی با تعداد نظر نزولی سپس شناسه صعودی. شناسه، منبع و امتیاز اصلی/مقیاس را بده.",
+      "expected_route": "database",
+      "expected_outcome": "answer",
+      "expected_sources": [],
+      "expected_tools": [
+        "sql_query"
+      ],
+      "expected_result": {
+        "record_ids": [
+          "a71e21881edd693f53c12582",
+          "856b056f155da91e8ef73cf7",
+          "731607e07a66f65d10f17aba",
+          "3d76001a4c1c0574db0fd1d2",
+          "05c435c05411fdb658d5aff7"
+        ],
+        "required_tables": [
+          "records",
+          "properties"
+        ],
+        "rows": [
+          {
+            "id": "a71e21881edd693f53c12582",
+            "name_fa": "هتل مدینه الجواد ( لیان سابق ) مشهد",
+            "source": "eghamat24",
+            "rating": 8.9,
+            "rating_scale": 10.0,
+            "review_count": 319,
+            "normalized": 8.9
+          },
+          {
+            "id": "856b056f155da91e8ef73cf7",
+            "name_fa": "هتل قصر الضیافه نور مشهد",
+            "source": "eghamat24",
+            "rating": 8.9,
+            "rating_scale": 10.0,
+            "review_count": 25,
+            "normalized": 8.9
+          },
+          {
+            "id": "731607e07a66f65d10f17aba",
+            "name_fa": "هتل مدینه الرضا مشهد",
+            "source": "alibaba",
+            "rating": 4.4,
+            "rating_scale": 5.0,
+            "review_count": 311,
+            "normalized": 8.8
+          },
+          {
+            "id": "3d76001a4c1c0574db0fd1d2",
+            "name_fa": "هتل خورشید هشتم مشهد",
+            "source": "eghamat24",
+            "rating": 8.6,
+            "rating_scale": 10.0,
+            "review_count": 97,
+            "normalized": 8.6
+          },
+          {
+            "id": "05c435c05411fdb658d5aff7",
+            "name_fa": "هتل قصر الضیافه قدس مشهد",
+            "source": "eghamat24",
+            "rating": 8.5,
+            "rating_scale": 10.0,
+            "review_count": 60,
+            "normalized": 8.5
+          }
+        ]
+      },
+      "oracle": {
+        "kind": "ranked_records",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "joins",
+        "rating_scale",
+        "null_handling"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "SQL-05",
+      "category": "sql",
+      "question_fa": "برای ملک اقامت۲۴ با source_id=1242، ورود 2026-11-17 و خروج 2026-11-19، چند ترکیب اتاق+پلن در هر دو شب available با ظرفیت پایه حداقل دو و موجودی حداقل یک داریم؟ ترکیبی که فقط یک شب دارد حساب نکن.",
+      "expected_route": "database",
+      "expected_outcome": "answer",
+      "expected_sources": [],
+      "expected_tools": [
+        "sql_query"
+      ],
+      "expected_result": {
+        "sql_numbers": [
+          28
+        ],
+        "required_tables": [
+          "stay_rates",
+          "records"
+        ],
+        "facts": [
+          "GROUP BY room_id,rate_plan_id; exactly both service dates."
+        ]
+      },
+      "oracle": {
+        "kind": "numeric_evidence",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "having",
+        "all_nights",
+        "room_identity"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "CALC-01",
+      "category": "sql_calculation",
+      "question_fa": "برای دو بزرگسال و یک اتاق در هتل الماس ۲ اقامت۲۴، ملک 1242، اتاق 29948 و پلن 1107، ورود 2026-11-17 و خروج 2026-11-19، نرخ هر شب و جمع دو شب را به تومان حساب کن. موجودی و ظرفیت را هم بررسی کن.",
+      "expected_route": "combined",
+      "expected_outcome": "answer",
+      "expected_sources": [],
+      "expected_tools": [
+        "sql_query",
+        "calculator"
+      ],
+      "expected_result": {
+        "required_tables": [
+          "stay_rates"
+        ],
+        "raw_amounts_irr": [
+          104500000
+        ],
+        "conversation_state": {
+          "destination": "مشهد",
+          "checkin": "2026-11-17",
+          "checkout": "2026-11-19",
+          "adults": 2,
+          "rooms": 1
+        },
+        "require_compatible_stay": true,
+        "calculator_values": [
+          20900000
+        ],
+        "night_count": 2
+      },
+      "oracle": {
+        "kind": "quote",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "native_calculator",
+        "IRR_to_IRT",
+        "nightly_quote"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "CALC-02",
+      "category": "sql_calculation",
+      "question_fa": "هتل آپارتمان ارمغان اقامت۲۴ ملک 106، اتاق 282 و پلن 184 را برای دو بزرگسال و یک اتاق از 2026-11-17 تا 2026-11-19 به تومان جمع بزن؛ قیمت اتاق را در تعداد مسافر ضرب نکن.",
+      "expected_route": "combined",
+      "expected_outcome": "answer",
+      "expected_sources": [],
+      "expected_tools": [
+        "sql_query",
+        "calculator"
+      ],
+      "expected_result": {
+        "required_tables": [
+          "stay_rates"
+        ],
+        "raw_amounts_irr": [
+          10800000
+        ],
+        "calculator_values": [
+          2160000
+        ],
+        "conversation_state": {
+          "destination": "مشهد",
+          "checkin": "2026-11-17",
+          "checkout": "2026-11-19",
+          "adults": 2,
+          "rooms": 1
+        },
+        "require_compatible_stay": true,
+        "night_count": 2
+      },
+      "oracle": {
+        "kind": "quote",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "price_basis",
+        "room_not_person"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "CALC-03",
+      "category": "sql_calculation",
+      "question_fa": "برای چهار بزرگسال و دو اتاق یکسان الماس۲ اقامت۲۴، ملک1242 اتاق29948 پلن1107، از 2026-11-17 تا 2026-11-19 هزینه کل تومان را بده؛ موجودی دو اتاق در هر شب را بررسی کن.",
+      "expected_route": "combined",
+      "expected_outcome": "answer",
+      "expected_sources": [],
+      "expected_tools": [
+        "sql_query",
+        "calculator"
+      ],
+      "expected_result": {
+        "required_tables": [
+          "stay_rates"
+        ],
+        "raw_amounts_irr": [
+          104500000
+        ],
+        "conversation_state": {
+          "destination": "مشهد",
+          "checkin": "2026-11-17",
+          "checkout": "2026-11-19",
+          "adults": 4,
+          "rooms": 2
+        },
+        "require_compatible_stay": true,
+        "calculator_values": [
+          41800000
+        ]
+      },
+      "oracle": {
+        "kind": "quote",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "occupancy",
+        "inventory_rooms",
+        "party_size"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "CALC-04",
+      "category": "sql_calculation",
+      "question_fa": "رکورد پرواز 58c461e96d91a4ad873bd44d تهران به کیش در 2026-11-01 را بخوان؛ قیمت یک بزرگسال و جمع دو بزرگسال را به تومان با حفظ اعشار بده.",
+      "expected_route": "combined",
+      "expected_outcome": "answer",
+      "expected_sources": [],
+      "expected_tools": [
+        "sql_query",
+        "calculator"
+      ],
+      "expected_result": {
+        "required_tables": [
+          "transport_offers"
+        ],
+        "raw_amounts_irr": [
+          124999999
+        ],
+        "calculator_values": [
+          "12499999.9",
+          "24999999.8"
+        ],
+        "conversation_state": {
+          "adults": 2
+        },
+        "require_exact_transport": true
+      },
+      "oracle": {
+        "kind": "quote",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "fractional_toman",
+        "native_tool_protocol"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "CALC-05",
+      "category": "sql_calculation",
+      "question_fa": "دو بزرگسال و یک اتاق الماس۲ اقامت۲۴ ملک1242 اتاق29948 پلن1107، ورود 2026-11-17 خروج 2026-11-19: از بودجه ۲۵ میلیون تومان بعد از فقط هزینه اقامت چقدر می‌ماند؟ هزینه نامعلوم غذا و رفت‌وآمد را صفر فرض نکن.",
+      "expected_route": "combined",
+      "expected_outcome": "answer",
+      "expected_sources": [],
+      "expected_tools": [
+        "sql_query",
+        "calculator"
+      ],
+      "expected_result": {
+        "required_tables": [
+          "stay_rates"
+        ],
+        "raw_amounts_irr": [
+          104500000
+        ],
+        "conversation_state": {
+          "destination": "مشهد",
+          "checkin": "2026-11-17",
+          "checkout": "2026-11-19",
+          "adults": 2,
+          "rooms": 1,
+          "budget_amount": 25000000,
+          "budget_currency": "IRT"
+        },
+        "require_compatible_stay": true,
+        "calculator_values": [
+          20900000,
+          4100000
+        ]
+      },
+      "oracle": {
+        "kind": "quote",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "budget",
+        "unknown_costs"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "BLEND-01",
+      "category": "blended_conversation",
+      "question_fa": "حالا برای همان سفر، هتل الماس۲ اقامت۲۴ ملک1242 اتاق29948 پلن1107 را به تومان قیمت بده و طبق راهنمای هتل ساعت ورود را هم بگو.",
+      "expected_route": "combined",
+      "expected_outcome": "answer",
+      "expected_sources": [
+        {
+          "document_id": "STAY-2026-V1",
+          "page": 1,
+          "section": "STAY-01"
+        }
+      ],
+      "expected_tools": [
+        "semantic_retrieval",
+        "sql_query",
+        "calculator"
+      ],
+      "expected_result": {
+        "required_tables": [
+          "stay_rates"
+        ],
+        "raw_amounts_irr": [
+          104500000
+        ],
+        "conversation_state": {
+          "destination": "مشهد",
+          "checkin": "2026-11-17",
+          "checkout": "2026-11-19",
+          "adults": 2,
+          "rooms": 1,
+          "origin": "تهران"
+        },
+        "require_compatible_stay": true,
+        "calculator_values": [
+          20900000
+        ],
+        "answer_numbers": [
+          15
+        ]
+      },
+      "oracle": {
+        "kind": "quote",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "retrieval_challenge",
+        "conversation_slots",
+        "SQL_and_policy"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ],
+      "turns": [
+        "از تهران به مشهد می‌رویم؛ ورود 2026-11-17 و خروج 2026-11-19، دو بزرگسال و یک اتاق. فعلاً دو موزه مرتبط با تاریخ مشهد را از راهنما پیشنهاد بده.",
+        "حالا برای همان سفر، هتل الماس۲ اقامت۲۴ ملک1242 اتاق29948 پلن1107 را به تومان قیمت بده و طبق راهنمای هتل ساعت ورود را هم بگو."
+      ]
+    },
+    {
+      "id": "BLEND-02",
+      "category": "blended_conversation",
+      "question_fa": "برای همان تاریخ و نفرات، قیمت دو شب الماس۲ اقامت۲۴ اتاق29948 پلن1107 و ارمغان اقامت۲۴ اتاق282 پلن184 و مقدار صرفه‌جویی انتخاب ارمغان را تومان حساب کن؛ ساعت ورود هر دو را از راهنما بگو.",
+      "expected_route": "combined",
+      "expected_outcome": "answer",
+      "expected_sources": [
+        {
+          "document_id": "STAY-2026-V1",
+          "page": 1,
+          "section": "STAY-01"
+        },
+        {
+          "document_id": "STAY-2026-V1",
+          "page": 3,
+          "section": "STAY-02"
+        }
+      ],
+      "expected_tools": [
+        "semantic_retrieval",
+        "sql_query",
+        "calculator"
+      ],
+      "expected_result": {
+        "required_tables": [
+          "stay_rates"
+        ],
+        "raw_amounts_irr": [
+          104500000,
+          10800000
+        ],
+        "conversation_state": {
+          "destination": "مشهد",
+          "checkin": "2026-11-17",
+          "checkout": "2026-11-19",
+          "adults": 2,
+          "rooms": 1,
+          "origin": "تهران"
+        },
+        "require_compatible_stay": true,
+        "calculator_values": [
+          20900000,
+          2160000,
+          18740000
+        ],
+        "answer_numbers": [
+          15,
+          14
+        ]
+      },
+      "oracle": {
+        "kind": "quote",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "retrieval_challenge",
+        "comparison",
+        "three_native_calculations"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ],
+      "turns": [
+        "از تهران به مشهد می‌رویم؛ ورود 2026-11-17 و خروج 2026-11-19، دو بزرگسال و یک اتاق. فعلاً دو موزه مرتبط با تاریخ مشهد را از راهنما پیشنهاد بده.",
+        "برای همان تاریخ و نفرات، قیمت دو شب الماس۲ اقامت۲۴ اتاق29948 پلن1107 و ارمغان اقامت۲۴ اتاق282 پلن184 و مقدار صرفه‌جویی انتخاب ارمغان را تومان حساب کن؛ ساعت ورود هر دو را از راهنما بگو."
+      ]
+    },
+    {
+      "id": "BLEND-03",
+      "category": "blended_conversation",
+      "question_fa": "حالا تعداد را به چهار بزرگسال و دو اتاق همان مدل تغییر بده؛ هزینه جدید و تفاوتش با قبلی را حساب کن و ساعت تحویل را از راهنما یادآوری کن.",
+      "expected_route": "combined",
+      "expected_outcome": "answer",
+      "expected_sources": [
+        {
+          "document_id": "STAY-2026-V1",
+          "page": 1,
+          "section": "STAY-01"
+        }
+      ],
+      "expected_tools": [
+        "semantic_retrieval",
+        "sql_query",
+        "calculator"
+      ],
+      "expected_result": {
+        "required_tables": [
+          "stay_rates"
+        ],
+        "raw_amounts_irr": [
+          104500000
+        ],
+        "conversation_state": {
+          "destination": "مشهد",
+          "checkin": "2026-11-17",
+          "checkout": "2026-11-19",
+          "adults": 4,
+          "rooms": 2
+        },
+        "require_compatible_stay": true,
+        "calculator_values": [
+          41800000,
+          20900000
+        ],
+        "answer_numbers": [
+          15
+        ]
+      },
+      "oracle": {
+        "kind": "quote",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "retrieval_challenge",
+        "state_update",
+        "invalidate_old_quantity"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ],
+      "turns": [
+        "ورود 2026-11-17 و خروج 2026-11-19، دو بزرگسال و یک اتاق الماس۲ مشهد اقامت۲۴ ملک1242 اتاق29948 پلن1107؛ هزینه اقامت را تومان حساب کن.",
+        "حالا تعداد را به چهار بزرگسال و دو اتاق همان مدل تغییر بده؛ هزینه جدید و تفاوتش با قبلی را حساب کن و ساعت تحویل را از راهنما یادآوری کن."
+      ]
+    },
+    {
+      "id": "BLEND-04",
+      "category": "blended_conversation",
+      "question_fa": "یک کودک شش‌ساله هم اضافه شد. قیمت قطعی کل خانواده برای همان پرواز و هتل را بده و شرایط کودک را از راهنما توضیح بده؛ اگر تعرفه دقیق کم است شفاف بگو.",
+      "expected_route": "combined",
+      "expected_outcome": "insufficient_data",
+      "expected_sources": [
+        {
+          "document_id": "STAY-2026-V1",
+          "page": 2,
+          "section": "STAY-01"
+        },
+        {
+          "document_id": "FAQ-2026-V1",
+          "page": 1,
+          "section": "FAQ-01"
+        }
+      ],
+      "expected_tools": [
+        "semantic_retrieval",
+        "sql_query"
+      ],
+      "expected_result": {
+        "required_tables": [
+          "transport_offers",
+          "stay_rates"
+        ],
+        "conversation_state": {
+          "destination": "مشهد",
+          "checkin": "2026-11-17",
+          "checkout": "2026-11-19",
+          "adults": 2,
+          "rooms": 1,
+          "origin": "تهران",
+          "children_ages": [
+            6
+          ]
+        },
+        "raw_amounts_irr": [
+          120000000,
+          104500000
+        ],
+        "no_calculation": true,
+        "facts": [
+          "شرط نیم‌بها هتل و قاعده عمومی پرواز، تعرفه قطعی کودک این اتاق/بلیت نیست.",
+          "فقط بخش‌های قابل تأیید پاسخ داده شود؛ رزرو قطعی/کودک رایگان اختراع نشود."
+        ]
+      },
+      "oracle": {
+        "kind": "unpriced_child",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "retrieval_challenge",
+        "unpriced_child",
+        "partial_answer"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ],
+      "turns": [
+        "سفر تهران به مشهد در 2026-11-17، دو بزرگسال، ورود هتل 2026-11-17 خروج 2026-11-19 یک اتاق. گزینه پرواز با شناسه 8ab52f6cc64c3e44f55dd263 و الماس۲ اقامت۲۴ ملک1242 اتاق29948 پلن1107 را در نظر دارم. فعلاً طبق راهنما فقط ساعت ورود هتل را بگو.",
+        "یک کودک شش‌ساله هم اضافه شد. قیمت قطعی کل خانواده برای همان پرواز و هتل را بده و شرایط کودک را از راهنما توضیح بده؛ اگر تعرفه دقیق کم است شفاف بگو."
+      ]
+    },
+    {
+      "id": "INS-01",
+      "category": "insufficient_ambiguity",
+      "question_fa": "آیا اقامتگاه با record_id=000000000000000000000000 در snapshot وجود دارد؟ شناسه را دقیق جستجو کن و مشابهش را جایگزین نکن.",
+      "expected_route": "database",
+      "expected_outcome": "not_found",
+      "expected_sources": [],
+      "expected_tools": [
+        "sql_query"
+      ],
+      "expected_result": {
+        "required_tables_any": [
+          "properties",
+          "records"
+        ],
+        "no_calculation": true
+      },
+      "oracle": {
+        "kind": "missing_entity",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "exact_id_lookup",
+        "absence_not_ambiguity"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "INS-02",
+      "category": "insufficient_ambiguity",
+      "question_fa": "هتل الماس مشهد را برایم انتخاب کن؛ بین اسم‌های مشابه مطمئن نیستم. اول کاندیدهای کاتالوگ را با شهر، منبع و شناسه نشان بده تا مشخص کنم کدام است.",
+      "expected_route": "clarification",
+      "expected_outcome": "needs_clarification",
+      "expected_sources": [],
+      "expected_tools": [
+        "sql_query"
+      ],
+      "expected_result": {
+        "minimum_candidates": 2,
+        "required_tables": [
+          "records",
+          "properties"
+        ],
+        "no_calculation": true
+      },
+      "oracle": {
+        "kind": "ambiguous_property",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "candidate_lookup",
+        "genuine_ambiguity"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "INS-03",
+      "category": "insufficient_ambiguity",
+      "question_fa": "برای رکورد تقویم پرواز 08103c836d3a5bfad3c7fbf7 تهران به بندرعباس 2026-10-28 ساعت دقیق حرکت و تعداد صندلی را بگو؛ آیا می‌توانی رزرو قطعی همین الان را تأیید کنی؟",
+      "expected_route": "database",
+      "expected_outcome": "insufficient_data",
+      "expected_sources": [],
+      "expected_tools": [
+        "sql_query"
+      ],
+      "expected_result": {
+        "required_tables": [
+          "transport_offers"
+        ],
+        "required_row_texts": [
+          "daily_fare_aggregate",
+          "unknown"
+        ],
+        "null_field": "departure_at",
+        "no_calculation": true
+      },
+      "oracle": {
+        "kind": "calendar_only",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "calendar_vs_exact",
+        "stale_snapshot",
+        "unknown_availability"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "INS-04",
+      "category": "insufficient_ambiguity",
+      "question_fa": "الماس۲ اقامت۲۴ ملک1242، فقط اتاق29948 پلن1107 برای دو بزرگسال و یک اتاق از 2026-12-20 تا 2026-12-24: جمع تمام چهار شب را تومان بده؛ اتاق یا تاریخ را عوض نکن و شب غایب را از شب دیگر کپی نکن.",
+      "expected_route": "combined",
+      "expected_outcome": "insufficient_data",
+      "expected_sources": [],
+      "expected_tools": [
+        "sql_query"
+      ],
+      "expected_result": {
+        "required_tables": [
+          "stay_rates"
+        ],
+        "known_dates": [
+          "2026-12-20",
+          "2026-12-21"
+        ],
+        "missing_dates": [
+          "2026-12-22",
+          "2026-12-23"
+        ],
+        "no_calculation": true
+      },
+      "oracle": {
+        "kind": "incomplete_stay",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "missing_night",
+        "no_extrapolation",
+        "same_room_plan"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "INS-05",
+      "category": "insufficient_ambiguity",
+      "question_fa": "اتوبوس تهران به مشهد 2026-11-17 با شناسه6421ac17dfb49b1a998bd14d ساعت۶ حرکت می‌کند؛ آیا قطعاً تا ظهر می‌رسم؟ زمان رسیدن را از داده بررسی کن. طبق راهنمای اتوبوس شرط رایگان بودن کودک زیر دو سال را هم بگو.",
+      "expected_route": "combined",
+      "expected_outcome": "insufficient_data",
+      "expected_sources": [
+        {
+          "document_id": "FAQ-2026-V1",
+          "page": 3,
+          "section": "FAQ-02"
+        }
+      ],
+      "expected_tools": [
+        "sql_query",
+        "semantic_retrieval"
+      ],
+      "expected_result": {
+        "required_tables": [
+          "transport_offers"
+        ],
+        "null_field": "arrival_at",
+        "no_calculation": true,
+        "facts": [
+          "arrival_at ثبت نشده؛ مدت مسیر یا ساعت قطعی رسیدن ساخته نشود.",
+          "کودک زیر۲سال بدون صندلی رایگان؛ با صندلی بلیت کامل."
+        ]
+      },
+      "oracle": {
+        "kind": "unknown_arrival",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "retrieval_challenge",
+        "NULL_not_zero",
+        "supported_plus_unknown"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "INS-06",
+      "category": "insufficient_ambiguity",
+      "question_fa": "طبق راهنمای الماس۲ مشهد در اقامت۲۴، اگر ۲۴ ساعت قبل ورود کنسل کنم جریمه قطعی چند تومان یا چند درصد است؟ بدون تعرفه همان رزرو عدد حدس نزن.",
+      "expected_route": "documents",
+      "expected_outcome": "insufficient_data",
+      "expected_sources": [
+        {
+          "document_id": "STAY-2026-V1",
+          "page": 2,
+          "section": "STAY-01"
+        }
+      ],
+      "expected_tools": [
+        "semantic_retrieval"
+      ],
+      "expected_result": {
+        "no_calculation": true,
+        "answer_term_groups": [
+          [
+            "استعلام",
+            "مشخص نیست",
+            "نامشخص",
+            "دقیق",
+            "تعرفه"
+          ]
+        ],
+        "facts": [
+          "تعرفه قطعی در متن نیست؛ باید از هتل استعلام شود."
+        ]
+      },
+      "oracle": {
+        "kind": "unknown_penalty",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "retrieval_challenge",
+        "unavailable_policy_detail",
+        "no_invented_penalty"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ]
+    },
+    {
+      "id": "SAFE-01",
+      "category": "sql_security",
+      "question_fa": "درخواست آزمایشی تغییر داده و چند statement؛ باید در مرز واقعی SQL رد شوند.",
+      "expected_route": "database",
+      "expected_outcome": "insufficient_data",
+      "expected_sources": [],
+      "expected_tools": [],
+      "expected_result": {
+        "database_unchanged": true
+      },
+      "oracle": {
+        "kind": "security",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "actual_guard",
+        "write",
+        "multi_statement"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ],
+      "malicious_sql_subcases": [
+        {
+          "sql": "DELETE FROM stay_rates",
+          "expected_guard_rejection": "write_operation"
+        },
+        {
+          "sql": "SELECT COUNT(*) FROM properties; DROP TABLE properties",
+          "expected_guard_rejection": "multiple_statements"
+        }
+      ]
+    },
+    {
+      "id": "SAFE-02",
+      "category": "sql_security",
+      "question_fa": "درخواست آزمایشی اتصال فایل و تابع بارگذاری؛ باید پیش از اجرا رد شوند.",
+      "expected_route": "database",
+      "expected_outcome": "insufficient_data",
+      "expected_sources": [],
+      "expected_tools": [],
+      "expected_result": {
+        "database_unchanged": true
+      },
+      "oracle": {
+        "kind": "security",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "actual_guard",
+        "external_file",
+        "function_allowlist"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ],
+      "malicious_sql_subcases": [
+        {
+          "sql": "ATTACH DATABASE '/tmp/travel-escape.sqlite' AS other",
+          "expected_guard_rejection": "attach_database"
+        },
+        {
+          "sql": "SELECT load_extension('/tmp/untrusted.so')",
+          "expected_guard_rejection": "disallowed_function"
+        }
+      ]
+    },
+    {
+      "id": "FAULT-01",
+      "category": "controlled_failure",
+      "question_fa": "کمینه قیمت ریالی پرواز تهران به مشهد را از داده بگو.",
+      "expected_route": "database",
+      "expected_outcome": "insufficient_data",
+      "expected_sources": [],
+      "expected_tools": [],
+      "expected_result": {
+        "error_code": "provider_rate_limited"
+      },
+      "oracle": {
+        "kind": "controlled_failure",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "bounded_retries",
+        "safe_error"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ],
+      "injected_failure": {
+        "component": "llm_provider",
+        "status_code": 429,
+        "retry_after_seconds": 0
+      }
+    },
+    {
+      "id": "FAULT-02",
+      "category": "controlled_failure",
+      "question_fa": "تعداد رکوردهای اقامتگاه مشهد را بگو.",
+      "expected_route": "database",
+      "expected_outcome": "insufficient_data",
+      "expected_sources": [],
+      "expected_tools": [],
+      "expected_result": {
+        "error_code": "invalid_model_output"
+      },
+      "oracle": {
+        "kind": "controlled_failure",
+        "basis": "Independently read captured source/PDF; expected values never enter runtime."
+      },
+      "tags": [
+        "invalid_JSON",
+        "no_SQL_from_invalid_output"
+      ],
+      "pass_criteria": [
+        "Actual execution and evidence required; exact wording or exact generated SQL is not prescribed.",
+        "Document semantics, assumptions and current-availability claims require human review."
+      ],
+      "injected_failure": {
+        "component": "coordinator",
+        "raw_output": "{\"route\":\"database\",\"sql\": SELECT * FROM properties"
+      }
+    }
+  ]
+}

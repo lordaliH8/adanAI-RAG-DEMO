@@ -1,0 +1,110 @@
+{
+  "visual_pages_reviewed": 29,
+  "document_tests": "9 passed",
+  "documents": [
+    {
+      "filename": "booking-faq.pdf",
+      "document_id": "FAQ-2026-V1",
+      "pages": 3,
+      "chunks": 12,
+      "repeated_lines_removed": 21,
+      "raw_characters": 4712,
+      "city": null,
+      "document_type": "booking_faq",
+      "source": "alibaba",
+      "capture_date": "2026-10-18",
+      "effective_from": "1900-01-01",
+      "effective_to": "2099-12-31",
+      "pdf_sha256": "960615ccaf8d6ba0fd09a3768f1f9052d12b471f29a0ed3d7e712311a9a0f746",
+      "max_tokens": 303,
+      "sources": [
+        "alibaba"
+      ],
+      "property_ids": []
+    },
+    {
+      "filename": "isfahan-culture.pdf",
+      "document_id": "ISFAHAN-2026-V1",
+      "pages": 6,
+      "chunks": 25,
+      "repeated_lines_removed": 36,
+      "raw_characters": 10411,
+      "city": "اصفهان",
+      "document_type": "city_guide",
+      "source": "wikimedia",
+      "capture_date": "2026-10-27",
+      "effective_from": "1900-01-01",
+      "effective_to": "2099-12-31",
+      "pdf_sha256": "92da2e15e748d697e91563fdae4154af4670323965a72628ff2004d64a4ac3ef",
+      "max_tokens": 314,
+      "sources": [
+        "wikimedia"
+      ],
+      "property_ids": []
+    },
+    {
+      "filename": "mashhad-culture.pdf",
+      "document_id": "MASHHAD-2026-V1",
+      "pages": 7,
+      "chunks": 28,
+      "repeated_lines_removed": 35,
+      "raw_characters": 10911,
+      "city": "مشهد",
+      "document_type": "city_guide",
+      "source": "wikimedia",
+      "capture_date": "2026-10-27",
+      "effective_from": "1900-01-01",
+      "effective_to": "2099-12-31",
+      "pdf_sha256": "5aa125567a5ab12b5789274f766f441cbfff0470889cf748f2c0fd9a82b035eb",
+      "max_tokens": 317,
+      "sources": [
+        "wikimedia"
+      ],
+      "property_ids": []
+    },
+    {
+      "filename": "mashhad-stay-conditions.pdf",
+      "document_id": "STAY-2026-V1",
+      "pages": 5,
+      "chunks": 12,
+      "repeated_lines_removed": 25,
+      "raw_characters": 5543,
+      "city": "مشهد",
+      "document_type": "accommodation_policies",
+      "source": "mixed",
+      "capture_date": "2026-10-18",
+      "effective_from": "1900-01-01",
+      "effective_to": "2099-12-31",
+      "pdf_sha256": "950db9dd8e3eecb9bd7b797be862ad07be2de046bc352ab6b7f703b86f3decf2",
+      "max_tokens": 318,
+      "sources": [
+        "alibaba",
+        "eghamat24"
+      ],
+      "property_ids": [
+        "106",
+        "1242"
+      ]
+    },
+    {
+      "filename": "shiraz-culture.pdf",
+      "document_id": "SHIRAZ-2026-V1",
+      "pages": 8,
+      "chunks": 34,
+      "repeated_lines_removed": 40,
+      "raw_characters": 14025,
+      "city": "شیراز",
+      "document_type": "city_guide",
+      "source": "wikimedia",
+      "capture_date": "2026-10-27",
+      "effective_from": "1900-01-01",
+      "effective_to": "2099-12-31",
+      "pdf_sha256": "902a76c547ef74105635c3118f23735b080b07cb3e4c2756b0d178fd9d8029ae",
+      "max_tokens": 320,
+      "sources": [
+        "wikimedia"
+      ],
+      "property_ids": []
+    }
+  ]
+}

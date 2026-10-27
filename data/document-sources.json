@@ -1,0 +1,194 @@
+{
+  "documents": [
+    {
+      "id": "MASHHAD-2026-V1",
+      "filename": "mashhad-culture.pdf",
+      "title": "مشهد؛ میراث، خوراک و پیرامون شهر",
+      "city": "مشهد",
+      "document_type": "city_guide",
+      "source": "wikimedia",
+      "compiled_at": "2026-10-27",
+      "observed_at": "2026-10-27T12:12:12.214695+00:00",
+      "source_urls": [
+        "https://fa.wikivoyage.org/wiki/%D9%85%D8%B4%D9%87%D8%AF",
+        "https://fa.wikipedia.org/wiki/%D8%A2%D8%B1%D8%A7%D9%85%DA%AF%D8%A7%D9%87%20%D9%81%D8%B1%D8%AF%D9%88%D8%B3%DB%8C"
+      ],
+      "property_ids": [],
+      "license": "CC BY-SA 4.0",
+      "sources": [
+        {
+          "title": "مشهد",
+          "source_url": "https://fa.wikivoyage.org/wiki/%D9%85%D8%B4%D9%87%D8%AF",
+          "revision_url": "https://fa.wikivoyage.org/w/index.php?title=%D9%85%D8%B4%D9%87%D8%AF&oldid=123136",
+          "retrieved_at": "2026-10-27T12:12:12.214695+00:00",
+          "html_sha256": "49ceb60be6be17e71a2aa71692073ad14c38aa9a185ef77a64e03f74a54622cd",
+          "license_urls": [
+            "https://creativecommons.org/licenses/by-sa/4.0/deed.fa"
+          ]
+        },
+        {
+          "title": "آرامگاه فردوسی",
+          "source_url": "https://fa.wikipedia.org/wiki/%D8%A2%D8%B1%D8%A7%D9%85%DA%AF%D8%A7%D9%87%20%D9%81%D8%B1%D8%AF%D9%88%D8%B3%DB%8C",
+          "revision_url": "https://fa.wikipedia.org/w/index.php?title=%D8%A2%D8%B1%D8%A7%D9%85%DA%AF%D8%A7%D9%87_%D9%81%D8%B1%D8%AF%D9%88%D8%B3%DB%8C&oldid=44164516",
+          "retrieved_at": "2026-10-27T12:13:29.274200+00:00",
+          "html_sha256": "90a604bfea844927d0057a10d440d0d7b69b5f8490657fab59595c55553bb72b",
+          "license_urls": [
+            "//creativecommons.org/licenses/by-sa/4.0/deed.fa"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SHIRAZ-2026-V1",
+      "filename": "shiraz-culture.pdf",
+      "title": "شیراز؛ باغ‌ها، شعر و میراث شهری",
+      "city": "شیراز",
+      "document_type": "city_guide",
+      "source": "wikimedia",
+      "compiled_at": "2026-10-27",
+      "observed_at": "2026-10-27T12:12:14.504286+00:00",
+      "source_urls": [
+        "https://fa.wikivoyage.org/wiki/%D8%B4%DB%8C%D8%B1%D8%A7%D8%B2",
+        "https://fa.wikipedia.org/wiki/%D8%AD%D8%A7%D9%81%D8%B8%DB%8C%D9%87",
+        "https://fa.wikipedia.org/wiki/%D8%A8%D8%A7%D8%BA%20%D8%A7%D8%B1%D9%85"
+      ],
+      "property_ids": [],
+      "license": "CC BY-SA 4.0",
+      "sources": [
+        {
+          "title": "شیراز",
+          "source_url": "https://fa.wikivoyage.org/wiki/%D8%B4%DB%8C%D8%B1%D8%A7%D8%B2",
+          "revision_url": "https://fa.wikivoyage.org/w/index.php?title=%D8%B4%DB%8C%D8%B1%D8%A7%D8%B2&oldid=126361",
+          "retrieved_at": "2026-10-27T12:12:14.504286+00:00",
+          "html_sha256": "94c4040c5a54eaea8e4bd78fef291d222e9bc4dd5fd83d6e8bd5d38057d41a5f",
+          "license_urls": [
+            "https://creativecommons.org/licenses/by-sa/4.0/deed.fa"
+          ]
+        },
+        {
+          "title": "حافظیه",
+          "source_url": "https://fa.wikipedia.org/wiki/%D8%AD%D8%A7%D9%81%D8%B8%DB%8C%D9%87",
+          "revision_url": "https://fa.wikipedia.org/w/index.php?title=%D8%AD%D8%A7%D9%81%D8%B8%DB%8C%D9%87&oldid=44707293",
+          "retrieved_at": "2026-10-27T12:13:34.431943+00:00",
+          "html_sha256": "86b0a9b8057cbdcc3c490d066bc8fa61b8e7d5d89b95980e10b17321e7dd67bb",
+          "license_urls": [
+            "//creativecommons.org/licenses/by-sa/4.0/deed.fa"
+          ]
+        },
+        {
+          "title": "باغ ارم",
+          "source_url": "https://fa.wikipedia.org/wiki/%D8%A8%D8%A7%D8%BA%20%D8%A7%D8%B1%D9%85",
+          "revision_url": "https://fa.wikipedia.org/w/index.php?title=%D8%A8%D8%A7%D8%BA_%D8%A7%D8%B1%D9%85&oldid=44802579",
+          "retrieved_at": "2026-10-27T12:13:41.495494+00:00",
+          "html_sha256": "d0baa5aab747b00df520bad7d2d924ef8239e3e12d35e8afd4d3022ae473671b",
+          "license_urls": [
+            "//creativecommons.org/licenses/by-sa/4.0/deed.fa"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ISFAHAN-2026-V1",
+      "filename": "isfahan-culture.pdf",
+      "title": "اصفهان؛ میدان، پل و خوراک محلی",
+      "city": "اصفهان",
+      "document_type": "city_guide",
+      "source": "wikimedia",
+      "compiled_at": "2026-10-27",
+      "observed_at": "2026-10-27T12:12:16.676080+00:00",
+      "source_urls": [
+        "https://fa.wikivoyage.org/wiki/%D8%A7%D8%B5%D9%81%D9%87%D8%A7%D9%86"
+      ],
+      "property_ids": [],
+      "license": "CC BY-SA 4.0",
+      "sources": [
+        {
+          "title": "اصفهان",
+          "source_url": "https://fa.wikivoyage.org/wiki/%D8%A7%D8%B5%D9%81%D9%87%D8%A7%D9%86",
+          "revision_url": "https://fa.wikivoyage.org/w/index.php?title=%D8%A7%D8%B5%D9%81%D9%87%D8%A7%D9%86&oldid=103888",
+          "retrieved_at": "2026-10-27T12:12:16.676080+00:00",
+          "html_sha256": "69554084ae954192e4d42cbc077b2eb4b74e425b1d3a1c277b1c1b944d5bd212",
+          "license_urls": [
+            "https://creativecommons.org/licenses/by-sa/4.0/deed.fa"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STAY-2026-V1",
+      "filename": "mashhad-stay-conditions.pdf",
+      "title": "مشهد؛ معرفی و شرایط اقامت دو هتل",
+      "city": "مشهد",
+      "document_type": "accommodation_policies",
+      "source": "mixed",
+      "compiled_at": "2026-10-27",
+      "observed_at": "2026-10-18T09:48:50+00:00",
+      "source_urls": [
+        "https://www.eghamat24.com/MashhadHotels/Almas_2Hotel.html",
+        "https://www.eghamat24.com/MashhadHotels/ArmaqanHotel.html",
+        "https://www.alibaba.ir/hotel/ir-mashhad/mashhad-almas2"
+      ],
+      "property_ids": [
+        "1242",
+        "106"
+      ],
+      "license": "Attributed factual compilation; commercial source rights not asserted",
+      "sources": [
+        {
+          "title": "هتل الماس 2 مشهد",
+          "source_url": "https://www.eghamat24.com/MashhadHotels/Almas_2Hotel.html",
+          "provider": "eghamat24",
+          "property_id": "1242",
+          "provider_property_id": "1242",
+          "observed_at": "2026-10-18T09:48:50+00:00"
+        },
+        {
+          "title": "هتل آپارتمان ارمغان مشهد",
+          "source_url": "https://www.eghamat24.com/MashhadHotels/ArmaqanHotel.html",
+          "provider": "eghamat24",
+          "property_id": "106",
+          "provider_property_id": "106",
+          "observed_at": "2026-10-18T09:57:48+00:00"
+        },
+        {
+          "title": "هتل الماس 2 مشهد",
+          "source_url": "https://www.alibaba.ir/hotel/ir-mashhad/mashhad-almas2",
+          "provider": "alibaba",
+          "property_id": "1242",
+          "provider_property_id": "ir-mashhad/mashhad-almas2",
+          "observed_at": "2026-10-18T09:49:18+00:00"
+        }
+      ]
+    },
+    {
+      "id": "FAQ-2026-V1",
+      "filename": "booking-faq.pdf",
+      "title": "پرسش‌های متداول رزرو پرواز و اتوبوس",
+      "city": null,
+      "document_type": "booking_faq",
+      "source": "alibaba",
+      "compiled_at": "2026-10-27",
+      "observed_at": "2026-10-18T09:48:49+00:00",
+      "source_urls": [
+        "https://www.alibaba.ir/",
+        "https://www.alibaba.ir/bus-ticket"
+      ],
+      "property_ids": [],
+      "license": "Attributed factual compilation; commercial source rights not asserted",
+      "sources": [
+        {
+          "title": "پرسش‌های متداول پرواز علی‌بابا",
+          "source_url": "https://www.alibaba.ir/",
+          "provider": "alibaba",
+          "observed_at": "2026-10-18T09:48:49+00:00"
+        },
+        {
+          "title": "پرسش‌های متداول اتوبوس علی‌بابا",
+          "source_url": "https://www.alibaba.ir/bus-ticket",
+          "provider": "alibaba",
+          "observed_at": "2026-10-18T09:48:49+00:00"
+        }
+      ]
+    }
+  ]
+}

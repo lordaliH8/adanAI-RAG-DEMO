@@ -1,0 +1,40 @@
+# Local credentials. Keep the public configuration template.
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# The private hiring brief is not part of the distributable business corpus.
+/adan-task*.pdf
+
+# Runtime state and optional authoring previews/archives are regenerated.
+/var/
+/output/
+/tmp/
+
+# Exploratory probes and superseded live baselines are not final evidence.
+/reports/provider-smoke*.json
+/reports/evaluation-baseline.json
+/reports/*baseline*.json
+/reports/*smoke*.json
+/reports/screenshots/
+/reports/first-live-*.json
+/reports/live-combined-verified.json
+/reports/*.tmp
+
+# Python / Node / editor caches and build products.
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.egg-info/
+/build/
+/dist/
+node_modules/
+.DS_Store

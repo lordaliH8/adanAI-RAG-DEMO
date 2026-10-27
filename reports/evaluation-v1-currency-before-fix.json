@@ -1,0 +1,2634 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-10-27T18:56:02.543425+00:00",
+  "as_of": "2026-10-27",
+  "mode": "live",
+  "base_url": "http://localhost:8000",
+  "selected_case_ids": [
+    "CALC-02",
+    "BLEND-02",
+    "INS-04"
+  ],
+  "cases_sha256": "cfa16d17d4c1ac1d031ff2944cc057c5411e61991a70ae3b7b48ef0a7238c5bc",
+  "notes": [
+    "Expected answers and oracle files are never supplied to application requests.",
+    "Each selected live case is attempted once; transport/model retries inside the app remain bounded.",
+    "Automatic pass covers stated mechanical/numeric checks, not full semantic answer quality.",
+    "Retrieval uses the same question for every mode; without explicit filters, context-dependent followups may lack their preceding travel slots.",
+    "Guard/failure executions are offline injections, never presented as live model behavior."
+  ],
+  "live": {
+    "planned": 3,
+    "results": [
+      {
+        "case_id": "CALC-02",
+        "state": "failed",
+        "question_fa": "هتل آپارتمان ارمغان اقامت۲۴ ملک 106، اتاق 282 و پلن 184 را برای دو بزرگسال و یک اتاق از 2026-11-17 تا 2026-11-19 به تومان جمع بزن؛ قیمت اتاق را در تعداد مسافر ضرب نکن.",
+        "actual": {
+          "request_id": "e43f5d99-e926-43b9-916c-423746ffda46",
+          "status": "answered",
+          "answer": "برای اقامت دو شب (از 2026-11-17 تا 2026-11-19) در هتل آپارتمان ارمغان مشهد، اتاق 282 با پلن 184 برای یک اتاق و دو بزرگسال، جمع مبلغ هر شب 10,800,000 ریال (بر اساس هر اتاق در هر شب) است. مجموع هزینه برای دو شب برابر با 21,600,000 تومان می‌باشد. این قیمت بر اساس نرخ ثبت‌شده در تاریخ 2026-10-18 و به ازای هر اتاق برای هر شب است و در تعداد مسافر ضرب نمی‌شود. نرخ‌ها از اقامت ۲۴ استخراج شده‌اند و هر شب ظرفیت کافی داشته است. [S1]\n\nزمینه نقل‌قول: نرخ‌ها و موجودی‌ها مربوط به snapshot ثبت‌شده در 2026-10-18 هستند؛ موجودی فعلی یا امکان رزرو امروز تأیید نشده است و پیش از رزرو باید دوباره بررسی شود.\nتاریخ‌های درخواست: ورود: 2026-11-17؛ خروج: 2026-11-19.\nمنبع و زمان مشاهده رکوردها: eghamat24 (مشاهده: 2026-10-18T09:58:14+00:00)؛ eghamat24 (مشاهده: 2026-10-18T09:57:48+00:00).",
+          "route": "combined",
+          "sources": [
+            {
+              "document_id": "STAY-2026-V1",
+              "title": "مشهد؛ معرفی و شرایط اقامت دو هتل",
+              "filename": "mashhad-stay-conditions.pdf",
+              "document_type": "accommodation_policies",
+              "city": "مشهد",
+              "source": "eghamat24",
+              "source_urls": [
+                "https://www.eghamat24.com/MashhadHotels/Almas_2Hotel.html",
+                "https://www.eghamat24.com/MashhadHotels/ArmaqanHotel.html",
+                "https://www.alibaba.ir/hotel/ir-mashhad/mashhad-almas2"
+              ],
+              "source_url": "https://www.eghamat24.com/MashhadHotels/ArmaqanHotel.html",
+              "property_ids": [
+                "1242",
+                "106"
+              ],
+              "property_id": "106",
+              "observed_at": "2026-10-18T09:57:48+00:00",
+              "capture_date": "2026-10-18",
+              "compiled_at": "2026-10-27",
+              "license": "Attributed factual compilation; commercial source rights not asserted",
+              "source_sha256": "950db9dd8e3eecb9bd7b797be862ad07be2de046bc352ab6b7f703b86f3decf2",
+              "chunk_id": "0e221b4b502344061f301e2ff062fe23a61764c5236eed71a19ed1b16610bcef",
+              "page": 3,
+              "section": "STAY-02",
+              "text": "منبع :اقامت بیست و چهار | شناسه هتل | 106 ثبت منبع 2026-10-18 :\n\n| STAY-02 هتل آپارتمان ارمغان مشهد\nهتل آپارتمان ارمغان مشهد در سال 1385 افتتاح گردیده است .از مزایای اقامت در این هتل می توان به\nنزدیکی به حرم مطهر رضوی و دسترسی آسان به مراکز تجاری و خرید از جمله بازار رضا اشاره کرد .هتل\nارمغان در 4 طبقه و 21 واحد اقامتی با پرسنلی مجرب و آموزش دیده آماده خدمت رسانی به شما\nمیهمانان گرامی می باشد.\nمشخصه\n\nاطلاعات ثبت شده\n\nنشانی\n\nمشهد ،خیابان امام رضا ،امام رضا ،12 شهید حنایی 7\n\nورود\n\n14:00\n\nخروج\n\n12:00\n\nورود و خروج\nساعت تحویل اتاق 14:00 :ساعت تخلیه اتاق 12:00 :\n\nپذیرش خانم مجرد\nبا مدارک شناسایی معتبر\n\nصیغه نامه\nبا مهر برجسته محضر\n\nنیم بهاء\nاقامت کودک زیر 5 سال (درصورت عدم استفاده از سرویس) رایگان می باشد و بازه سنی برای اقامت\nکودک بین 5 الی 7 سال (درصورت عدم استفاده از سرویس) نیم بها محاسبه می گردد .لازم به ذکر\nاست :اقامت رایگان و نیم بها تنها برای یک کودک محاسبه می گردد.\n\nکنسلی\nکنسلی رزرو در ایام پیک و غیر پیک :با توجه به اینکه نرخ کنسلی در ایام مختلف و هتل های مختلف\nمتفاوت می باشد ،مبلغ دقیق کنسلی بعد از استعلام از هتل مشخص می گردد.",
+              "token_count": 299,
+              "dense_score": 0.6722555,
+              "lexical_score": 62.782567030869906,
+              "matched_text": "منبع :اقامت بیست و چهار | شناسه هتل | 106 ثبت منبع 2026-10-18 :\n\n| STAY-02 هتل آپارتمان ارمغان مشهد\nهتل آپارتمان ارمغان مشهد در سال 1385 افتتاح گردیده است .از مزایای اقامت در این هتل می توان به\nنزدیکی به حرم مطهر رضوی و دسترسی آسان به مراکز تجاری و خرید از جمله بازار رضا اشاره کرد .هتل\nارمغان در 4 طبقه و 21 واحد اقامتی با پرسنلی مجرب و آموزش دیده آماده خدمت رسانی به شما\nمیهمانان گرامی می باشد.\nمشخصه\n\nاطلاعات ثبت شده\n\nنشانی",
+              "context_scope": "physical_page",
+              "context_chunk_ids": [
+                "0e221b4b502344061f301e2ff062fe23a61764c5236eed71a19ed1b16610bcef",
+                "b115d4ca3b9c8ce6e668b4fc070cae23c58aa7d7b8cabf7ddeec290501801b63",
+                "e63cb80ddfdc875dc13a2a0a353a4af9cc9440ee009c977d8746dd6592df5269"
+              ],
+              "score": 0.03278688524590164,
+              "source_id": "S1"
+            }
+          ],
+          "sql_results": [
+            {
+              "sql": "SELECT s.record_id, s.property_id, s.room_id, s.rate_plan_id, s.service_date, s.amount_irr, s.price_basis, s.availability, s.occupancy, s.inventory, s.closed, s.min_stay, s.max_stay, s.close_to_arrival, s.close_to_departure, s.board_type, s.extra_capacity, s.cancelable FROM stay_rates s WHERE s.property_id = 'eebaa9ba7ec7123ad48040cc' AND s.room_id = '282' AND s.rate_plan_id = '184' AND s.service_date >= '2026-11-17' AND s.service_date < '2026-11-19' AND s.availability = 'available' AND s.closed = 0",
+              "columns": [
+                "record_id",
+                "property_id",
+                "room_id",
+                "rate_plan_id",
+                "service_date",
+                "amount_irr",
+                "price_basis",
+                "availability",
+                "occupancy",
+                "inventory",
+                "closed",
+                "min_stay",
+                "max_stay",
+                "close_to_arrival",
+                "close_to_departure",
+                "board_type",
+                "extra_capacity",
+                "cancelable"
+              ],
+              "rows": [
+                [
+                  "f2200987c1bd5e36fa3e4eb4",
+                  "eebaa9ba7ec7123ad48040cc",
+                  "282",
+                  "184",
+                  "2026-11-17",
+                  10800000,
+                  "per_room_per_night",
+                  "available",
+                  2,
+                  3,
+                  0,
+                  null,
+                  null,
+                  0,
+                  0,
+                  "room_only",
+                  0,
+                  1
+                ],
+                [
+                  "6a4cac02999f59172672e65a",
+                  "eebaa9ba7ec7123ad48040cc",
+                  "282",
+                  "184",
+                  "2026-11-18",
+                  10800000,
+                  "per_room_per_night",
+                  "available",
+                  2,
+                  3,
+                  0,
+                  null,
+                  null,
+                  0,
+                  0,
+                  "room_only",
+                  0,
+                  1
+                ]
+              ],
+              "row_count": 2,
+              "truncated": false,
+              "duration_ms": 4.315,
+              "record_sources": [
+                {
+                  "id": "6a4cac02999f59172672e65a",
+                  "source": "eghamat24",
+                  "source_id": "106:282:184:2026-11-18",
+                  "name_fa": "هتل آپارتمان ارمغان مشهد — اتاق دو تخته دبل",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/properties/106/v2/rooms-rates?from_date=2026-11-17&to_date=2026-11-20&no_special_user=true",
+                  "observed_at": "2026-10-18T09:58:14+00:00"
+                },
+                {
+                  "id": "eebaa9ba7ec7123ad48040cc",
+                  "source": "eghamat24",
+                  "source_id": "106",
+                  "name_fa": "هتل آپارتمان ارمغان مشهد",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/MashhadHotels/ArmaqanHotel.html",
+                  "observed_at": "2026-10-18T09:57:48+00:00"
+                },
+                {
+                  "id": "f2200987c1bd5e36fa3e4eb4",
+                  "source": "eghamat24",
+                  "source_id": "106:282:184:2026-11-17",
+                  "name_fa": "هتل آپارتمان ارمغان مشهد — اتاق دو تخته دبل",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/properties/106/v2/rooms-rates?from_date=2026-11-17&to_date=2026-11-20&no_special_user=true",
+                  "observed_at": "2026-10-18T09:58:14+00:00"
+                }
+              ]
+            }
+          ],
+          "calculations": [
+            {
+              "tool": "calculate",
+              "tool_call_id": "call_BvVIqpvrqDjPbK1IUFCkadDw",
+              "expression": "10800000+10800000",
+              "value": "21600000.00",
+              "unit": "تومان",
+              "precision": 2
+            }
+          ],
+          "conversation_state": {
+            "destination": "مشهد",
+            "checkin": "2026-11-17",
+            "checkout": "2026-11-19",
+            "adults": 2,
+            "rooms": 1,
+            "property_id": "eebaa9ba7ec7123ad48040cc",
+            "room_id": "282",
+            "rate_plan_id": "184",
+            "selected_transport_ids": [],
+            "selected_stay_ids": [
+              "f2200987c1bd5e36fa3e4eb4",
+              "6a4cac02999f59172672e65a"
+            ]
+          },
+          "quote_evidence": {
+            "stay": {
+              "blocked": false,
+              "groups": [
+                {
+                  "property_id": "eebaa9ba7ec7123ad48040cc",
+                  "room_id": "282",
+                  "rate_plan_id": "184",
+                  "nights": 2,
+                  "rooms": 1,
+                  "complete_observed": true,
+                  "reasons": [],
+                  "unknown_restrictions": [
+                    "checkout_day_restrictions",
+                    "max_stay",
+                    "min_stay"
+                  ],
+                  "nightly_amounts_irr": [
+                    10800000,
+                    10800000
+                  ]
+                }
+              ],
+              "reasons": []
+            }
+          },
+          "snapshot": {
+            "captured_on": "2026-10-18",
+            "as_of": "2026-10-27",
+            "requires_revalidation": true,
+            "live_availability_confirmed": false
+          },
+          "trace": [
+            {
+              "step": "coordinator",
+              "status": "started",
+              "message": "انتخاب مسیر و آماده‌سازی پرس‌وجو آغاز شد.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "entity_linker",
+              "status": "completed",
+              "message": "شناسه و نام کاندیدها از کاتالوگ واقعی بررسی شد.",
+              "duration_ms": 0,
+              "data": {
+                "entities": [
+                  {
+                    "id": "eebaa9ba7ec7123ad48040cc",
+                    "source": "eghamat24",
+                    "source_id": "106",
+                    "name_fa": "هتل آپارتمان ارمغان مشهد",
+                    "city_fa": "مشهد"
+                  }
+                ]
+              }
+            },
+            {
+              "step": "coordinator",
+              "status": "completed",
+              "message": "مسیر درخواست مشخص شد.",
+              "duration_ms": 8663.84,
+              "data": {
+                "route": "combined",
+                "needs_documents": true,
+                "requires_calculator": true,
+                "sql_generated": true,
+                "conversation_state": {
+                  "checkin": "2026-11-17",
+                  "checkout": "2026-11-19",
+                  "adults": 2,
+                  "rooms": 1,
+                  "property_id": "eebaa9ba7ec7123ad48040cc",
+                  "room_id": "282",
+                  "rate_plan_id": "184",
+                  "selected_transport_ids": [],
+                  "selected_stay_ids": []
+                }
+              }
+            },
+            {
+              "step": "database_specialist",
+              "status": "started",
+              "message": "اعتبارسنجی و اجرای خواندنی SQL آغاز شد.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "database_specialist",
+              "status": "completed",
+              "message": "SQL اعتبارسنجی و اجرا شد.",
+              "duration_ms": 23.6,
+              "data": {
+                "sql": "SELECT s.record_id, s.property_id, s.room_id, s.rate_plan_id, s.service_date, s.amount_irr, s.price_basis, s.availability, s.occupancy, s.inventory, s.closed, s.min_stay, s.max_stay, s.close_to_arrival, s.close_to_departure, s.board_type, s.extra_capacity, s.cancelable FROM stay_rates s WHERE s.property_id = 'eebaa9ba7ec7123ad48040cc' AND s.room_id = '282' AND s.rate_plan_id = '184' AND s.service_date >= '2026-11-17' AND s.service_date < '2026-11-19' AND s.availability = 'available' AND s.closed = 0",
+                "row_count": 2,
+                "truncated": false,
+                "repair_used": false,
+                "query_index": 1,
+                "query_count": 1
+              }
+            },
+            {
+              "step": "document_specialist",
+              "status": "started",
+              "message": "بازیابی شاهد از اسناد آغاز شد.",
+              "duration_ms": 0,
+              "data": {
+                "query": "هتل آپارتمان ارمغان اقامت۲۴ ملک 106، اتاق 282 و پلن 184 را برای دو بزرگسال و یک اتاق از 2026-11-17 تا 2026-11-19 به تومان جمع بزن؛ قیمت اتاق را در تعداد مسافر ضرب نکن.\nقوانین و شرایط هتل آپارتمان ارمغان مشهد در اقامت۲۴ برای ظرفیت، صبحانه و کنسلی پلن 184 و اتاق 282"
+              }
+            },
+            {
+              "step": "document_specialist",
+              "status": "completed",
+              "message": "شواهد بازیابی برای بررسی پاسخ آماده‌اند.",
+              "duration_ms": 28333.47,
+              "data": {
+                "query": "هتل آپارتمان ارمغان اقامت۲۴ ملک 106، اتاق 282 و پلن 184 را برای دو بزرگسال و یک اتاق از 2026-11-17 تا 2026-11-19 به تومان جمع بزن؛ قیمت اتاق را در تعداد مسافر ضرب نکن.\nقوانین و شرایط هتل آپارتمان ارمغان مشهد در اقامت۲۴ برای ظرفیت، صبحانه و کنسلی پلن 184 و اتاق 282",
+                "mode": "hybrid",
+                "filters": {},
+                "count": 6,
+                "chunks": [
+                  {
+                    "source_id": "S1",
+                    "chunk_id": "0e221b4b502344061f301e2ff062fe23a61764c5236eed71a19ed1b16610bcef",
+                    "document_id": "STAY-2026-V1",
+                    "page": 3,
+                    "section": "STAY-02",
+                    "score": 0.03278688524590164
+                  },
+                  {
+                    "source_id": "S2",
+                    "chunk_id": "dc11e0350c610d76a35c476e4ec6ecfdc7339e3b4ac0ef9c4822ad1434a98b23",
+                    "document_id": "STAY-2026-V1",
+                    "page": 4,
+                    "section": "STAY-03",
+                    "score": 0.031054405392392875
+                  },
+                  {
+                    "source_id": "S3",
+                    "chunk_id": "3192937f4b52f6954bc945d1682c5692f78c214c42ae0703c1d00b6dc626934b",
+                    "document_id": "STAY-2026-V1",
+                    "page": 1,
+                    "section": "STAY-01",
+                    "score": 0.031024531024531024
+                  },
+                  {
+                    "source_id": "S4",
+                    "chunk_id": "9a569c6d1629b07ff20da4824877ef1a07b3ba91bea953b76bd37a0f8197cb4d",
+                    "document_id": "STAY-2026-V1",
+                    "page": 2,
+                    "section": "STAY-01",
+                    "score": 0.028484848484848488
+                  },
+                  {
+                    "source_id": "S5",
+                    "chunk_id": "b4a6793b905b524e6c35c12393f8645fef16dbae5c88deb03a73a8d7345443e0",
+                    "document_id": "MASHHAD-2026-V1",
+                    "page": 4,
+                    "section": "MASH-03",
+                    "score": 0.026875901875901876
+                  },
+                  {
+                    "source_id": "S6",
+                    "chunk_id": "1976cfcce509a77d4f6d59f61da06f7f2e818ecfc233d7adeadfde79f3503c8b",
+                    "document_id": "MASHHAD-2026-V1",
+                    "page": 3,
+                    "section": "MASH-03",
+                    "score": 0.014705882352941176
+                  }
+                ]
+              }
+            },
+            {
+              "step": "synthesis",
+              "status": "started",
+              "message": "پاسخ با شواهد و ابزار محاسبه در صورت نیاز ساخته می‌شود.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "calculator",
+              "status": "completed",
+              "message": "ابزار محاسبه واقعی اجرا شد.",
+              "duration_ms": 0.75,
+              "data": {
+                "tool_call_id": "call_BvVIqpvrqDjPbK1IUFCkadDw",
+                "expression": "10800000+10800000",
+                "value": "21600000.00",
+                "unit": "تومان",
+                "precision": 2
+              }
+            },
+            {
+              "step": "llm",
+              "status": "retry",
+              "message": "ارتباط با ارائه‌دهنده مدل برقرار نشد.",
+              "duration_ms": 0,
+              "data": {
+                "attempt": 1,
+                "delay_seconds": 0.5,
+                "code": "provider_connection_error"
+              }
+            },
+            {
+              "step": "source_validation",
+              "status": "formatted",
+              "message": "ارجاع‌های معتبر انتخاب‌شده مدل، بدون تغییر ادعاها به متن افزوده شدند.",
+              "duration_ms": 0,
+              "data": {
+                "source_ids": [
+                  "S1"
+                ]
+              }
+            },
+            {
+              "step": "synthesis",
+              "status": "completed",
+              "message": "پاسخ نهایی و ارجاع‌ها بررسی شدند.",
+              "duration_ms": 102292.03,
+              "data": {
+                "status": "answered",
+                "source_ids": [
+                  "S1"
+                ],
+                "calculator_calls": 1
+              }
+            },
+            {
+              "step": "workflow",
+              "status": "completed",
+              "message": "پردازش درخواست پایان یافت.",
+              "duration_ms": 0,
+              "data": {
+                "status": "answered",
+                "route": "combined"
+              }
+            }
+          ],
+          "metrics": {
+            "duration_ms": 139328.45,
+            "llm_calls": 3,
+            "prompt_tokens": 17415,
+            "completion_tokens": 552,
+            "responses_with_usage": 3,
+            "as_of": "2026-10-27",
+            "retrieval": {
+              "mode": "hybrid",
+              "filters": {},
+              "candidates": 25,
+              "returned": 6,
+              "reranked": false,
+              "reranker": null,
+              "context_scope": "physical_page",
+              "fusion": "RRF(k=60)",
+              "duration_ms": 28333.16,
+              "dense_ms": 28330.13,
+              "lexical_ms": 2.71
+            }
+          }
+        },
+        "assessment": {
+          "automatic_pass": false,
+          "checks": [
+            {
+              "criterion": "route",
+              "passed": true,
+              "expected": "combined",
+              "actual": "combined"
+            },
+            {
+              "criterion": "outcome",
+              "passed": true,
+              "expected": [
+                "answered"
+              ],
+              "actual": "answered"
+            },
+            {
+              "criterion": "tool:sql_query",
+              "passed": true
+            },
+            {
+              "criterion": "tool:calculator",
+              "passed": true
+            },
+            {
+              "criterion": "inline_sources_resolve",
+              "passed": true,
+              "actual": [
+                "S1"
+              ]
+            },
+            {
+              "criterion": "SQL_numeric_evidence:0",
+              "passed": true,
+              "expected": "10800000",
+              "observed": [
+                "0",
+                "1",
+                "10800000",
+                "184",
+                "2",
+                "282",
+                "3"
+              ]
+            },
+            {
+              "criterion": "native_calculator_value:0",
+              "passed": false,
+              "expected": "2160000",
+              "observed": [
+                "21600000.00"
+              ]
+            },
+            {
+              "criterion": "operational_tables_queried",
+              "passed": true,
+              "expected": [
+                "stay_rates"
+              ],
+              "actual": [
+                "stay_rates"
+              ],
+              "accepted_equivalences": []
+            },
+            {
+              "criterion": "conversation_slot:destination",
+              "passed": true,
+              "expected": "مشهد",
+              "actual": "مشهد"
+            },
+            {
+              "criterion": "conversation_slot:checkin",
+              "passed": true,
+              "expected": "2026-11-17",
+              "actual": "2026-11-17"
+            },
+            {
+              "criterion": "conversation_slot:checkout",
+              "passed": true,
+              "expected": "2026-11-19",
+              "actual": "2026-11-19"
+            },
+            {
+              "criterion": "conversation_slot:adults",
+              "passed": true,
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "criterion": "conversation_slot:rooms",
+              "passed": true,
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "criterion": "calculator_operand_provenance",
+              "passed": true,
+              "expressions": [
+                {
+                  "expression": "10800000+10800000",
+                  "operands": [
+                    "10800000",
+                    "10800000"
+                  ],
+                  "unsupported_literals": [],
+                  "passed": true
+                }
+              ]
+            },
+            {
+              "criterion": "compatible_all_night_stay",
+              "passed": true
+            },
+            {
+              "criterion": "snapshot_not_live_booking",
+              "passed": true
+            }
+          ],
+          "semantic_review_required": true,
+          "semantic_review_notes": [
+            "Literal provenance is checked; review price basis, selected legs/room plan, occupancy and arithmetic meaning separately.",
+            "Check the answer labels observed prices as stale snapshot evidence, preserves IRR/Toman and price basis, and never promises a booking."
+          ],
+          "scope": "observable route/tools, citations, slots, row/numeric equivalence and literal operands; not full semantic fidelity or live availability"
+        },
+        "duration_ms": 139436.57
+      },
+      {
+        "case_id": "BLEND-02",
+        "state": "failed",
+        "question_fa": "برای همان تاریخ و نفرات، قیمت دو شب الماس۲ اقامت۲۴ اتاق29948 پلن1107 و ارمغان اقامت۲۴ اتاق282 پلن184 و مقدار صرفه‌جویی انتخاب ارمغان را تومان حساب کن؛ ساعت ورود هر دو را از راهنما بگو.",
+        "actual": {
+          "request_id": "3017652d-0cb9-427b-82d1-3277cd151ff7",
+          "status": "answered",
+          "answer": "برای اقامت دو شب (ورود 2026-11-17 و خروج 2026-11-19) با دو بزرگسال و یک اتاق:\n\n- هتل الماس ۲ (اتاق 29948، پلن 1107): جمع دو شب 209,000,000 ریال (بر اساس هر شب 104,500,000 ریال، هر دو شب، هر اتاق، قیمت به ازای هر شب، مشاهده شده در 2026-10-18) [S2].\n- هتل آپارتمان ارمغان (اتاق 282، پلن 184): جمع دو شب 21,600,000 ریال (بر اساس هر شب 10,800,000 ریال، هر دو شب، هر اتاق، قیمت به ازای هر شب، مشاهده شده در 2026-10-18) [S1].\n\nمقدار صرفه‌جویی با انتخاب ارمغان نسبت به الماس ۲ برای این بازه، 18,740,000 تومان است.\n\nساعت ورود (تحویل اتاق) بر اساس راهنما:\n- الماس ۲: ساعت 15:00 [S2]\n- ارمغان: ساعت 14:00 [S1]\n\nزمینه نقل‌قول: نرخ‌ها و موجودی‌ها مربوط به snapshot ثبت‌شده در 2026-10-18 هستند؛ موجودی فعلی یا امکان رزرو امروز تأیید نشده است و پیش از رزرو باید دوباره بررسی شود.\nتاریخ‌های درخواست: ورود: 2026-11-17؛ خروج: 2026-11-19.\nمنبع و زمان مشاهده رکوردها: eghamat24 (مشاهده: 2026-10-18T09:51:10+00:00)؛ eghamat24 (مشاهده: 2026-10-18T09:48:50+00:00)؛ eghamat24 (مشاهده: 2026-10-18T09:58:14+00:00)؛ eghamat24 (مشاهده: 2026-10-18T09:57:48+00:00).",
+          "route": "combined",
+          "sources": [
+            {
+              "document_id": "STAY-2026-V1",
+              "title": "مشهد؛ معرفی و شرایط اقامت دو هتل",
+              "filename": "mashhad-stay-conditions.pdf",
+              "document_type": "accommodation_policies",
+              "city": "مشهد",
+              "source": "eghamat24",
+              "source_urls": [
+                "https://www.eghamat24.com/MashhadHotels/Almas_2Hotel.html",
+                "https://www.eghamat24.com/MashhadHotels/ArmaqanHotel.html",
+                "https://www.alibaba.ir/hotel/ir-mashhad/mashhad-almas2"
+              ],
+              "source_url": "https://www.eghamat24.com/MashhadHotels/ArmaqanHotel.html",
+              "property_ids": [
+                "1242",
+                "106"
+              ],
+              "property_id": "106",
+              "observed_at": "2026-10-18T09:57:48+00:00",
+              "capture_date": "2026-10-18",
+              "compiled_at": "2026-10-27",
+              "license": "Attributed factual compilation; commercial source rights not asserted",
+              "source_sha256": "950db9dd8e3eecb9bd7b797be862ad07be2de046bc352ab6b7f703b86f3decf2",
+              "chunk_id": "0e221b4b502344061f301e2ff062fe23a61764c5236eed71a19ed1b16610bcef",
+              "page": 3,
+              "section": "STAY-02",
+              "text": "منبع :اقامت بیست و چهار | شناسه هتل | 106 ثبت منبع 2026-10-18 :\n\n| STAY-02 هتل آپارتمان ارمغان مشهد\nهتل آپارتمان ارمغان مشهد در سال 1385 افتتاح گردیده است .از مزایای اقامت در این هتل می توان به\nنزدیکی به حرم مطهر رضوی و دسترسی آسان به مراکز تجاری و خرید از جمله بازار رضا اشاره کرد .هتل\nارمغان در 4 طبقه و 21 واحد اقامتی با پرسنلی مجرب و آموزش دیده آماده خدمت رسانی به شما\nمیهمانان گرامی می باشد.\nمشخصه\n\nاطلاعات ثبت شده\n\nنشانی\n\nمشهد ،خیابان امام رضا ،امام رضا ،12 شهید حنایی 7\n\nورود\n\n14:00\n\nخروج\n\n12:00\n\nورود و خروج\nساعت تحویل اتاق 14:00 :ساعت تخلیه اتاق 12:00 :\n\nپذیرش خانم مجرد\nبا مدارک شناسایی معتبر\n\nصیغه نامه\nبا مهر برجسته محضر\n\nنیم بهاء\nاقامت کودک زیر 5 سال (درصورت عدم استفاده از سرویس) رایگان می باشد و بازه سنی برای اقامت\nکودک بین 5 الی 7 سال (درصورت عدم استفاده از سرویس) نیم بها محاسبه می گردد .لازم به ذکر\nاست :اقامت رایگان و نیم بها تنها برای یک کودک محاسبه می گردد.\n\nکنسلی\nکنسلی رزرو در ایام پیک و غیر پیک :با توجه به اینکه نرخ کنسلی در ایام مختلف و هتل های مختلف\nمتفاوت می باشد ،مبلغ دقیق کنسلی بعد از استعلام از هتل مشخص می گردد.",
+              "token_count": 299,
+              "dense_score": 0.6365422,
+              "lexical_score": 57.43322764835992,
+              "matched_text": "منبع :اقامت بیست و چهار | شناسه هتل | 106 ثبت منبع 2026-10-18 :\n\n| STAY-02 هتل آپارتمان ارمغان مشهد\nهتل آپارتمان ارمغان مشهد در سال 1385 افتتاح گردیده است .از مزایای اقامت در این هتل می توان به\nنزدیکی به حرم مطهر رضوی و دسترسی آسان به مراکز تجاری و خرید از جمله بازار رضا اشاره کرد .هتل\nارمغان در 4 طبقه و 21 واحد اقامتی با پرسنلی مجرب و آموزش دیده آماده خدمت رسانی به شما\nمیهمانان گرامی می باشد.\nمشخصه\n\nاطلاعات ثبت شده\n\nنشانی",
+              "context_scope": "physical_page",
+              "context_chunk_ids": [
+                "0e221b4b502344061f301e2ff062fe23a61764c5236eed71a19ed1b16610bcef",
+                "b115d4ca3b9c8ce6e668b4fc070cae23c58aa7d7b8cabf7ddeec290501801b63",
+                "e63cb80ddfdc875dc13a2a0a353a4af9cc9440ee009c977d8746dd6592df5269"
+              ],
+              "score": 0.032266458495966696,
+              "source_id": "S1"
+            },
+            {
+              "document_id": "STAY-2026-V1",
+              "title": "مشهد؛ معرفی و شرایط اقامت دو هتل",
+              "filename": "mashhad-stay-conditions.pdf",
+              "document_type": "accommodation_policies",
+              "city": "مشهد",
+              "source": "eghamat24",
+              "source_urls": [
+                "https://www.eghamat24.com/MashhadHotels/Almas_2Hotel.html",
+                "https://www.eghamat24.com/MashhadHotels/ArmaqanHotel.html",
+                "https://www.alibaba.ir/hotel/ir-mashhad/mashhad-almas2"
+              ],
+              "source_url": "https://www.eghamat24.com/MashhadHotels/Almas_2Hotel.html",
+              "property_ids": [
+                "1242",
+                "106"
+              ],
+              "property_id": "1242",
+              "observed_at": "2026-10-18T09:48:50+00:00",
+              "capture_date": "2026-10-18",
+              "compiled_at": "2026-10-27",
+              "license": "Attributed factual compilation; commercial source rights not asserted",
+              "source_sha256": "950db9dd8e3eecb9bd7b797be862ad07be2de046bc352ab6b7f703b86f3decf2",
+              "chunk_id": "98b3be7b31a61e82985a49d33831cdde88c71cec5be54382ed64d093595f94a6",
+              "page": 1,
+              "section": "STAY-01",
+              "text": "منبع :اقامت بیست و چهار | شناسه هتل | 1242 ثبت منبع 2026-10-18 :\n\n| STAY-01 هتل الماس 2 مشهد\nیادداشت های مستند از معرفی اقامت 24 و علی بابا؛ ثبت منبع .2026-10-18 :این گردآوری تأیید رزرو یا تضمین\nخدمات امروز نیست.\n\nهتل 5 ستاره و مجلل الماس 2 از گروه هتل های الماس در اسفند ماه سال 1395 افتتاح شد .هتل\nالماس دو با 217 اتاق با امکانات رفاهی ویژه در 25 طبقه با الهام از معماری خاص ملل مختلف به سبک\nهای مختلفی چون ایران باستان ،روسی ،ترکی ،رومی ،آفریقایی ،عربی ،ایرانی ،اتاق صفوی و ...موزه\nای از هنر های بین المللی را به نمایش گذاشته است .هتل الماس 2 با پرسنلی مجرب و آموزش دیده با\nافتخار آماده میزبانی از شما میهمانان گرامی می باشند.\nمشخصه\n\nاطلاعات ثبت شده\n\nنشانی\n\nمشهد ،خیابان امام رضا ،امام رضا 20\n\nورود\n\n15:00\n\nخروج\n\n12:00\n\nورود و خروج\nساعت تحویل اتاق 15:00 :ساعت تخلیه اتاق 12:00 :\n\nپذیرش خانم مجرد\nبا مدارک شناسایی معتبر\n\nصیغه نامه\nبا مهر برجسته محضر (فقط میهمان ایرانی)",
+              "token_count": 304,
+              "dense_score": 0.57267946,
+              "lexical_score": 50.342623843896654,
+              "matched_text": "الماس دو با 217 اتاق با امکانات رفاهی ویژه در 25 طبقه با الهام از معماری خاص ملل مختلف به سبک\nهای مختلفی چون ایران باستان ،روسی ،ترکی ،رومی ،آفریقایی ،عربی ،ایرانی ،اتاق صفوی و ...موزه\nای از هنر های بین المللی را به نمایش گذاشته است .هتل الماس 2 با پرسنلی مجرب و آموزش دیده با\nافتخار آماده میزبانی از شما میهمانان گرامی می باشند.\nمشخصه\n\nاطلاعات ثبت شده\n\nنشانی\n\nمشهد ،خیابان امام رضا ،امام رضا 20\n\nورود\n\n15:00\n\nخروج\n\n12:00\n\nورود و خروج",
+              "context_scope": "physical_page",
+              "context_chunk_ids": [
+                "3192937f4b52f6954bc945d1682c5692f78c214c42ae0703c1d00b6dc626934b",
+                "98b3be7b31a61e82985a49d33831cdde88c71cec5be54382ed64d093595f94a6",
+                "2291d83c901308bba12756d43cc4b9ac387a759b9cf349fae0b43f25b641b622"
+              ],
+              "score": 0.031754032258064516,
+              "source_id": "S2"
+            }
+          ],
+          "sql_results": [
+            {
+              "sql": "SELECT s.record_id, s.property_id, s.room_id, s.rate_plan_id, s.service_date, s.amount_irr, s.price_basis, s.availability, s.occupancy, s.inventory, s.closed, s.min_stay, s.max_stay, s.close_to_arrival, s.close_to_departure FROM stay_rates s JOIN records r ON s.property_id = r.id WHERE r.source = 'eghamat24' AND r.source_id = '1242' AND s.room_id = '29948' AND s.rate_plan_id = '1107' AND s.service_date >= '2026-11-17' AND s.service_date < '2026-11-19' AND s.availability = 'available' AND s.closed = 0",
+              "columns": [
+                "record_id",
+                "property_id",
+                "room_id",
+                "rate_plan_id",
+                "service_date",
+                "amount_irr",
+                "price_basis",
+                "availability",
+                "occupancy",
+                "inventory",
+                "closed",
+                "min_stay",
+                "max_stay",
+                "close_to_arrival",
+                "close_to_departure"
+              ],
+              "rows": [
+                [
+                  "445d61c583c632f1c9d4abad",
+                  "8cb037325c5662bce8b4b605",
+                  "29948",
+                  "1107",
+                  "2026-11-17",
+                  104500000,
+                  "per_room_per_night",
+                  "available",
+                  2,
+                  10,
+                  0,
+                  null,
+                  null,
+                  0,
+                  0
+                ],
+                [
+                  "5fa0ab15301423f9b8090d70",
+                  "8cb037325c5662bce8b4b605",
+                  "29948",
+                  "1107",
+                  "2026-11-18",
+                  104500000,
+                  "per_room_per_night",
+                  "available",
+                  2,
+                  10,
+                  0,
+                  null,
+                  null,
+                  0,
+                  0
+                ]
+              ],
+              "row_count": 2,
+              "truncated": false,
+              "duration_ms": 7.499,
+              "record_sources": [
+                {
+                  "id": "445d61c583c632f1c9d4abad",
+                  "source": "eghamat24",
+                  "source_id": "1242:29948:1107:2026-11-17",
+                  "name_fa": "هتل الماس 2 مشهد — اتاق دوتخته دبل فیروزه اکونومی",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/properties/1242/v2/rooms-rates?from_date=2026-11-15&to_date=2026-11-18&no_special_user=true",
+                  "observed_at": "2026-10-18T09:51:10+00:00"
+                },
+                {
+                  "id": "5fa0ab15301423f9b8090d70",
+                  "source": "eghamat24",
+                  "source_id": "1242:29948:1107:2026-11-18",
+                  "name_fa": "هتل الماس 2 مشهد — اتاق دوتخته دبل فیروزه اکونومی",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/properties/1242/v2/rooms-rates?from_date=2026-11-15&to_date=2026-11-18&no_special_user=true",
+                  "observed_at": "2026-10-18T09:51:10+00:00"
+                },
+                {
+                  "id": "8cb037325c5662bce8b4b605",
+                  "source": "eghamat24",
+                  "source_id": "1242",
+                  "name_fa": "هتل الماس 2 مشهد",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/MashhadHotels/Almas_2Hotel.html",
+                  "observed_at": "2026-10-18T09:48:50+00:00"
+                }
+              ]
+            },
+            {
+              "sql": "SELECT s.record_id, s.property_id, s.room_id, s.rate_plan_id, s.service_date, s.amount_irr, s.price_basis, s.availability, s.occupancy, s.inventory, s.closed, s.min_stay, s.max_stay, s.close_to_arrival, s.close_to_departure FROM stay_rates s JOIN records r ON s.property_id = r.id WHERE r.source = 'eghamat24' AND r.source_id = '106' AND s.room_id = '282' AND s.rate_plan_id = '184' AND s.service_date >= '2026-11-17' AND s.service_date < '2026-11-19' AND s.availability = 'available' AND s.closed = 0",
+              "columns": [
+                "record_id",
+                "property_id",
+                "room_id",
+                "rate_plan_id",
+                "service_date",
+                "amount_irr",
+                "price_basis",
+                "availability",
+                "occupancy",
+                "inventory",
+                "closed",
+                "min_stay",
+                "max_stay",
+                "close_to_arrival",
+                "close_to_departure"
+              ],
+              "rows": [
+                [
+                  "f2200987c1bd5e36fa3e4eb4",
+                  "eebaa9ba7ec7123ad48040cc",
+                  "282",
+                  "184",
+                  "2026-11-17",
+                  10800000,
+                  "per_room_per_night",
+                  "available",
+                  2,
+                  3,
+                  0,
+                  null,
+                  null,
+                  0,
+                  0
+                ],
+                [
+                  "6a4cac02999f59172672e65a",
+                  "eebaa9ba7ec7123ad48040cc",
+                  "282",
+                  "184",
+                  "2026-11-18",
+                  10800000,
+                  "per_room_per_night",
+                  "available",
+                  2,
+                  3,
+                  0,
+                  null,
+                  null,
+                  0,
+                  0
+                ]
+              ],
+              "row_count": 2,
+              "truncated": false,
+              "duration_ms": 5.259,
+              "record_sources": [
+                {
+                  "id": "6a4cac02999f59172672e65a",
+                  "source": "eghamat24",
+                  "source_id": "106:282:184:2026-11-18",
+                  "name_fa": "هتل آپارتمان ارمغان مشهد — اتاق دو تخته دبل",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/properties/106/v2/rooms-rates?from_date=2026-11-17&to_date=2026-11-20&no_special_user=true",
+                  "observed_at": "2026-10-18T09:58:14+00:00"
+                },
+                {
+                  "id": "eebaa9ba7ec7123ad48040cc",
+                  "source": "eghamat24",
+                  "source_id": "106",
+                  "name_fa": "هتل آپارتمان ارمغان مشهد",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/MashhadHotels/ArmaqanHotel.html",
+                  "observed_at": "2026-10-18T09:57:48+00:00"
+                },
+                {
+                  "id": "f2200987c1bd5e36fa3e4eb4",
+                  "source": "eghamat24",
+                  "source_id": "106:282:184:2026-11-17",
+                  "name_fa": "هتل آپارتمان ارمغان مشهد — اتاق دو تخته دبل",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/properties/106/v2/rooms-rates?from_date=2026-11-17&to_date=2026-11-20&no_special_user=true",
+                  "observed_at": "2026-10-18T09:58:14+00:00"
+                }
+              ]
+            }
+          ],
+          "calculations": [
+            {
+              "tool": "calculate",
+              "tool_call_id": "call_sQmmMLxBFHpdJ1WxyK07Gclo",
+              "expression": "104500000+104500000",
+              "value": "209000000",
+              "unit": "ریال",
+              "precision": 0
+            },
+            {
+              "tool": "calculate",
+              "tool_call_id": "call_6CmEzJdcavcR3jNIhQadoYcW",
+              "expression": "10800000+10800000",
+              "value": "21600000",
+              "unit": "ریال",
+              "precision": 0
+            },
+            {
+              "tool": "calculate",
+              "tool_call_id": "call_VmFEbfLUAxkIIqZWDSjX3Q1R",
+              "expression": "(104500000+104500000-10800000-10800000)/10",
+              "value": "18740000.00",
+              "unit": "تومان",
+              "precision": 2
+            }
+          ],
+          "conversation_state": {
+            "origin": "تهران",
+            "destination": "مشهد",
+            "checkin": "2026-11-17",
+            "checkout": "2026-11-19",
+            "adults": 2,
+            "rooms": 1,
+            "selected_transport_ids": [],
+            "selected_stay_ids": []
+          },
+          "quote_evidence": {
+            "stay": {
+              "blocked": false,
+              "groups": [
+                {
+                  "property_id": "8cb037325c5662bce8b4b605",
+                  "room_id": "29948",
+                  "rate_plan_id": "1107",
+                  "nights": 2,
+                  "rooms": 1,
+                  "complete_observed": true,
+                  "reasons": [],
+                  "unknown_restrictions": [
+                    "checkout_day_restrictions",
+                    "max_stay",
+                    "min_stay"
+                  ],
+                  "nightly_amounts_irr": [
+                    104500000,
+                    104500000
+                  ]
+                },
+                {
+                  "property_id": "eebaa9ba7ec7123ad48040cc",
+                  "room_id": "282",
+                  "rate_plan_id": "184",
+                  "nights": 2,
+                  "rooms": 1,
+                  "complete_observed": true,
+                  "reasons": [],
+                  "unknown_restrictions": [
+                    "checkout_day_restrictions",
+                    "max_stay",
+                    "min_stay"
+                  ],
+                  "nightly_amounts_irr": [
+                    10800000,
+                    10800000
+                  ]
+                }
+              ],
+              "reasons": []
+            }
+          },
+          "snapshot": {
+            "captured_on": "2026-10-18",
+            "as_of": "2026-10-27",
+            "requires_revalidation": true,
+            "live_availability_confirmed": false
+          },
+          "trace": [
+            {
+              "step": "coordinator",
+              "status": "started",
+              "message": "انتخاب مسیر و آماده‌سازی پرس‌وجو آغاز شد.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "entity_linker",
+              "status": "completed",
+              "message": "شناسه و نام کاندیدها از کاتالوگ واقعی بررسی شد.",
+              "duration_ms": 0,
+              "data": {
+                "entities": [
+                  {
+                    "id": "8cb037325c5662bce8b4b605",
+                    "source": "eghamat24",
+                    "source_id": "1242",
+                    "name_fa": "هتل الماس 2 مشهد",
+                    "city_fa": "مشهد"
+                  },
+                  {
+                    "id": "eebaa9ba7ec7123ad48040cc",
+                    "source": "eghamat24",
+                    "source_id": "106",
+                    "name_fa": "هتل آپارتمان ارمغان مشهد",
+                    "city_fa": "مشهد"
+                  }
+                ]
+              }
+            },
+            {
+              "step": "coordinator",
+              "status": "completed",
+              "message": "مسیر درخواست مشخص شد.",
+              "duration_ms": 30052.29,
+              "data": {
+                "route": "combined",
+                "needs_documents": true,
+                "requires_calculator": true,
+                "sql_generated": true,
+                "conversation_state": {
+                  "origin": "تهران",
+                  "destination": "مشهد",
+                  "checkin": "2026-11-17",
+                  "checkout": "2026-11-19",
+                  "adults": 2,
+                  "rooms": 1,
+                  "selected_transport_ids": [],
+                  "selected_stay_ids": []
+                }
+              }
+            },
+            {
+              "step": "database_specialist",
+              "status": "started",
+              "message": "اعتبارسنجی و اجرای خواندنی SQL آغاز شد.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "database_specialist",
+              "status": "completed",
+              "message": "SQL اعتبارسنجی و اجرا شد.",
+              "duration_ms": 11.13,
+              "data": {
+                "sql": "SELECT s.record_id, s.property_id, s.room_id, s.rate_plan_id, s.service_date, s.amount_irr, s.price_basis, s.availability, s.occupancy, s.inventory, s.closed, s.min_stay, s.max_stay, s.close_to_arrival, s.close_to_departure FROM stay_rates s JOIN records r ON s.property_id = r.id WHERE r.source = 'eghamat24' AND r.source_id = '1242' AND s.room_id = '29948' AND s.rate_plan_id = '1107' AND s.service_date >= '2026-11-17' AND s.service_date < '2026-11-19' AND s.availability = 'available' AND s.closed = 0",
+                "row_count": 2,
+                "truncated": false,
+                "repair_used": false,
+                "query_index": 1,
+                "query_count": 2
+              }
+            },
+            {
+              "step": "database_specialist",
+              "status": "completed",
+              "message": "SQL اعتبارسنجی و اجرا شد.",
+              "duration_ms": 18.92,
+              "data": {
+                "sql": "SELECT s.record_id, s.property_id, s.room_id, s.rate_plan_id, s.service_date, s.amount_irr, s.price_basis, s.availability, s.occupancy, s.inventory, s.closed, s.min_stay, s.max_stay, s.close_to_arrival, s.close_to_departure FROM stay_rates s JOIN records r ON s.property_id = r.id WHERE r.source = 'eghamat24' AND r.source_id = '106' AND s.room_id = '282' AND s.rate_plan_id = '184' AND s.service_date >= '2026-11-17' AND s.service_date < '2026-11-19' AND s.availability = 'available' AND s.closed = 0",
+                "row_count": 2,
+                "truncated": false,
+                "repair_used": false,
+                "query_index": 2,
+                "query_count": 2
+              }
+            },
+            {
+              "step": "document_specialist",
+              "status": "started",
+              "message": "بازیابی شاهد از اسناد آغاز شد.",
+              "duration_ms": 0,
+              "data": {
+                "query": "برای همان تاریخ و نفرات، قیمت دو شب الماس۲ اقامت۲۴ اتاق29948 پلن1107 و ارمغان اقامت۲۴ اتاق282 پلن184 و مقدار صرفه‌جویی انتخاب ارمغان را تومان حساب کن؛ ساعت ورود هر دو را از راهنما بگو.\nساعت ورود هتل الماس ۲ مشهد و هتل آپارتمان ارمغان مشهد را از راهنمای اقامت۲۴ اعلام کن."
+              }
+            },
+            {
+              "step": "document_specialist",
+              "status": "completed",
+              "message": "شواهد بازیابی برای بررسی پاسخ آماده‌اند.",
+              "duration_ms": 24096.32,
+              "data": {
+                "query": "برای همان تاریخ و نفرات، قیمت دو شب الماس۲ اقامت۲۴ اتاق29948 پلن1107 و ارمغان اقامت۲۴ اتاق282 پلن184 و مقدار صرفه‌جویی انتخاب ارمغان را تومان حساب کن؛ ساعت ورود هر دو را از راهنما بگو.\nساعت ورود هتل الماس ۲ مشهد و هتل آپارتمان ارمغان مشهد را از راهنمای اقامت۲۴ اعلام کن.",
+                "mode": "hybrid",
+                "filters": {},
+                "count": 6,
+                "chunks": [
+                  {
+                    "source_id": "S1",
+                    "chunk_id": "0e221b4b502344061f301e2ff062fe23a61764c5236eed71a19ed1b16610bcef",
+                    "document_id": "STAY-2026-V1",
+                    "page": 3,
+                    "section": "STAY-02",
+                    "score": 0.032266458495966696
+                  },
+                  {
+                    "source_id": "S2",
+                    "chunk_id": "98b3be7b31a61e82985a49d33831cdde88c71cec5be54382ed64d093595f94a6",
+                    "document_id": "STAY-2026-V1",
+                    "page": 1,
+                    "section": "STAY-01",
+                    "score": 0.031754032258064516
+                  },
+                  {
+                    "source_id": "S3",
+                    "chunk_id": "dc11e0350c610d76a35c476e4ec6ecfdc7339e3b4ac0ef9c4822ad1434a98b23",
+                    "document_id": "STAY-2026-V1",
+                    "page": 4,
+                    "section": "STAY-03",
+                    "score": 0.031009615384615385
+                  },
+                  {
+                    "source_id": "S4",
+                    "chunk_id": "9a569c6d1629b07ff20da4824877ef1a07b3ba91bea953b76bd37a0f8197cb4d",
+                    "document_id": "STAY-2026-V1",
+                    "page": 2,
+                    "section": "STAY-01",
+                    "score": 0.029418126757516764
+                  },
+                  {
+                    "source_id": "S5",
+                    "chunk_id": "95db296d049681a709ac586ab075941f23a10fa0d8f19c9aba618d4a1518e7c6",
+                    "document_id": "MASHHAD-2026-V1",
+                    "page": 5,
+                    "section": "MASH-04",
+                    "score": 0.02651914295749912
+                  },
+                  {
+                    "source_id": "S6",
+                    "chunk_id": "b4a6793b905b524e6c35c12393f8645fef16dbae5c88deb03a73a8d7345443e0",
+                    "document_id": "MASHHAD-2026-V1",
+                    "page": 4,
+                    "section": "MASH-03",
+                    "score": 0.013888888888888888
+                  }
+                ]
+              }
+            },
+            {
+              "step": "synthesis",
+              "status": "started",
+              "message": "پاسخ با شواهد و ابزار محاسبه در صورت نیاز ساخته می‌شود.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "calculator",
+              "status": "completed",
+              "message": "ابزار محاسبه واقعی اجرا شد.",
+              "duration_ms": 0.36,
+              "data": {
+                "tool_call_id": "call_sQmmMLxBFHpdJ1WxyK07Gclo",
+                "expression": "104500000+104500000",
+                "value": "209000000",
+                "unit": "ریال",
+                "precision": 0
+              }
+            },
+            {
+              "step": "calculator",
+              "status": "completed",
+              "message": "ابزار محاسبه واقعی اجرا شد.",
+              "duration_ms": 0.09,
+              "data": {
+                "tool_call_id": "call_6CmEzJdcavcR3jNIhQadoYcW",
+                "expression": "10800000+10800000",
+                "value": "21600000",
+                "unit": "ریال",
+                "precision": 0
+              }
+            },
+            {
+              "step": "calculator",
+              "status": "completed",
+              "message": "ابزار محاسبه واقعی اجرا شد.",
+              "duration_ms": 0.22,
+              "data": {
+                "tool_call_id": "call_VmFEbfLUAxkIIqZWDSjX3Q1R",
+                "expression": "(104500000+104500000-10800000-10800000)/10",
+                "value": "18740000.00",
+                "unit": "تومان",
+                "precision": 2
+              }
+            },
+            {
+              "step": "synthesis",
+              "status": "completed",
+              "message": "پاسخ نهایی و ارجاع‌ها بررسی شدند.",
+              "duration_ms": 65320.89,
+              "data": {
+                "status": "answered",
+                "source_ids": [
+                  "S1",
+                  "S2"
+                ],
+                "calculator_calls": 3
+              }
+            },
+            {
+              "step": "workflow",
+              "status": "completed",
+              "message": "پردازش درخواست پایان یافت.",
+              "duration_ms": 0,
+              "data": {
+                "status": "answered",
+                "route": "combined"
+              }
+            }
+          ],
+          "metrics": {
+            "duration_ms": 119495.2,
+            "llm_calls": 3,
+            "prompt_tokens": 19557,
+            "completion_tokens": 971,
+            "responses_with_usage": 3,
+            "as_of": "2026-10-27",
+            "retrieval": {
+              "mode": "hybrid",
+              "filters": {},
+              "candidates": 23,
+              "returned": 6,
+              "reranked": false,
+              "reranker": null,
+              "context_scope": "physical_page",
+              "fusion": "RRF(k=60)",
+              "duration_ms": 24095.99,
+              "dense_ms": 24094.17,
+              "lexical_ms": 1.57
+            }
+          }
+        },
+        "assessment": {
+          "automatic_pass": false,
+          "checks": [
+            {
+              "criterion": "route",
+              "passed": true,
+              "expected": "combined",
+              "actual": "combined"
+            },
+            {
+              "criterion": "outcome",
+              "passed": true,
+              "expected": [
+                "answered"
+              ],
+              "actual": "answered"
+            },
+            {
+              "criterion": "tool:semantic_retrieval",
+              "passed": true
+            },
+            {
+              "criterion": "tool:sql_query",
+              "passed": true
+            },
+            {
+              "criterion": "tool:calculator",
+              "passed": true
+            },
+            {
+              "criterion": "relevant_source_page",
+              "passed": true,
+              "coverage": {
+                "gold_page_count": 2,
+                "hit_page_count": 2,
+                "recall_at_k": 1.0,
+                "any_gold_hit": true,
+                "all_gold_hit": true,
+                "mrr": 1.0,
+                "k": 12,
+                "ranked_pages": [
+                  {
+                    "document_id": "STAY-2026-V1",
+                    "page": 3
+                  },
+                  {
+                    "document_id": "STAY-2026-V1",
+                    "page": 1
+                  }
+                ]
+              }
+            },
+            {
+              "criterion": "inline_sources_resolve",
+              "passed": true,
+              "actual": [
+                "S1",
+                "S2"
+              ]
+            },
+            {
+              "criterion": "SQL_numeric_evidence:0",
+              "passed": true,
+              "expected": "104500000",
+              "observed": [
+                "0",
+                "10",
+                "104500000",
+                "10800000",
+                "1107",
+                "184",
+                "2",
+                "282",
+                "29948",
+                "3"
+              ]
+            },
+            {
+              "criterion": "SQL_numeric_evidence:1",
+              "passed": true,
+              "expected": "10800000",
+              "observed": [
+                "0",
+                "10",
+                "104500000",
+                "10800000",
+                "1107",
+                "184",
+                "2",
+                "282",
+                "29948",
+                "3"
+              ]
+            },
+            {
+              "criterion": "native_calculator_value:0",
+              "passed": false,
+              "expected": "20900000",
+              "observed": [
+                "18740000.00",
+                "209000000",
+                "21600000"
+              ]
+            },
+            {
+              "criterion": "native_calculator_value:1",
+              "passed": false,
+              "expected": "2160000",
+              "observed": [
+                "18740000.00",
+                "209000000",
+                "21600000"
+              ]
+            },
+            {
+              "criterion": "native_calculator_value:2",
+              "passed": true,
+              "expected": "18740000",
+              "observed": [
+                "18740000.00",
+                "209000000",
+                "21600000"
+              ]
+            },
+            {
+              "criterion": "answer_numeric_fact:0",
+              "passed": true,
+              "expected": "15"
+            },
+            {
+              "criterion": "answer_numeric_fact:1",
+              "passed": true,
+              "expected": "14"
+            },
+            {
+              "criterion": "operational_tables_queried",
+              "passed": true,
+              "expected": [
+                "stay_rates"
+              ],
+              "actual": [
+                "records",
+                "stay_rates"
+              ],
+              "accepted_equivalences": []
+            },
+            {
+              "criterion": "conversation_slot:destination",
+              "passed": true,
+              "expected": "مشهد",
+              "actual": "مشهد"
+            },
+            {
+              "criterion": "conversation_slot:checkin",
+              "passed": true,
+              "expected": "2026-11-17",
+              "actual": "2026-11-17"
+            },
+            {
+              "criterion": "conversation_slot:checkout",
+              "passed": true,
+              "expected": "2026-11-19",
+              "actual": "2026-11-19"
+            },
+            {
+              "criterion": "conversation_slot:adults",
+              "passed": true,
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "criterion": "conversation_slot:rooms",
+              "passed": true,
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "criterion": "conversation_slot:origin",
+              "passed": true,
+              "expected": "تهران",
+              "actual": "تهران"
+            },
+            {
+              "criterion": "calculator_operand_provenance",
+              "passed": true,
+              "expressions": [
+                {
+                  "expression": "104500000+104500000",
+                  "operands": [
+                    "104500000",
+                    "104500000"
+                  ],
+                  "unsupported_literals": [],
+                  "passed": true
+                },
+                {
+                  "expression": "10800000+10800000",
+                  "operands": [
+                    "10800000",
+                    "10800000"
+                  ],
+                  "unsupported_literals": [],
+                  "passed": true
+                },
+                {
+                  "expression": "(104500000+104500000-10800000-10800000)/10",
+                  "operands": [
+                    "10",
+                    "10800000",
+                    "10800000",
+                    "104500000",
+                    "104500000"
+                  ],
+                  "unsupported_literals": [],
+                  "passed": true
+                }
+              ]
+            },
+            {
+              "criterion": "compatible_all_night_stay",
+              "passed": true
+            },
+            {
+              "criterion": "snapshot_not_live_booking",
+              "passed": true
+            },
+            {
+              "criterion": "preceding_conversation_turns_executed",
+              "passed": true
+            }
+          ],
+          "semantic_review_required": true,
+          "semantic_review_notes": [
+            "Verify every cited claim and cross-property pairing. Any/all gold page coverage is reported; a page hit alone is not entailment.",
+            "Literal provenance is checked; review price basis, selected legs/room plan, occupancy and arithmetic meaning separately.",
+            "Check the answer labels observed prices as stale snapshot evidence, preserves IRR/Toman and price basis, and never promises a booking."
+          ],
+          "scope": "observable route/tools, citations, slots, row/numeric equivalence and literal operands; not full semantic fidelity or live availability"
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "question_fa": "از تهران به مشهد می‌رویم؛ ورود 2026-11-17 و خروج 2026-11-19، دو بزرگسال و یک اتاق. فعلاً دو موزه مرتبط با تاریخ مشهد را از راهنما پیشنهاد بده.",
+            "actual": {
+              "request_id": "045eb3aa-e655-4b87-8fc5-33a273be9dbd",
+              "status": "answered",
+              "answer": "بر اساس راهنمای سفر، دو موزه مرتبط با تاریخ مشهد که می‌توانید بازدید کنید:\n\n1. موزه‌های آستان قدس رضوی: این مجموعه شامل موزه‌های فرش، سکه و تمبر، نقاشی و مجموعه‌های دیگر است و از مهم‌ترین مراکز فرهنگی و تاریخی مشهد به شمار می‌رود.\n\n2. موزه نادری و آرامگاه نادرشاه: این مکان یادمان نادرشاه افشار است و جنبه تاریخی و فرهنگی مهمی دارد.\n\nهمچنین موزه توس (موزه فردوسی) در مجموعه آرامگاه فردوسی در توس نیز از موزه‌های تاریخی مهم در نزدیکی مشهد است. توجه داشته باشید که ذکر نام موزه‌ها در راهنما به معنای تضمین باز بودن یا امکان بازدید در تاریخ سفر شما نیست و لازم است وضعیت بازدید را جداگانه بررسی کنید. [S2]",
+              "route": "documents",
+              "sources": [
+                {
+                  "document_id": "MASHHAD-2026-V1",
+                  "title": "مشهد؛ میراث، خوراک و پیرامون شهر",
+                  "filename": "mashhad-culture.pdf",
+                  "document_type": "city_guide",
+                  "city": "مشهد",
+                  "source": "wikimedia",
+                  "source_urls": [
+                    "https://fa.wikivoyage.org/wiki/%D9%85%D8%B4%D9%87%D8%AF",
+                    "https://fa.wikipedia.org/wiki/%D8%A2%D8%B1%D8%A7%D9%85%DA%AF%D8%A7%D9%87%20%D9%81%D8%B1%D8%AF%D9%88%D8%B3%DB%8C"
+                  ],
+                  "source_url": "https://fa.wikivoyage.org/w/index.php?title=%D9%85%D8%B4%D9%87%D8%AF&oldid=123136",
+                  "property_ids": [],
+                  "property_id": null,
+                  "observed_at": "2026-10-27T12:12:12.214695+00:00",
+                  "capture_date": "2026-10-27",
+                  "compiled_at": "2026-10-27",
+                  "license": "CC BY-SA 4.0",
+                  "source_sha256": "5aa125567a5ab12b5789274f766f441cbfff0470889cf748f2c0fd9a82b035eb",
+                  "chunk_id": "95db296d049681a709ac586ab075941f23a10fa0d8f19c9aba618d4a1518e7c6",
+                  "page": 5,
+                  "section": "MASH-04",
+                  "text": "منبع :ویکی سفر؛ مشهد | ثبت منبع 2026-10-27 :\n\n| MASH-04 موزه ها و یادمان های شهر\nحرم بزرگ ترین و مشهورترین مکان دیدنی مشهد است .معماری فوق العاده ،فضای آرامش بخش و\nسرشار از معنویت برای زائران این امام است .حتی اگر فردی مذهبی هم نباشید ،بازدید از آنجا،\nخاطره ای به یاد ماندنی برای شما خواهد بود.\nمجموعه\n\nشناسه فرهنگی یا تاریخی\n\nموزه های آستان قدس رضوی\n\nفرش ،سکه و تمبر ،نقاشی و مجموعه های دیگر\n\nموزه نادری و آرامگاه نادرشاه\n\nیادمان نادرشاه افشار\n\nموزه توس\n\nموزه فردوسی در مجموعه توس\n\nمسجد گوهرشاد\n\nاز بناهای تاریخی مشهد\n\nگنبد خشتی و مدرسه عباسقلیخان\n\nدیگر بناهای تاریخی نام برده در راهنمای شهر\n\nدر فهرست موزه های ویکی سفر ،موزه بزرگ تاریخ طبیعی خراسان ،موزه علوم و تاریخ طبیعی مشهد و\nموزه آب نیز نام برده شده اند .نام بردن از یک موزه در این فهرست ،به معنای تأیید ساعت بازدید یا بازبودن\nآن در روز سفر نیست.",
+                  "token_count": 156,
+                  "dense_score": 0.54125357,
+                  "lexical_score": 26.92578044652229,
+                  "matched_text": "در فهرست موزه های ویکی سفر ،موزه بزرگ تاریخ طبیعی خراسان ،موزه علوم و تاریخ طبیعی مشهد و\nموزه آب نیز نام برده شده اند .نام بردن از یک موزه در این فهرست ،به معنای تأیید ساعت بازدید یا بازبودن\nآن در روز سفر نیست.",
+                  "context_scope": "physical_page",
+                  "context_chunk_ids": [
+                    "800b3e8d770d1dd8cc3c9ccc65d342cb7639a8ed8a8576ced0f530464ea6cc16",
+                    "2adf912e3111d3870fa8e88f11630ec55aa54ab8c2b145d98d16d58a48cde03b",
+                    "95db296d049681a709ac586ab075941f23a10fa0d8f19c9aba618d4a1518e7c6"
+                  ],
+                  "score": 0.031754032258064516,
+                  "source_id": "S2"
+                }
+              ],
+              "sql_results": [],
+              "calculations": [],
+              "conversation_state": {
+                "origin": "تهران",
+                "destination": "مشهد",
+                "checkin": "2026-11-17",
+                "checkout": "2026-11-19",
+                "adults": 2,
+                "rooms": 1,
+                "selected_transport_ids": [],
+                "selected_stay_ids": []
+              },
+              "quote_evidence": {},
+              "snapshot": {
+                "captured_on": "2026-10-18",
+                "as_of": "2026-10-27",
+                "requires_revalidation": true,
+                "live_availability_confirmed": false
+              },
+              "trace": [
+                {
+                  "step": "coordinator",
+                  "status": "started",
+                  "message": "انتخاب مسیر و آماده‌سازی پرس‌وجو آغاز شد.",
+                  "duration_ms": 0,
+                  "data": {}
+                },
+                {
+                  "step": "coordinator",
+                  "status": "completed",
+                  "message": "مسیر درخواست مشخص شد.",
+                  "duration_ms": 39659.32,
+                  "data": {
+                    "route": "documents",
+                    "needs_documents": true,
+                    "requires_calculator": false,
+                    "sql_generated": false,
+                    "conversation_state": {
+                      "origin": "تهران",
+                      "destination": "مشهد",
+                      "checkin": "2026-11-17",
+                      "checkout": "2026-11-19",
+                      "adults": 2,
+                      "rooms": 1,
+                      "selected_transport_ids": [],
+                      "selected_stay_ids": []
+                    }
+                  }
+                },
+                {
+                  "step": "document_specialist",
+                  "status": "started",
+                  "message": "بازیابی شاهد از اسناد آغاز شد.",
+                  "duration_ms": 0,
+                  "data": {
+                    "query": "از تهران به مشهد می‌رویم؛ ورود 2026-11-17 و خروج 2026-11-19، دو بزرگسال و یک اتاق. فعلاً دو موزه مرتبط با تاریخ مشهد را از راهنما پیشنهاد بده.\nدو موزه مرتبط با تاریخ مشهد را معرفی کن."
+                  }
+                },
+                {
+                  "step": "document_specialist",
+                  "status": "completed",
+                  "message": "شواهد بازیابی برای بررسی پاسخ آماده‌اند.",
+                  "duration_ms": 14232.48,
+                  "data": {
+                    "query": "از تهران به مشهد می‌رویم؛ ورود 2026-11-17 و خروج 2026-11-19، دو بزرگسال و یک اتاق. فعلاً دو موزه مرتبط با تاریخ مشهد را از راهنما پیشنهاد بده.\nدو موزه مرتبط با تاریخ مشهد را معرفی کن.",
+                    "mode": "hybrid",
+                    "filters": {},
+                    "count": 6,
+                    "chunks": [
+                      {
+                        "source_id": "S1",
+                        "chunk_id": "2291d83c901308bba12756d43cc4b9ac387a759b9cf349fae0b43f25b641b622",
+                        "document_id": "STAY-2026-V1",
+                        "page": 1,
+                        "section": "STAY-01",
+                        "score": 0.032018442622950824
+                      },
+                      {
+                        "source_id": "S2",
+                        "chunk_id": "95db296d049681a709ac586ab075941f23a10fa0d8f19c9aba618d4a1518e7c6",
+                        "document_id": "MASHHAD-2026-V1",
+                        "page": 5,
+                        "section": "MASH-04",
+                        "score": 0.031754032258064516
+                      },
+                      {
+                        "source_id": "S3",
+                        "chunk_id": "88fe857ecbb55f663084ebd071ac69179f59836f6215c73bb4b4a3196d6f4f5e",
+                        "document_id": "MASHHAD-2026-V1",
+                        "page": 4,
+                        "section": "MASH-03",
+                        "score": 0.029206349206349208
+                      },
+                      {
+                        "source_id": "S4",
+                        "chunk_id": "3c24a61a96aff0445f03d1fdbbfa5e6338c52852f51702b51819fd8d50751f6a",
+                        "document_id": "MASHHAD-2026-V1",
+                        "page": 2,
+                        "section": "MASH-02",
+                        "score": 0.028169014084507043
+                      },
+                      {
+                        "source_id": "S5",
+                        "chunk_id": "8a651cfb17b8ca7d4a217eb9c1e85935476b33e7dbad15540e5502c748f767e1",
+                        "document_id": "MASHHAD-2026-V1",
+                        "page": 3,
+                        "section": "MASH-03",
+                        "score": 0.027984344422700584
+                      },
+                      {
+                        "source_id": "S6",
+                        "chunk_id": "5a78814702c1e05bb065627736e67ef778d9e39e33cf2d41d38d8c84bc9f827f",
+                        "document_id": "STAY-2026-V1",
+                        "page": 4,
+                        "section": "STAY-03",
+                        "score": 0.027479766610201392
+                      }
+                    ]
+                  }
+                },
+                {
+                  "step": "synthesis",
+                  "status": "started",
+                  "message": "پاسخ با شواهد و ابزار محاسبه در صورت نیاز ساخته می‌شود.",
+                  "duration_ms": 0,
+                  "data": {}
+                },
+                {
+                  "step": "synthesis",
+                  "status": "completed",
+                  "message": "پاسخ نهایی و ارجاع‌ها بررسی شدند.",
+                  "duration_ms": 36232.51,
+                  "data": {
+                    "status": "answered",
+                    "source_ids": [
+                      "S2"
+                    ],
+                    "calculator_calls": 0
+                  }
+                },
+                {
+                  "step": "workflow",
+                  "status": "completed",
+                  "message": "پردازش درخواست پایان یافت.",
+                  "duration_ms": 0,
+                  "data": {
+                    "status": "answered",
+                    "route": "documents"
+                  }
+                }
+              ],
+              "metrics": {
+                "duration_ms": 90131.03,
+                "llm_calls": 2,
+                "prompt_tokens": 9871,
+                "completion_tokens": 363,
+                "responses_with_usage": 2,
+                "as_of": "2026-10-27",
+                "retrieval": {
+                  "mode": "hybrid",
+                  "filters": {},
+                  "candidates": 27,
+                  "returned": 6,
+                  "reranked": false,
+                  "reranker": null,
+                  "context_scope": "physical_page",
+                  "fusion": "RRF(k=60)",
+                  "duration_ms": 14232.1,
+                  "dense_ms": 14229.26,
+                  "lexical_ms": 2.45
+                }
+              }
+            },
+            "duration_ms": 90138.49
+          },
+          {
+            "turn": 2,
+            "question_fa": "برای همان تاریخ و نفرات، قیمت دو شب الماس۲ اقامت۲۴ اتاق29948 پلن1107 و ارمغان اقامت۲۴ اتاق282 پلن184 و مقدار صرفه‌جویی انتخاب ارمغان را تومان حساب کن؛ ساعت ورود هر دو را از راهنما بگو.",
+            "actual": {
+              "request_id": "3017652d-0cb9-427b-82d1-3277cd151ff7",
+              "status": "answered",
+              "answer": "برای اقامت دو شب (ورود 2026-11-17 و خروج 2026-11-19) با دو بزرگسال و یک اتاق:\n\n- هتل الماس ۲ (اتاق 29948، پلن 1107): جمع دو شب 209,000,000 ریال (بر اساس هر شب 104,500,000 ریال، هر دو شب، هر اتاق، قیمت به ازای هر شب، مشاهده شده در 2026-10-18) [S2].\n- هتل آپارتمان ارمغان (اتاق 282، پلن 184): جمع دو شب 21,600,000 ریال (بر اساس هر شب 10,800,000 ریال، هر دو شب، هر اتاق، قیمت به ازای هر شب، مشاهده شده در 2026-10-18) [S1].\n\nمقدار صرفه‌جویی با انتخاب ارمغان نسبت به الماس ۲ برای این بازه، 18,740,000 تومان است.\n\nساعت ورود (تحویل اتاق) بر اساس راهنما:\n- الماس ۲: ساعت 15:00 [S2]\n- ارمغان: ساعت 14:00 [S1]\n\nزمینه نقل‌قول: نرخ‌ها و موجودی‌ها مربوط به snapshot ثبت‌شده در 2026-10-18 هستند؛ موجودی فعلی یا امکان رزرو امروز تأیید نشده است و پیش از رزرو باید دوباره بررسی شود.\nتاریخ‌های درخواست: ورود: 2026-11-17؛ خروج: 2026-11-19.\nمنبع و زمان مشاهده رکوردها: eghamat24 (مشاهده: 2026-10-18T09:51:10+00:00)؛ eghamat24 (مشاهده: 2026-10-18T09:48:50+00:00)؛ eghamat24 (مشاهده: 2026-10-18T09:58:14+00:00)؛ eghamat24 (مشاهده: 2026-10-18T09:57:48+00:00).",
+              "route": "combined",
+              "sources": [
+                {
+                  "document_id": "STAY-2026-V1",
+                  "title": "مشهد؛ معرفی و شرایط اقامت دو هتل",
+                  "filename": "mashhad-stay-conditions.pdf",
+                  "document_type": "accommodation_policies",
+                  "city": "مشهد",
+                  "source": "eghamat24",
+                  "source_urls": [
+                    "https://www.eghamat24.com/MashhadHotels/Almas_2Hotel.html",
+                    "https://www.eghamat24.com/MashhadHotels/ArmaqanHotel.html",
+                    "https://www.alibaba.ir/hotel/ir-mashhad/mashhad-almas2"
+                  ],
+                  "source_url": "https://www.eghamat24.com/MashhadHotels/ArmaqanHotel.html",
+                  "property_ids": [
+                    "1242",
+                    "106"
+                  ],
+                  "property_id": "106",
+                  "observed_at": "2026-10-18T09:57:48+00:00",
+                  "capture_date": "2026-10-18",
+                  "compiled_at": "2026-10-27",
+                  "license": "Attributed factual compilation; commercial source rights not asserted",
+                  "source_sha256": "950db9dd8e3eecb9bd7b797be862ad07be2de046bc352ab6b7f703b86f3decf2",
+                  "chunk_id": "0e221b4b502344061f301e2ff062fe23a61764c5236eed71a19ed1b16610bcef",
+                  "page": 3,
+                  "section": "STAY-02",
+                  "text": "منبع :اقامت بیست و چهار | شناسه هتل | 106 ثبت منبع 2026-10-18 :\n\n| STAY-02 هتل آپارتمان ارمغان مشهد\nهتل آپارتمان ارمغان مشهد در سال 1385 افتتاح گردیده است .از مزایای اقامت در این هتل می توان به\nنزدیکی به حرم مطهر رضوی و دسترسی آسان به مراکز تجاری و خرید از جمله بازار رضا اشاره کرد .هتل\nارمغان در 4 طبقه و 21 واحد اقامتی با پرسنلی مجرب و آموزش دیده آماده خدمت رسانی به شما\nمیهمانان گرامی می باشد.\nمشخصه\n\nاطلاعات ثبت شده\n\nنشانی\n\nمشهد ،خیابان امام رضا ،امام رضا ،12 شهید حنایی 7\n\nورود\n\n14:00\n\nخروج\n\n12:00\n\nورود و خروج\nساعت تحویل اتاق 14:00 :ساعت تخلیه اتاق 12:00 :\n\nپذیرش خانم مجرد\nبا مدارک شناسایی معتبر\n\nصیغه نامه\nبا مهر برجسته محضر\n\nنیم بهاء\nاقامت کودک زیر 5 سال (درصورت عدم استفاده از سرویس) رایگان می باشد و بازه سنی برای اقامت\nکودک بین 5 الی 7 سال (درصورت عدم استفاده از سرویس) نیم بها محاسبه می گردد .لازم به ذکر\nاست :اقامت رایگان و نیم بها تنها برای یک کودک محاسبه می گردد.\n\nکنسلی\nکنسلی رزرو در ایام پیک و غیر پیک :با توجه به اینکه نرخ کنسلی در ایام مختلف و هتل های مختلف\nمتفاوت می باشد ،مبلغ دقیق کنسلی بعد از استعلام از هتل مشخص می گردد.",
+                  "token_count": 299,
+                  "dense_score": 0.6365422,
+                  "lexical_score": 57.43322764835992,
+                  "matched_text": "منبع :اقامت بیست و چهار | شناسه هتل | 106 ثبت منبع 2026-10-18 :\n\n| STAY-02 هتل آپارتمان ارمغان مشهد\nهتل آپارتمان ارمغان مشهد در سال 1385 افتتاح گردیده است .از مزایای اقامت در این هتل می توان به\nنزدیکی به حرم مطهر رضوی و دسترسی آسان به مراکز تجاری و خرید از جمله بازار رضا اشاره کرد .هتل\nارمغان در 4 طبقه و 21 واحد اقامتی با پرسنلی مجرب و آموزش دیده آماده خدمت رسانی به شما\nمیهمانان گرامی می باشد.\nمشخصه\n\nاطلاعات ثبت شده\n\nنشانی",
+                  "context_scope": "physical_page",
+                  "context_chunk_ids": [
+                    "0e221b4b502344061f301e2ff062fe23a61764c5236eed71a19ed1b16610bcef",
+                    "b115d4ca3b9c8ce6e668b4fc070cae23c58aa7d7b8cabf7ddeec290501801b63",
+                    "e63cb80ddfdc875dc13a2a0a353a4af9cc9440ee009c977d8746dd6592df5269"
+                  ],
+                  "score": 0.032266458495966696,
+                  "source_id": "S1"
+                },
+                {
+                  "document_id": "STAY-2026-V1",
+                  "title": "مشهد؛ معرفی و شرایط اقامت دو هتل",
+                  "filename": "mashhad-stay-conditions.pdf",
+                  "document_type": "accommodation_policies",
+                  "city": "مشهد",
+                  "source": "eghamat24",
+                  "source_urls": [
+                    "https://www.eghamat24.com/MashhadHotels/Almas_2Hotel.html",
+                    "https://www.eghamat24.com/MashhadHotels/ArmaqanHotel.html",
+                    "https://www.alibaba.ir/hotel/ir-mashhad/mashhad-almas2"
+                  ],
+                  "source_url": "https://www.eghamat24.com/MashhadHotels/Almas_2Hotel.html",
+                  "property_ids": [
+                    "1242",
+                    "106"
+                  ],
+                  "property_id": "1242",
+                  "observed_at": "2026-10-18T09:48:50+00:00",
+                  "capture_date": "2026-10-18",
+                  "compiled_at": "2026-10-27",
+                  "license": "Attributed factual compilation; commercial source rights not asserted",
+                  "source_sha256": "950db9dd8e3eecb9bd7b797be862ad07be2de046bc352ab6b7f703b86f3decf2",
+                  "chunk_id": "98b3be7b31a61e82985a49d33831cdde88c71cec5be54382ed64d093595f94a6",
+                  "page": 1,
+                  "section": "STAY-01",
+                  "text": "منبع :اقامت بیست و چهار | شناسه هتل | 1242 ثبت منبع 2026-10-18 :\n\n| STAY-01 هتل الماس 2 مشهد\nیادداشت های مستند از معرفی اقامت 24 و علی بابا؛ ثبت منبع .2026-10-18 :این گردآوری تأیید رزرو یا تضمین\nخدمات امروز نیست.\n\nهتل 5 ستاره و مجلل الماس 2 از گروه هتل های الماس در اسفند ماه سال 1395 افتتاح شد .هتل\nالماس دو با 217 اتاق با امکانات رفاهی ویژه در 25 طبقه با الهام از معماری خاص ملل مختلف به سبک\nهای مختلفی چون ایران باستان ،روسی ،ترکی ،رومی ،آفریقایی ،عربی ،ایرانی ،اتاق صفوی و ...موزه\nای از هنر های بین المللی را به نمایش گذاشته است .هتل الماس 2 با پرسنلی مجرب و آموزش دیده با\nافتخار آماده میزبانی از شما میهمانان گرامی می باشند.\nمشخصه\n\nاطلاعات ثبت شده\n\nنشانی\n\nمشهد ،خیابان امام رضا ،امام رضا 20\n\nورود\n\n15:00\n\nخروج\n\n12:00\n\nورود و خروج\nساعت تحویل اتاق 15:00 :ساعت تخلیه اتاق 12:00 :\n\nپذیرش خانم مجرد\nبا مدارک شناسایی معتبر\n\nصیغه نامه\nبا مهر برجسته محضر (فقط میهمان ایرانی)",
+                  "token_count": 304,
+                  "dense_score": 0.57267946,
+                  "lexical_score": 50.342623843896654,
+                  "matched_text": "الماس دو با 217 اتاق با امکانات رفاهی ویژه در 25 طبقه با الهام از معماری خاص ملل مختلف به سبک\nهای مختلفی چون ایران باستان ،روسی ،ترکی ،رومی ،آفریقایی ،عربی ،ایرانی ،اتاق صفوی و ...موزه\nای از هنر های بین المللی را به نمایش گذاشته است .هتل الماس 2 با پرسنلی مجرب و آموزش دیده با\nافتخار آماده میزبانی از شما میهمانان گرامی می باشند.\nمشخصه\n\nاطلاعات ثبت شده\n\nنشانی\n\nمشهد ،خیابان امام رضا ،امام رضا 20\n\nورود\n\n15:00\n\nخروج\n\n12:00\n\nورود و خروج",
+                  "context_scope": "physical_page",
+                  "context_chunk_ids": [
+                    "3192937f4b52f6954bc945d1682c5692f78c214c42ae0703c1d00b6dc626934b",
+                    "98b3be7b31a61e82985a49d33831cdde88c71cec5be54382ed64d093595f94a6",
+                    "2291d83c901308bba12756d43cc4b9ac387a759b9cf349fae0b43f25b641b622"
+                  ],
+                  "score": 0.031754032258064516,
+                  "source_id": "S2"
+                }
+              ],
+              "sql_results": [
+                {
+                  "sql": "SELECT s.record_id, s.property_id, s.room_id, s.rate_plan_id, s.service_date, s.amount_irr, s.price_basis, s.availability, s.occupancy, s.inventory, s.closed, s.min_stay, s.max_stay, s.close_to_arrival, s.close_to_departure FROM stay_rates s JOIN records r ON s.property_id = r.id WHERE r.source = 'eghamat24' AND r.source_id = '1242' AND s.room_id = '29948' AND s.rate_plan_id = '1107' AND s.service_date >= '2026-11-17' AND s.service_date < '2026-11-19' AND s.availability = 'available' AND s.closed = 0",
+                  "columns": [
+                    "record_id",
+                    "property_id",
+                    "room_id",
+                    "rate_plan_id",
+                    "service_date",
+                    "amount_irr",
+                    "price_basis",
+                    "availability",
+                    "occupancy",
+                    "inventory",
+                    "closed",
+                    "min_stay",
+                    "max_stay",
+                    "close_to_arrival",
+                    "close_to_departure"
+                  ],
+                  "rows": [
+                    [
+                      "445d61c583c632f1c9d4abad",
+                      "8cb037325c5662bce8b4b605",
+                      "29948",
+                      "1107",
+                      "2026-11-17",
+                      104500000,
+                      "per_room_per_night",
+                      "available",
+                      2,
+                      10,
+                      0,
+                      null,
+                      null,
+                      0,
+                      0
+                    ],
+                    [
+                      "5fa0ab15301423f9b8090d70",
+                      "8cb037325c5662bce8b4b605",
+                      "29948",
+                      "1107",
+                      "2026-11-18",
+                      104500000,
+                      "per_room_per_night",
+                      "available",
+                      2,
+                      10,
+                      0,
+                      null,
+                      null,
+                      0,
+                      0
+                    ]
+                  ],
+                  "row_count": 2,
+                  "truncated": false,
+                  "duration_ms": 7.499,
+                  "record_sources": [
+                    {
+                      "id": "445d61c583c632f1c9d4abad",
+                      "source": "eghamat24",
+                      "source_id": "1242:29948:1107:2026-11-17",
+                      "name_fa": "هتل الماس 2 مشهد — اتاق دوتخته دبل فیروزه اکونومی",
+                      "city_fa": "مشهد",
+                      "source_url": "https://www.eghamat24.com/properties/1242/v2/rooms-rates?from_date=2026-11-15&to_date=2026-11-18&no_special_user=true",
+                      "observed_at": "2026-10-18T09:51:10+00:00"
+                    },
+                    {
+                      "id": "5fa0ab15301423f9b8090d70",
+                      "source": "eghamat24",
+                      "source_id": "1242:29948:1107:2026-11-18",
+                      "name_fa": "هتل الماس 2 مشهد — اتاق دوتخته دبل فیروزه اکونومی",
+                      "city_fa": "مشهد",
+                      "source_url": "https://www.eghamat24.com/properties/1242/v2/rooms-rates?from_date=2026-11-15&to_date=2026-11-18&no_special_user=true",
+                      "observed_at": "2026-10-18T09:51:10+00:00"
+                    },
+                    {
+                      "id": "8cb037325c5662bce8b4b605",
+                      "source": "eghamat24",
+                      "source_id": "1242",
+                      "name_fa": "هتل الماس 2 مشهد",
+                      "city_fa": "مشهد",
+                      "source_url": "https://www.eghamat24.com/MashhadHotels/Almas_2Hotel.html",
+                      "observed_at": "2026-10-18T09:48:50+00:00"
+                    }
+                  ]
+                },
+                {
+                  "sql": "SELECT s.record_id, s.property_id, s.room_id, s.rate_plan_id, s.service_date, s.amount_irr, s.price_basis, s.availability, s.occupancy, s.inventory, s.closed, s.min_stay, s.max_stay, s.close_to_arrival, s.close_to_departure FROM stay_rates s JOIN records r ON s.property_id = r.id WHERE r.source = 'eghamat24' AND r.source_id = '106' AND s.room_id = '282' AND s.rate_plan_id = '184' AND s.service_date >= '2026-11-17' AND s.service_date < '2026-11-19' AND s.availability = 'available' AND s.closed = 0",
+                  "columns": [
+                    "record_id",
+                    "property_id",
+                    "room_id",
+                    "rate_plan_id",
+                    "service_date",
+                    "amount_irr",
+                    "price_basis",
+                    "availability",
+                    "occupancy",
+                    "inventory",
+                    "closed",
+                    "min_stay",
+                    "max_stay",
+                    "close_to_arrival",
+                    "close_to_departure"
+                  ],
+                  "rows": [
+                    [
+                      "f2200987c1bd5e36fa3e4eb4",
+                      "eebaa9ba7ec7123ad48040cc",
+                      "282",
+                      "184",
+                      "2026-11-17",
+                      10800000,
+                      "per_room_per_night",
+                      "available",
+                      2,
+                      3,
+                      0,
+                      null,
+                      null,
+                      0,
+                      0
+                    ],
+                    [
+                      "6a4cac02999f59172672e65a",
+                      "eebaa9ba7ec7123ad48040cc",
+                      "282",
+                      "184",
+                      "2026-11-18",
+                      10800000,
+                      "per_room_per_night",
+                      "available",
+                      2,
+                      3,
+                      0,
+                      null,
+                      null,
+                      0,
+                      0
+                    ]
+                  ],
+                  "row_count": 2,
+                  "truncated": false,
+                  "duration_ms": 5.259,
+                  "record_sources": [
+                    {
+                      "id": "6a4cac02999f59172672e65a",
+                      "source": "eghamat24",
+                      "source_id": "106:282:184:2026-11-18",
+                      "name_fa": "هتل آپارتمان ارمغان مشهد — اتاق دو تخته دبل",
+                      "city_fa": "مشهد",
+                      "source_url": "https://www.eghamat24.com/properties/106/v2/rooms-rates?from_date=2026-11-17&to_date=2026-11-20&no_special_user=true",
+                      "observed_at": "2026-10-18T09:58:14+00:00"
+                    },
+                    {
+                      "id": "eebaa9ba7ec7123ad48040cc",
+                      "source": "eghamat24",
+                      "source_id": "106",
+                      "name_fa": "هتل آپارتمان ارمغان مشهد",
+                      "city_fa": "مشهد",
+                      "source_url": "https://www.eghamat24.com/MashhadHotels/ArmaqanHotel.html",
+                      "observed_at": "2026-10-18T09:57:48+00:00"
+                    },
+                    {
+                      "id": "f2200987c1bd5e36fa3e4eb4",
+                      "source": "eghamat24",
+                      "source_id": "106:282:184:2026-11-17",
+                      "name_fa": "هتل آپارتمان ارمغان مشهد — اتاق دو تخته دبل",
+                      "city_fa": "مشهد",
+                      "source_url": "https://www.eghamat24.com/properties/106/v2/rooms-rates?from_date=2026-11-17&to_date=2026-11-20&no_special_user=true",
+                      "observed_at": "2026-10-18T09:58:14+00:00"
+                    }
+                  ]
+                }
+              ],
+              "calculations": [
+                {
+                  "tool": "calculate",
+                  "tool_call_id": "call_sQmmMLxBFHpdJ1WxyK07Gclo",
+                  "expression": "104500000+104500000",
+                  "value": "209000000",
+                  "unit": "ریال",
+                  "precision": 0
+                },
+                {
+                  "tool": "calculate",
+                  "tool_call_id": "call_6CmEzJdcavcR3jNIhQadoYcW",
+                  "expression": "10800000+10800000",
+                  "value": "21600000",
+                  "unit": "ریال",
+                  "precision": 0
+                },
+                {
+                  "tool": "calculate",
+                  "tool_call_id": "call_VmFEbfLUAxkIIqZWDSjX3Q1R",
+                  "expression": "(104500000+104500000-10800000-10800000)/10",
+                  "value": "18740000.00",
+                  "unit": "تومان",
+                  "precision": 2
+                }
+              ],
+              "conversation_state": {
+                "origin": "تهران",
+                "destination": "مشهد",
+                "checkin": "2026-11-17",
+                "checkout": "2026-11-19",
+                "adults": 2,
+                "rooms": 1,
+                "selected_transport_ids": [],
+                "selected_stay_ids": []
+              },
+              "quote_evidence": {
+                "stay": {
+                  "blocked": false,
+                  "groups": [
+                    {
+                      "property_id": "8cb037325c5662bce8b4b605",
+                      "room_id": "29948",
+                      "rate_plan_id": "1107",
+                      "nights": 2,
+                      "rooms": 1,
+                      "complete_observed": true,
+                      "reasons": [],
+                      "unknown_restrictions": [
+                        "checkout_day_restrictions",
+                        "max_stay",
+                        "min_stay"
+                      ],
+                      "nightly_amounts_irr": [
+                        104500000,
+                        104500000
+                      ]
+                    },
+                    {
+                      "property_id": "eebaa9ba7ec7123ad48040cc",
+                      "room_id": "282",
+                      "rate_plan_id": "184",
+                      "nights": 2,
+                      "rooms": 1,
+                      "complete_observed": true,
+                      "reasons": [],
+                      "unknown_restrictions": [
+                        "checkout_day_restrictions",
+                        "max_stay",
+                        "min_stay"
+                      ],
+                      "nightly_amounts_irr": [
+                        10800000,
+                        10800000
+                      ]
+                    }
+                  ],
+                  "reasons": []
+                }
+              },
+              "snapshot": {
+                "captured_on": "2026-10-18",
+                "as_of": "2026-10-27",
+                "requires_revalidation": true,
+                "live_availability_confirmed": false
+              },
+              "trace": [
+                {
+                  "step": "coordinator",
+                  "status": "started",
+                  "message": "انتخاب مسیر و آماده‌سازی پرس‌وجو آغاز شد.",
+                  "duration_ms": 0,
+                  "data": {}
+                },
+                {
+                  "step": "entity_linker",
+                  "status": "completed",
+                  "message": "شناسه و نام کاندیدها از کاتالوگ واقعی بررسی شد.",
+                  "duration_ms": 0,
+                  "data": {
+                    "entities": [
+                      {
+                        "id": "8cb037325c5662bce8b4b605",
+                        "source": "eghamat24",
+                        "source_id": "1242",
+                        "name_fa": "هتل الماس 2 مشهد",
+                        "city_fa": "مشهد"
+                      },
+                      {
+                        "id": "eebaa9ba7ec7123ad48040cc",
+                        "source": "eghamat24",
+                        "source_id": "106",
+                        "name_fa": "هتل آپارتمان ارمغان مشهد",
+                        "city_fa": "مشهد"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "step": "coordinator",
+                  "status": "completed",
+                  "message": "مسیر درخواست مشخص شد.",
+                  "duration_ms": 30052.29,
+                  "data": {
+                    "route": "combined",
+                    "needs_documents": true,
+                    "requires_calculator": true,
+                    "sql_generated": true,
+                    "conversation_state": {
+                      "origin": "تهران",
+                      "destination": "مشهد",
+                      "checkin": "2026-11-17",
+                      "checkout": "2026-11-19",
+                      "adults": 2,
+                      "rooms": 1,
+                      "selected_transport_ids": [],
+                      "selected_stay_ids": []
+                    }
+                  }
+                },
+                {
+                  "step": "database_specialist",
+                  "status": "started",
+                  "message": "اعتبارسنجی و اجرای خواندنی SQL آغاز شد.",
+                  "duration_ms": 0,
+                  "data": {}
+                },
+                {
+                  "step": "database_specialist",
+                  "status": "completed",
+                  "message": "SQL اعتبارسنجی و اجرا شد.",
+                  "duration_ms": 11.13,
+                  "data": {
+                    "sql": "SELECT s.record_id, s.property_id, s.room_id, s.rate_plan_id, s.service_date, s.amount_irr, s.price_basis, s.availability, s.occupancy, s.inventory, s.closed, s.min_stay, s.max_stay, s.close_to_arrival, s.close_to_departure FROM stay_rates s JOIN records r ON s.property_id = r.id WHERE r.source = 'eghamat24' AND r.source_id = '1242' AND s.room_id = '29948' AND s.rate_plan_id = '1107' AND s.service_date >= '2026-11-17' AND s.service_date < '2026-11-19' AND s.availability = 'available' AND s.closed = 0",
+                    "row_count": 2,
+                    "truncated": false,
+                    "repair_used": false,
+                    "query_index": 1,
+                    "query_count": 2
+                  }
+                },
+                {
+                  "step": "database_specialist",
+                  "status": "completed",
+                  "message": "SQL اعتبارسنجی و اجرا شد.",
+                  "duration_ms": 18.92,
+                  "data": {
+                    "sql": "SELECT s.record_id, s.property_id, s.room_id, s.rate_plan_id, s.service_date, s.amount_irr, s.price_basis, s.availability, s.occupancy, s.inventory, s.closed, s.min_stay, s.max_stay, s.close_to_arrival, s.close_to_departure FROM stay_rates s JOIN records r ON s.property_id = r.id WHERE r.source = 'eghamat24' AND r.source_id = '106' AND s.room_id = '282' AND s.rate_plan_id = '184' AND s.service_date >= '2026-11-17' AND s.service_date < '2026-11-19' AND s.availability = 'available' AND s.closed = 0",
+                    "row_count": 2,
+                    "truncated": false,
+                    "repair_used": false,
+                    "query_index": 2,
+                    "query_count": 2
+                  }
+                },
+                {
+                  "step": "document_specialist",
+                  "status": "started",
+                  "message": "بازیابی شاهد از اسناد آغاز شد.",
+                  "duration_ms": 0,
+                  "data": {
+                    "query": "برای همان تاریخ و نفرات، قیمت دو شب الماس۲ اقامت۲۴ اتاق29948 پلن1107 و ارمغان اقامت۲۴ اتاق282 پلن184 و مقدار صرفه‌جویی انتخاب ارمغان را تومان حساب کن؛ ساعت ورود هر دو را از راهنما بگو.\nساعت ورود هتل الماس ۲ مشهد و هتل آپارتمان ارمغان مشهد را از راهنمای اقامت۲۴ اعلام کن."
+                  }
+                },
+                {
+                  "step": "document_specialist",
+                  "status": "completed",
+                  "message": "شواهد بازیابی برای بررسی پاسخ آماده‌اند.",
+                  "duration_ms": 24096.32,
+                  "data": {
+                    "query": "برای همان تاریخ و نفرات، قیمت دو شب الماس۲ اقامت۲۴ اتاق29948 پلن1107 و ارمغان اقامت۲۴ اتاق282 پلن184 و مقدار صرفه‌جویی انتخاب ارمغان را تومان حساب کن؛ ساعت ورود هر دو را از راهنما بگو.\nساعت ورود هتل الماس ۲ مشهد و هتل آپارتمان ارمغان مشهد را از راهنمای اقامت۲۴ اعلام کن.",
+                    "mode": "hybrid",
+                    "filters": {},
+                    "count": 6,
+                    "chunks": [
+                      {
+                        "source_id": "S1",
+                        "chunk_id": "0e221b4b502344061f301e2ff062fe23a61764c5236eed71a19ed1b16610bcef",
+                        "document_id": "STAY-2026-V1",
+                        "page": 3,
+                        "section": "STAY-02",
+                        "score": 0.032266458495966696
+                      },
+                      {
+                        "source_id": "S2",
+                        "chunk_id": "98b3be7b31a61e82985a49d33831cdde88c71cec5be54382ed64d093595f94a6",
+                        "document_id": "STAY-2026-V1",
+                        "page": 1,
+                        "section": "STAY-01",
+                        "score": 0.031754032258064516
+                      },
+                      {
+                        "source_id": "S3",
+                        "chunk_id": "dc11e0350c610d76a35c476e4ec6ecfdc7339e3b4ac0ef9c4822ad1434a98b23",
+                        "document_id": "STAY-2026-V1",
+                        "page": 4,
+                        "section": "STAY-03",
+                        "score": 0.031009615384615385
+                      },
+                      {
+                        "source_id": "S4",
+                        "chunk_id": "9a569c6d1629b07ff20da4824877ef1a07b3ba91bea953b76bd37a0f8197cb4d",
+                        "document_id": "STAY-2026-V1",
+                        "page": 2,
+                        "section": "STAY-01",
+                        "score": 0.029418126757516764
+                      },
+                      {
+                        "source_id": "S5",
+                        "chunk_id": "95db296d049681a709ac586ab075941f23a10fa0d8f19c9aba618d4a1518e7c6",
+                        "document_id": "MASHHAD-2026-V1",
+                        "page": 5,
+                        "section": "MASH-04",
+                        "score": 0.02651914295749912
+                      },
+                      {
+                        "source_id": "S6",
+                        "chunk_id": "b4a6793b905b524e6c35c12393f8645fef16dbae5c88deb03a73a8d7345443e0",
+                        "document_id": "MASHHAD-2026-V1",
+                        "page": 4,
+                        "section": "MASH-03",
+                        "score": 0.013888888888888888
+                      }
+                    ]
+                  }
+                },
+                {
+                  "step": "synthesis",
+                  "status": "started",
+                  "message": "پاسخ با شواهد و ابزار محاسبه در صورت نیاز ساخته می‌شود.",
+                  "duration_ms": 0,
+                  "data": {}
+                },
+                {
+                  "step": "calculator",
+                  "status": "completed",
+                  "message": "ابزار محاسبه واقعی اجرا شد.",
+                  "duration_ms": 0.36,
+                  "data": {
+                    "tool_call_id": "call_sQmmMLxBFHpdJ1WxyK07Gclo",
+                    "expression": "104500000+104500000",
+                    "value": "209000000",
+                    "unit": "ریال",
+                    "precision": 0
+                  }
+                },
+                {
+                  "step": "calculator",
+                  "status": "completed",
+                  "message": "ابزار محاسبه واقعی اجرا شد.",
+                  "duration_ms": 0.09,
+                  "data": {
+                    "tool_call_id": "call_6CmEzJdcavcR3jNIhQadoYcW",
+                    "expression": "10800000+10800000",
+                    "value": "21600000",
+                    "unit": "ریال",
+                    "precision": 0
+                  }
+                },
+                {
+                  "step": "calculator",
+                  "status": "completed",
+                  "message": "ابزار محاسبه واقعی اجرا شد.",
+                  "duration_ms": 0.22,
+                  "data": {
+                    "tool_call_id": "call_VmFEbfLUAxkIIqZWDSjX3Q1R",
+                    "expression": "(104500000+104500000-10800000-10800000)/10",
+                    "value": "18740000.00",
+                    "unit": "تومان",
+                    "precision": 2
+                  }
+                },
+                {
+                  "step": "synthesis",
+                  "status": "completed",
+                  "message": "پاسخ نهایی و ارجاع‌ها بررسی شدند.",
+                  "duration_ms": 65320.89,
+                  "data": {
+                    "status": "answered",
+                    "source_ids": [
+                      "S1",
+                      "S2"
+                    ],
+                    "calculator_calls": 3
+                  }
+                },
+                {
+                  "step": "workflow",
+                  "status": "completed",
+                  "message": "پردازش درخواست پایان یافت.",
+                  "duration_ms": 0,
+                  "data": {
+                    "status": "answered",
+                    "route": "combined"
+                  }
+                }
+              ],
+              "metrics": {
+                "duration_ms": 119495.2,
+                "llm_calls": 3,
+                "prompt_tokens": 19557,
+                "completion_tokens": 971,
+                "responses_with_usage": 3,
+                "as_of": "2026-10-27",
+                "retrieval": {
+                  "mode": "hybrid",
+                  "filters": {},
+                  "candidates": 23,
+                  "returned": 6,
+                  "reranked": false,
+                  "reranker": null,
+                  "context_scope": "physical_page",
+                  "fusion": "RRF(k=60)",
+                  "duration_ms": 24095.99,
+                  "dense_ms": 24094.17,
+                  "lexical_ms": 1.57
+                }
+              }
+            },
+            "duration_ms": 119502.35
+          }
+        ],
+        "duration_ms": 209648.1
+      },
+      {
+        "case_id": "INS-04",
+        "state": "passed",
+        "question_fa": "الماس۲ اقامت۲۴ ملک1242، فقط اتاق29948 پلن1107 برای دو بزرگسال و یک اتاق از 2026-12-20 تا 2026-12-24: جمع تمام چهار شب را تومان بده؛ اتاق یا تاریخ را عوض نکن و شب غایب را از شب دیگر کپی نکن.",
+        "actual": {
+          "request_id": "786ba4b4-4565-4508-809f-9ecfd2674fc7",
+          "status": "insufficient_evidence",
+          "answer": "نقل‌قول کامل با این شواهد قابل تأیید نیست: شب‌های کامل و یکتای همان اتاق/پلن موجود نیست: 2026-12-22, 2026-12-23",
+          "route": "combined",
+          "sources": [],
+          "sql_results": [
+            {
+              "sql": "SELECT s.record_id, s.property_id, s.room_id, s.rate_plan_id, s.service_date, s.amount_irr, s.price_basis, s.availability, s.occupancy, s.inventory, s.closed, s.min_stay, s.max_stay, s.close_to_arrival, s.close_to_departure, s.board_type, s.cancelable FROM stay_rates s JOIN properties p ON s.property_id = p.record_id JOIN records r ON p.record_id = r.id WHERE r.source = 'eghamat24' AND r.source_id = '1242' AND s.room_id = '29948' AND s.rate_plan_id = '1107' AND s.service_date >= '2026-12-20' AND s.service_date < '2026-12-24' AND s.availability = 'available' AND s.closed = 0;",
+              "columns": [
+                "record_id",
+                "property_id",
+                "room_id",
+                "rate_plan_id",
+                "service_date",
+                "amount_irr",
+                "price_basis",
+                "availability",
+                "occupancy",
+                "inventory",
+                "closed",
+                "min_stay",
+                "max_stay",
+                "close_to_arrival",
+                "close_to_departure",
+                "board_type",
+                "cancelable"
+              ],
+              "rows": [
+                [
+                  "ce0bd54b0c06d135f63f85e9",
+                  "8cb037325c5662bce8b4b605",
+                  "29948",
+                  "1107",
+                  "2026-12-20",
+                  87400000,
+                  "per_room_per_night",
+                  "available",
+                  2,
+                  7,
+                  0,
+                  null,
+                  null,
+                  0,
+                  0,
+                  "bed_and_breakfast",
+                  1
+                ],
+                [
+                  "aa8ad95d844337d4ae542c1d",
+                  "8cb037325c5662bce8b4b605",
+                  "29948",
+                  "1107",
+                  "2026-12-21",
+                  87400000,
+                  "per_room_per_night",
+                  "available",
+                  2,
+                  7,
+                  0,
+                  null,
+                  null,
+                  0,
+                  0,
+                  "bed_and_breakfast",
+                  1
+                ]
+              ],
+              "row_count": 2,
+              "truncated": false,
+              "duration_ms": 8.247,
+              "record_sources": [
+                {
+                  "id": "8cb037325c5662bce8b4b605",
+                  "source": "eghamat24",
+                  "source_id": "1242",
+                  "name_fa": "هتل الماس 2 مشهد",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/MashhadHotels/Almas_2Hotel.html",
+                  "observed_at": "2026-10-18T09:48:50+00:00"
+                },
+                {
+                  "id": "aa8ad95d844337d4ae542c1d",
+                  "source": "eghamat24",
+                  "source_id": "1242:29948:1107:2026-12-21",
+                  "name_fa": "هتل الماس 2 مشهد — اتاق دوتخته دبل فیروزه اکونومی",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/properties/1242/v2/rooms-rates?from_date=2026-12-21&to_date=2026-12-24&no_special_user=true",
+                  "observed_at": "2026-10-18T09:51:31+00:00"
+                },
+                {
+                  "id": "ce0bd54b0c06d135f63f85e9",
+                  "source": "eghamat24",
+                  "source_id": "1242:29948:1107:2026-12-20",
+                  "name_fa": "هتل الماس 2 مشهد — اتاق دوتخته دبل فیروزه اکونومی",
+                  "city_fa": "مشهد",
+                  "source_url": "https://www.eghamat24.com/properties/1242/v2/rooms-rates?from_date=2026-12-17&to_date=2026-12-20&no_special_user=true",
+                  "observed_at": "2026-10-18T09:51:29+00:00"
+                }
+              ]
+            }
+          ],
+          "calculations": [],
+          "conversation_state": {
+            "destination": "مشهد",
+            "checkin": "2026-12-20",
+            "checkout": "2026-12-24",
+            "adults": 2,
+            "rooms": 1,
+            "property_id": "8cb037325c5662bce8b4b605",
+            "room_id": "29948",
+            "rate_plan_id": "1107",
+            "selected_transport_ids": [],
+            "selected_stay_ids": []
+          },
+          "quote_evidence": {
+            "stay": {
+              "blocked": true,
+              "groups": [
+                {
+                  "property_id": "8cb037325c5662bce8b4b605",
+                  "room_id": "29948",
+                  "rate_plan_id": "1107",
+                  "nights": 4,
+                  "rooms": 1,
+                  "complete_observed": false,
+                  "reasons": [
+                    "شب‌های کامل و یکتای همان اتاق/پلن موجود نیست: 2026-12-22, 2026-12-23"
+                  ],
+                  "unknown_restrictions": [
+                    "checkout_day_restrictions",
+                    "max_stay",
+                    "min_stay"
+                  ],
+                  "nightly_amounts_irr": [
+                    87400000,
+                    87400000
+                  ]
+                }
+              ],
+              "reasons": [
+                "شب‌های کامل و یکتای همان اتاق/پلن موجود نیست: 2026-12-22, 2026-12-23"
+              ]
+            }
+          },
+          "snapshot": {
+            "captured_on": "2026-10-18",
+            "as_of": "2026-10-27",
+            "requires_revalidation": true,
+            "live_availability_confirmed": false
+          },
+          "trace": [
+            {
+              "step": "coordinator",
+              "status": "started",
+              "message": "انتخاب مسیر و آماده‌سازی پرس‌وجو آغاز شد.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "entity_linker",
+              "status": "completed",
+              "message": "شناسه و نام کاندیدها از کاتالوگ واقعی بررسی شد.",
+              "duration_ms": 0,
+              "data": {
+                "entities": [
+                  {
+                    "id": "8cb037325c5662bce8b4b605",
+                    "source": "eghamat24",
+                    "source_id": "1242",
+                    "name_fa": "هتل الماس 2 مشهد",
+                    "city_fa": "مشهد"
+                  }
+                ]
+              }
+            },
+            {
+              "step": "coordinator",
+              "status": "completed",
+              "message": "مسیر درخواست مشخص شد.",
+              "duration_ms": 29198.17,
+              "data": {
+                "route": "combined",
+                "needs_documents": false,
+                "requires_calculator": true,
+                "sql_generated": true,
+                "conversation_state": {
+                  "destination": "مشهد",
+                  "checkin": "2026-12-20",
+                  "checkout": "2026-12-24",
+                  "adults": 2,
+                  "rooms": 1,
+                  "property_id": "8cb037325c5662bce8b4b605",
+                  "room_id": "29948",
+                  "rate_plan_id": "1107",
+                  "selected_transport_ids": [],
+                  "selected_stay_ids": []
+                }
+              }
+            },
+            {
+              "step": "database_specialist",
+              "status": "started",
+              "message": "اعتبارسنجی و اجرای خواندنی SQL آغاز شد.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "database_specialist",
+              "status": "completed",
+              "message": "SQL اعتبارسنجی و اجرا شد.",
+              "duration_ms": 11.51,
+              "data": {
+                "sql": "SELECT s.record_id, s.property_id, s.room_id, s.rate_plan_id, s.service_date, s.amount_irr, s.price_basis, s.availability, s.occupancy, s.inventory, s.closed, s.min_stay, s.max_stay, s.close_to_arrival, s.close_to_departure, s.board_type, s.cancelable FROM stay_rates s JOIN properties p ON s.property_id = p.record_id JOIN records r ON p.record_id = r.id WHERE r.source = 'eghamat24' AND r.source_id = '1242' AND s.room_id = '29948' AND s.rate_plan_id = '1107' AND s.service_date >= '2026-12-20' AND s.service_date < '2026-12-24' AND s.availability = 'available' AND s.closed = 0;",
+                "row_count": 2,
+                "truncated": false,
+                "repair_used": false,
+                "query_index": 1,
+                "query_count": 1
+              }
+            },
+            {
+              "step": "synthesis",
+              "status": "started",
+              "message": "پاسخ با شواهد و ابزار محاسبه در صورت نیاز ساخته می‌شود.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "synthesis",
+              "status": "completed",
+              "message": "پاسخ نهایی و ارجاع‌ها بررسی شدند.",
+              "duration_ms": 32033.06,
+              "data": {
+                "status": "insufficient_evidence",
+                "source_ids": [],
+                "calculator_calls": 0
+              }
+            },
+            {
+              "step": "workflow",
+              "status": "completed",
+              "message": "پردازش درخواست پایان یافت.",
+              "duration_ms": 0,
+              "data": {
+                "status": "insufficient_evidence",
+                "route": "combined"
+              }
+            }
+          ],
+          "metrics": {
+            "duration_ms": 61249.06,
+            "llm_calls": 2,
+            "prompt_tokens": 6744,
+            "completion_tokens": 636,
+            "responses_with_usage": 2,
+            "as_of": "2026-10-27",
+            "retrieval": {}
+          }
+        },
+        "assessment": {
+          "automatic_pass": true,
+          "checks": [
+            {
+              "criterion": "route",
+              "passed": true,
+              "expected": "combined",
+              "actual": "combined"
+            },
+            {
+              "criterion": "outcome",
+              "passed": true,
+              "expected": [
+                "insufficient_evidence"
+              ],
+              "actual": "insufficient_evidence"
+            },
+            {
+              "criterion": "tool:sql_query",
+              "passed": true
+            },
+            {
+              "criterion": "inline_sources_resolve",
+              "passed": true,
+              "actual": []
+            },
+            {
+              "criterion": "operational_tables_queried",
+              "passed": true,
+              "expected": [
+                "stay_rates"
+              ],
+              "actual": [
+                "properties",
+                "records",
+                "stay_rates"
+              ],
+              "accepted_equivalences": []
+            },
+            {
+              "criterion": "no_invented_calculation",
+              "passed": true
+            },
+            {
+              "criterion": "missing_nights_block_quote",
+              "passed": true
+            },
+            {
+              "criterion": "known_night:2026-12-20",
+              "passed": true
+            },
+            {
+              "criterion": "known_night:2026-12-21",
+              "passed": true
+            },
+            {
+              "criterion": "snapshot_not_live_booking",
+              "passed": true
+            }
+          ],
+          "semantic_review_required": true,
+          "semantic_review_notes": [
+            "Confirm missing dates are named and neither another room/plan nor repeated known-night prices fill them.",
+            "Check the answer labels observed prices as stale snapshot evidence, preserves IRR/Toman and price basis, and never promises a booking."
+          ],
+          "scope": "observable route/tools, citations, slots, row/numeric equivalence and literal operands; not full semantic fidelity or live availability"
+        },
+        "duration_ms": 61258.4
+      }
+    ]
+  },
+  "offline": {
+    "planned": 0,
+    "results": []
+  },
+  "retrieval": {
+    "planned": 1,
+    "results": []
+  },
+  "summary": {
+    "live": {
+      "planned": 3,
+      "executed": 3,
+      "passed": 1,
+      "failed": 2,
+      "not_run": 0
+    },
+    "offline": {
+      "planned": 0,
+      "executed": 0,
+      "passed": 0,
+      "failed": 0,
+      "not_run": 0
+    },
+    "retrieval": {
+      "planned": 1,
+      "executed": 0,
+      "passed": 0,
+      "failed": 0,
+      "not_run": 1
+    }
+  },
+  "finished_at": "2026-10-27T19:02:52.956519+00:00"
+}

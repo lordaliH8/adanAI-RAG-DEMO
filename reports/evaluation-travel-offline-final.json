@@ -1,0 +1,270 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-10-27T19:13:32.363832+00:00",
+  "as_of": "2026-10-27",
+  "mode": "offline",
+  "base_url": "http://localhost:8000",
+  "selected_case_ids": null,
+  "cases_sha256": "cfa16d17d4c1ac1d031ff2944cc057c5411e61991a70ae3b7b48ef0a7238c5bc",
+  "notes": [
+    "Expected answers and oracle files are never supplied to application requests.",
+    "Each selected live case is attempted once; transport/model retries inside the app remain bounded.",
+    "Automatic pass covers stated mechanical/numeric checks, not full semantic answer quality.",
+    "Retrieval uses the same question for every mode; without explicit filters, context-dependent followups may lack their preceding travel slots.",
+    "Guard/failure executions are offline injections, never presented as live model behavior."
+  ],
+  "live": {
+    "planned": 26,
+    "results": []
+  },
+  "offline": {
+    "planned": 4,
+    "results": [
+      {
+        "case_id": "SAFE-01",
+        "state": "passed",
+        "execution": "actual SQLService validation boundary; no model refusal involved",
+        "subcases": [
+          {
+            "malicious_sql": "DELETE FROM stay_rates",
+            "expected_guard_code": "write_operation",
+            "accepted_equivalent_codes": [
+              "unsafe_query",
+              "write_operation"
+            ],
+            "actual_guard_rejection": {
+              "code": "unsafe_query",
+              "message": "فقط پرس‌وجوی SELECT خواندنی مجاز است."
+            },
+            "database_unchanged": true,
+            "state": "passed"
+          },
+          {
+            "malicious_sql": "SELECT COUNT(*) FROM properties; DROP TABLE properties",
+            "expected_guard_code": "multiple_statements",
+            "accepted_equivalent_codes": [
+              "multiple_statements"
+            ],
+            "actual_guard_rejection": {
+              "code": "multiple_statements",
+              "message": "فقط یک پرس‌وجوی خواندنی مجاز است."
+            },
+            "database_unchanged": true,
+            "state": "passed"
+          }
+        ],
+        "database_unchanged": true,
+        "duration_ms": 134.95
+      },
+      {
+        "case_id": "SAFE-02",
+        "state": "passed",
+        "execution": "actual SQLService validation boundary; no model refusal involved",
+        "subcases": [
+          {
+            "malicious_sql": "ATTACH DATABASE '/tmp/travel-escape.sqlite' AS other",
+            "expected_guard_code": "attach_database",
+            "accepted_equivalent_codes": [
+              "attach_database",
+              "unsafe_query"
+            ],
+            "actual_guard_rejection": {
+              "code": "unsafe_query",
+              "message": "فقط پرس‌وجوی SELECT خواندنی مجاز است."
+            },
+            "database_unchanged": true,
+            "state": "passed"
+          },
+          {
+            "malicious_sql": "SELECT load_extension('/tmp/untrusted.so')",
+            "expected_guard_code": "disallowed_function",
+            "accepted_equivalent_codes": [
+              "disallowed_function"
+            ],
+            "actual_guard_rejection": {
+              "code": "disallowed_function",
+              "message": "تابع درخواستی در فهرست توابع مجاز نیست."
+            },
+            "database_unchanged": true,
+            "state": "passed"
+          }
+        ],
+        "database_unchanged": true,
+        "duration_ms": 126.95
+      },
+      {
+        "case_id": "FAULT-01",
+        "state": "passed",
+        "execution": "actual adapter + workflow with injected model transport; no provider network",
+        "attempts": 3,
+        "bounded_attempts_passed": true,
+        "sql_execution_count": 0,
+        "secrets_exposed": false,
+        "actual": {
+          "request_id": "6cbf60ac-759f-4328-aafc-bffeaf1339ef",
+          "status": "error",
+          "answer": "محدودیت سرعت ارائه‌دهنده فعلاً اجازه پاسخ نمی‌دهد. کمی بعد دوباره تلاش کنید.",
+          "route": "clarification",
+          "sources": [],
+          "sql_results": [],
+          "calculations": [],
+          "conversation_state": {},
+          "quote_evidence": {},
+          "snapshot": {
+            "captured_on": "2026-10-18",
+            "as_of": "2026-10-27",
+            "requires_revalidation": true,
+            "live_availability_confirmed": false
+          },
+          "trace": [
+            {
+              "step": "coordinator",
+              "status": "started",
+              "message": "انتخاب مسیر و آماده‌سازی پرس‌وجو آغاز شد.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "llm",
+              "status": "retry",
+              "message": "محدودیت سرعت ارائه‌دهنده فعلاً اجازه پاسخ نمی‌دهد. کمی بعد دوباره تلاش کنید.",
+              "duration_ms": 0,
+              "data": {
+                "attempt": 1,
+                "delay_seconds": 0,
+                "code": "provider_rate_limited"
+              }
+            },
+            {
+              "step": "llm",
+              "status": "retry",
+              "message": "محدودیت سرعت ارائه‌دهنده فعلاً اجازه پاسخ نمی‌دهد. کمی بعد دوباره تلاش کنید.",
+              "duration_ms": 0,
+              "data": {
+                "attempt": 2,
+                "delay_seconds": 0,
+                "code": "provider_rate_limited"
+              }
+            },
+            {
+              "step": "workflow",
+              "status": "error",
+              "message": "محدودیت سرعت ارائه‌دهنده فعلاً اجازه پاسخ نمی‌دهد. کمی بعد دوباره تلاش کنید.",
+              "duration_ms": 0,
+              "data": {
+                "code": "provider_rate_limited"
+              }
+            }
+          ],
+          "metrics": {
+            "duration_ms": 5.39,
+            "llm_calls": 1,
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "responses_with_usage": 0,
+            "as_of": "2026-10-27",
+            "retrieval": {}
+          },
+          "error": {
+            "code": "provider_rate_limited",
+            "message": "محدودیت سرعت ارائه‌دهنده فعلاً اجازه پاسخ نمی‌دهد. کمی بعد دوباره تلاش کنید."
+          }
+        },
+        "duration_ms": 70.84
+      },
+      {
+        "case_id": "FAULT-02",
+        "state": "passed",
+        "execution": "actual adapter + workflow with injected model transport; no provider network",
+        "attempts": 2,
+        "bounded_attempts_passed": true,
+        "sql_execution_count": 0,
+        "secrets_exposed": false,
+        "actual": {
+          "request_id": "7b3358e8-1768-47cc-8e32-53bc1511eb2e",
+          "status": "error",
+          "answer": "پاسخ ساخت‌یافته مدل پس از بررسی معتبر نبود؛ پرس‌وجویی از این پاسخ اجرا نشد.",
+          "route": "clarification",
+          "sources": [],
+          "sql_results": [],
+          "calculations": [],
+          "conversation_state": {},
+          "quote_evidence": {},
+          "snapshot": {
+            "captured_on": "2026-10-18",
+            "as_of": "2026-10-27",
+            "requires_revalidation": true,
+            "live_availability_confirmed": false
+          },
+          "trace": [
+            {
+              "step": "coordinator",
+              "status": "started",
+              "message": "انتخاب مسیر و آماده‌سازی پرس‌وجو آغاز شد.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "model_output",
+              "status": "repair",
+              "message": "یک تلاش محدود برای اصلاح قالب پاسخ انجام می‌شود.",
+              "duration_ms": 0,
+              "data": {}
+            },
+            {
+              "step": "workflow",
+              "status": "error",
+              "message": "پاسخ ساخت‌یافته مدل پس از بررسی معتبر نبود؛ پرس‌وجویی از این پاسخ اجرا نشد.",
+              "duration_ms": 0,
+              "data": {
+                "code": "invalid_model_output"
+              }
+            }
+          ],
+          "metrics": {
+            "duration_ms": 4.49,
+            "llm_calls": 2,
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "responses_with_usage": 0,
+            "as_of": "2026-10-27",
+            "retrieval": {}
+          },
+          "error": {
+            "code": "invalid_model_output",
+            "message": "پاسخ ساخت‌یافته مدل پس از بررسی معتبر نبود؛ پرس‌وجویی از این پاسخ اجرا نشد."
+          }
+        },
+        "duration_ms": 19.69
+      }
+    ]
+  },
+  "retrieval": {
+    "planned": 12,
+    "results": []
+  },
+  "summary": {
+    "live": {
+      "planned": 26,
+      "executed": 0,
+      "passed": 0,
+      "failed": 0,
+      "not_run": 26
+    },
+    "offline": {
+      "planned": 4,
+      "executed": 4,
+      "passed": 4,
+      "failed": 0,
+      "not_run": 0
+    },
+    "retrieval": {
+      "planned": 12,
+      "executed": 0,
+      "passed": 0,
+      "failed": 0,
+      "not_run": 12
+    }
+  },
+  "finished_at": "2026-10-27T19:13:33.626046+00:00"
+}

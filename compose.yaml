@@ -1,0 +1,60 @@
+name: hamsafar-demo
+
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.20.0
+    volumes:
+      - travel_qdrant:/qdrant/storage
+
+  api:
+    image: hamsafar-demo:local
+    build:
+      context: .
+    command:
+      - sh
+      - -c
+      - python -m app.bootstrap && exec uvicorn app.main:app --host 0.0.0.0 --port 8000
+    env_file:
+      - .env
+    environment:
+      DATA_DIR: /app/data
+      STATE_DIR: /app/var
+      QDRANT_URL: http://qdrant:6333
+      PDFTOTEXT_BIN: pdftotext
+    volumes:
+      - travel_state:/app/var
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      qdrant:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 120s
+
+  ui:
+    image: hamsafar-demo:local
+    build:
+      context: .
+    command: ["streamlit", "run", "ui/app.py", "--server.address=0.0.0.0", "--server.port=8501", "--browser.gatherUsageStats=false"]
+    environment:
+      BACKEND_URL: http://api:8000
+      BACKEND_PUBLIC_URL: http://localhost:8000
+      STREAMLIT_BROWSER_GATHER_USAGE_STATS: "false"
+    ports:
+      - "127.0.0.1:8501:8501"
+    depends_on:
+      api:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/_stcore/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  travel_state:
+  travel_qdrant:
