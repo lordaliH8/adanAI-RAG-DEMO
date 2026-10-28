@@ -651,6 +651,13 @@ class WorkflowService:
                         plan.requires_calculator = True
                     if plan.data_purpose == "recommendation" and has_money and plan.trip_context.origin and plan.trip_context.destination and plan.trip_context.departure_date and "transport_offers" in tables:
                         plan.requires_exact_transport = True
+                    for comparison in tree.find_all(exp.EQ, exp.GT, exp.GTE, exp.LT, exp.LTE):
+                        left, right = comparison.this, comparison.expression
+                        if isinstance(right, exp.Column):
+                            left, right = right, left
+                        if isinstance(left, exp.Column) and left.name in {"departure_at", "arrival_at"} and isinstance(right, exp.Literal) \
+                                and re.fullmatch(r"\d{1,2}:\d{2}(?::\d{2})?", str(right.this)):
+                            raise ProviderError("incomplete_travel_evidence", "زمان حرکت و رسیدن رشته کامل تاریخ و ساعت محلی با offset است؛ مقایسه مستقیم آن با ساعت تنها، نتیجه نادرست می‌دهد. بخش ساعت محلی را با substr(column,12,5) استخراج و با ساعت بیست‌وچهارساعته مقایسه کن؛ تابع time روی offset ممکن است ساعت را به UTC تبدیل کند. روز سفر و سایر شرایط کاربر را حفظ کن.")
                     if plan.requires_complete_stay and isinstance(tree, exp.Select) and tree.args.get("group") is not None \
                             and any(table.name.lower() == "stay_rates" for table in tree.find_all(exp.Table)):
                         raise ProviderError("incomplete_travel_evidence", "نقل‌قول اقامت به ردیف واقعی تک‌تک شب‌ها نیاز دارد؛ GROUP BY در خروجی نهایی، شب‌ها و محدودیت‌هایشان را فشرده می‌کند. می‌توان گروه‌های واجد شرایط را در زیرپرس‌وجو یا CTE پیدا کرد، اما خروجی نهایی باید به ردیف‌های اصلی نرخ همان گروه‌ها متصل شود و همه ستون‌های هر شب را برگرداند. قیمت هر شب را از یک ردیف نماینده تکرار نکن.")
@@ -679,6 +686,9 @@ class WorkflowService:
                     tables = {table.name.lower() for table in tree.find_all(exp.Table)}
                     relevant_stay = plan.requires_complete_stay and "stay_rates" in tables
                     relevant_transport = plan.requires_exact_transport and "transport_offers" in tables
+                    if relevant_transport and not rows and attempt == 0:
+                        result["evidence_warning"] = "Empty transport result requires one date/time and schema review"
+                        raise ProviderError("incomplete_travel_evidence", "پرس‌وجوی حرکت صفر ردیف داد؛ پیش از اعلام نبود شاهد، یک بار شرط روز، مسیر، ظرفیت و ساعت را بررسی کن. departure_at تاریخ و ساعت محلی کامل با offset است؛ ساعت محلی با substr(departure_at,12,5) خوانده می‌شود و مقایسه مستقیم timestamp با ساعت تنها یا تبدیل ناخواسته به UTC معتبر نیست. محدودیت واقعی کاربر را حذف یا عوض نکن و تمام ستون‌های حرکت را نگه دار. اگر اصلاح هم خالی بود، محدودیت داده را صادقانه توضیح بده.")
                     if relevant_stay and not rows and attempt == 0:
                         result["evidence_warning"] = "Empty stay result requires one schema-link review before absence is accepted"
                         raise ProviderError("incomplete_travel_evidence", "پاسخ صفرردیفی به‌تنهایی نبود نرخ را ثابت نمی‌کند؛ پیوند والد را بررسی کن: sr.property_id به properties.record_id و سپس records.id وصل می‌شود، ولی sr.record_id به رکورد offer همان نرخ وصل است، نه رکورد property هتل. شناسه اصلی سایت متعلق به رکورد والد property است. تاریخ، room_id و rate_plan_id را حفظ کن و اگر trip_context.property_id معلوم است از همان هش معتبر ملک استفاده کن. برای حفظ شواهد همه ستون‌های نرخ را با SELECT sr.* برگردان. فقط همین یک اصلاح مجاز است؛ اگر پرس‌وجوی اصلاح‌شده هم خالی بود، نبود شاهد را صادقانه اعلام کن.")

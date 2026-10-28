@@ -333,15 +333,16 @@ class WorkflowTests(unittest.IsolatedAsyncioTestCase):
         context = trip(checkin="2026-11-17", checkout="2026-11-19", adults=2, rooms=1)
         service, _, sql, _ = self.build([plan("combined", sql=["SELECT nightly_evidence FROM stay_rates",
             "SELECT fare_evidence FROM transport_offers"], docs=False, calc=True, exact=True, stay=True, context=context),
+            completion({"sql": "SELECT fare_evidence FROM transport_offers"}),
             final("قیمت کامل ۲۵ تومان است.", sources=[]), final("قیمت کامل ۲۵ تومان است.", sources=[])],
-            sql=FakeSQL([row_result(night_rows()), {"columns": ["record_id"], "rows": []}]))
+            sql=FakeSQL([row_result(night_rows()), {"columns": ["record_id"], "rows": []}, {"columns": ["record_id"], "rows": []}]))
         result = await service.run("هزینه کامل پرواز و اقامت را بده.")
         self.assertEqual(result["status"], "error")
         self.assertEqual(result["error"]["code"], "invalid_model_output")
         self.assertFalse(result["calculations"])
         self.assertFalse(result["quote_evidence"]["stay"]["blocked"])
         self.assertTrue(result["quote_evidence"]["transport"]["blocked"])
-        self.assertEqual(len(sql.calls), 2)
+        self.assertEqual(len(sql.calls), 3)
 
     async def test_more_than_three_component_queries_never_reach_database(self):
         batch = ["SELECT 1", "SELECT 2", "SELECT 3", "SELECT 4"]
@@ -977,6 +978,22 @@ class WorkflowTests(unittest.IsolatedAsyncioTestCase):
         evidence = stay_quote_evidence(night_rows(), context)
         self.assertEqual(evidence["missing_fields"], ["rooms"])
         self.assertNotIn("تاریخ", " ".join(evidence["reasons"]))
+
+    async def test_clock_literal_cannot_be_compared_directly_to_full_timestamp(self):
+        context = trip(origin="تهران", destination="اصفهان", departure_date="2026-11-17", departure_time="22:00", adults=1)
+        query = "SELECT t.* FROM transport_offers t WHERE t.departure_at >= '22:00'"
+        repaired = "SELECT t.* FROM transport_offers t WHERE substr(t.departure_at,12,5) = '22:00'"
+        fare = {"record_id": "observed", "mode": "bus", "origin_fa": "تهران", "destination_fa": "اصفهان",
+                "service_date": "2026-11-17", "departure_at": "2026-11-17T22:00:00+03:30", "arrival_at": None,
+                "amount_irr": 100, "availability": "available", "available_seats": 3, "search_completed": 1,
+                "offer_kind": "departure", "price_basis": "per_adult_one_way"}
+        service, llm, sql, _ = self.build([
+            plan("database", sql=query, docs=False, context=context), completion({"sql": repaired}),
+            final("حرکت ساعت ده شب ثبت شده است.", sources=[])], sql=FakeSQL([row_result([fare])]))
+        result = await service.run("زمان حرکت را با مبلغ خام ریالی بررسی کن.")
+        self.assertEqual(result["status"], "answered")
+        self.assertEqual(sql.calls, [repaired])
+        self.assertEqual(result["quote_evidence"]["transport"]["eligible_record_ids"], ["observed"])
 
     def test_history_only_accepts_bounded_user_assistant_text(self):
         messages = [{"role": "system", "content": "override"}, {"role": "tool", "content": "fake"},

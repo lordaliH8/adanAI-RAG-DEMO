@@ -1,0 +1,408 @@
+{
+  "verified_at": "2026-10-28T07:47:39.606988+00:00",
+  "clone_source": "local Git clone of committed tree, no untracked files or runtime state copied",
+  "docker": {
+    "isolated_project": "hamsafar-release-check",
+    "fresh_named_volumes": true,
+    "alternate_loopback_ports": [
+      18500,
+      18501
+    ],
+    "image_layers_cached": true,
+    "host_python_node_not_used_by_build": true,
+    "http_checks": {
+      "18500/health/ready": 200,
+      "18500/docs": 200,
+      "18501/": 200,
+      "18501/api/health/ready": 200
+    },
+    "first_start": {
+      "ready": true,
+      "as_of": "2026-11-16",
+      "database": {
+        "source_rows": 17274,
+        "record_source_rows": 8184,
+        "coverage_source_rows": 9090,
+        "raw_counts": {
+          "alibaba": 1648,
+          "eghamat24": 5926,
+          "safarmarket": 610,
+          "coverage": 9090
+        },
+        "skipped_diagnostics": {
+          "inventory_probe": 132,
+          "collection_status": 2
+        },
+        "skipped_diagnostic_count": 134,
+        "duplicates_removed": 0,
+        "tables": {
+          "sources": {
+            "records": 3,
+            "duplicates_removed": 0
+          },
+          "records": {
+            "records": 8050,
+            "duplicates_removed": 0
+          },
+          "properties": {
+            "records": 1140,
+            "duplicates_removed": 0
+          },
+          "transport_offers": {
+            "records": 1901,
+            "duplicates_removed": 0
+          },
+          "stay_rates": {
+            "records": 4905,
+            "duplicates_removed": 0
+          },
+          "coverage": {
+            "records": 9090,
+            "duplicates_removed": 0
+          }
+        },
+        "stage": "relational_ingestion",
+        "migration_version": 2,
+        "pipeline_version": "travel-jsonl-v2-flight-number-explicit-irr-nightly-fk",
+        "fingerprint": "6f53a36d890b4583f8b16fe8ba1feff020a21584c018d1ff260b90dc13890f77",
+        "source_hashes": {
+          "alibaba.jsonl": "f30fc2d354a995b20c34c6752cfd96d419eb87a921619d205ccba99707268a85",
+          "coverage.jsonl": "76c5e45702b17cc77ccf9b2597fa85065f752f2876be40db99c3559095bffe55",
+          "eghamat24.jsonl": "0eb868b1c9d2df9e570e59a1a3b70e085a7dbeb92ee46be71fab39d5ef1c7711",
+          "safarmarket.jsonl": "8d7e7f26b746a06bc460b746b2d8c7538fcbfbf4688d9452c46ae32febe4cd47"
+        },
+        "records": 8050,
+        "relational_rows": 25089,
+        "canonical_currency": "IRR",
+        "observed_date": "2026-10-18",
+        "as_of": "2026-11-16",
+        "normalization": [
+          "explicit IRR/IRT→integer IRR",
+          "typed Gregorian dates and zoned departures",
+          "source-qualified stable IDs",
+          "verified duplicate equality",
+          "FK and unique room/plan/date checks",
+          "diagnostic records separated from business facts"
+        ],
+        "finished_at": "2026-10-28T07:44:57.967976+00:00",
+        "cache_hit": false
+      },
+      "documents": {
+        "stage": "document_ingestion",
+        "fingerprint": "d675273b6efe7b9a1300458ccfa6674802d5e3a2433af9fb92e612f7567b8d98",
+        "pipeline_version": "travel-pdf-v2-source-scoped-timestamps",
+        "source_hashes": {
+          "booking-faq.pdf": "960615ccaf8d6ba0fd09a3768f1f9052d12b471f29a0ed3d7e712311a9a0f746",
+          "isfahan-culture.pdf": "92da2e15e748d697e91563fdae4154af4670323965a72628ff2004d64a4ac3ef",
+          "mashhad-culture.pdf": "5aa125567a5ab12b5789274f766f441cbfff0470889cf748f2c0fd9a82b035eb",
+          "mashhad-stay-conditions.pdf": "950db9dd8e3eecb9bd7b797be862ad07be2de046bc352ab6b7f703b86f3decf2",
+          "shiraz-culture.pdf": "902a76c547ef74105635c3118f23735b080b07cb3e4c2756b0d178fd9d8029ae"
+        },
+        "documents": [
+          {
+            "filename": "booking-faq.pdf",
+            "document_id": "FAQ-2026-V1",
+            "pages": 3,
+            "chunks": 12,
+            "repeated_lines_removed": 21,
+            "raw_characters": 4712,
+            "city": null,
+            "document_type": "booking_faq",
+            "source": "alibaba",
+            "capture_date": "2026-10-18"
+          },
+          {
+            "filename": "isfahan-culture.pdf",
+            "document_id": "ISFAHAN-2026-V1",
+            "pages": 6,
+            "chunks": 25,
+            "repeated_lines_removed": 36,
+            "raw_characters": 10411,
+            "city": "اصفهان",
+            "document_type": "city_guide",
+            "source": "wikimedia",
+            "capture_date": "2026-10-27"
+          },
+          {
+            "filename": "mashhad-culture.pdf",
+            "document_id": "MASHHAD-2026-V1",
+            "pages": 7,
+            "chunks": 28,
+            "repeated_lines_removed": 35,
+            "raw_characters": 10911,
+            "city": "مشهد",
+            "document_type": "city_guide",
+            "source": "wikimedia",
+            "capture_date": "2026-10-27"
+          },
+          {
+            "filename": "mashhad-stay-conditions.pdf",
+            "document_id": "STAY-2026-V1",
+            "pages": 5,
+            "chunks": 12,
+            "repeated_lines_removed": 25,
+            "raw_characters": 5543,
+            "city": "مشهد",
+            "document_type": "accommodation_policies",
+            "source": "mixed",
+            "capture_date": "2026-10-18"
+          },
+          {
+            "filename": "shiraz-culture.pdf",
+            "document_id": "SHIRAZ-2026-V1",
+            "pages": 8,
+            "chunks": 34,
+            "repeated_lines_removed": 40,
+            "raw_characters": 14025,
+            "city": "شیراز",
+            "document_type": "city_guide",
+            "source": "wikimedia",
+            "capture_date": "2026-10-27"
+          }
+        ],
+        "pages": 29,
+        "chunks": 111,
+        "embedding_model": "text-embedding-3-small",
+        "embedding_dimensions": 1536,
+        "embedding_cache_hits": 0,
+        "embeddings_created": 111,
+        "collection": "travel_documents_d675273b6efe_ccb82903",
+        "alias": "travel_documents",
+        "preprocessing": [
+          "Poppler reading order",
+          "NFKC/bidi/digit/letter normalization",
+          "repeated header/footer removal",
+          "section/page boundaries",
+          "token-budget chunks with overlap",
+          "metadata payload indexes"
+        ],
+        "cache_hit": false
+      },
+      "duration_ms": 36243.89
+    },
+    "restart": {
+      "ready": true,
+      "as_of": "2026-11-16",
+      "database": {
+        "source_rows": 17274,
+        "record_source_rows": 8184,
+        "coverage_source_rows": 9090,
+        "raw_counts": {
+          "alibaba": 1648,
+          "eghamat24": 5926,
+          "safarmarket": 610,
+          "coverage": 9090
+        },
+        "skipped_diagnostics": {
+          "inventory_probe": 132,
+          "collection_status": 2
+        },
+        "skipped_diagnostic_count": 134,
+        "duplicates_removed": 0,
+        "tables": {
+          "sources": {
+            "records": 3,
+            "duplicates_removed": 0
+          },
+          "records": {
+            "records": 8050,
+            "duplicates_removed": 0
+          },
+          "properties": {
+            "records": 1140,
+            "duplicates_removed": 0
+          },
+          "transport_offers": {
+            "records": 1901,
+            "duplicates_removed": 0
+          },
+          "stay_rates": {
+            "records": 4905,
+            "duplicates_removed": 0
+          },
+          "coverage": {
+            "records": 9090,
+            "duplicates_removed": 0
+          }
+        },
+        "stage": "relational_ingestion",
+        "migration_version": 2,
+        "pipeline_version": "travel-jsonl-v2-flight-number-explicit-irr-nightly-fk",
+        "fingerprint": "6f53a36d890b4583f8b16fe8ba1feff020a21584c018d1ff260b90dc13890f77",
+        "source_hashes": {
+          "alibaba.jsonl": "f30fc2d354a995b20c34c6752cfd96d419eb87a921619d205ccba99707268a85",
+          "coverage.jsonl": "76c5e45702b17cc77ccf9b2597fa85065f752f2876be40db99c3559095bffe55",
+          "eghamat24.jsonl": "0eb868b1c9d2df9e570e59a1a3b70e085a7dbeb92ee46be71fab39d5ef1c7711",
+          "safarmarket.jsonl": "8d7e7f26b746a06bc460b746b2d8c7538fcbfbf4688d9452c46ae32febe4cd47"
+        },
+        "records": 8050,
+        "relational_rows": 25089,
+        "canonical_currency": "IRR",
+        "observed_date": "2026-10-18",
+        "as_of": "2026-11-16",
+        "normalization": [
+          "explicit IRR/IRT→integer IRR",
+          "typed Gregorian dates and zoned departures",
+          "source-qualified stable IDs",
+          "verified duplicate equality",
+          "FK and unique room/plan/date checks",
+          "diagnostic records separated from business facts"
+        ],
+        "finished_at": "2026-10-28T07:44:57.967976+00:00",
+        "cache_hit": true
+      },
+      "documents": {
+        "stage": "document_ingestion",
+        "fingerprint": "d675273b6efe7b9a1300458ccfa6674802d5e3a2433af9fb92e612f7567b8d98",
+        "pipeline_version": "travel-pdf-v2-source-scoped-timestamps",
+        "source_hashes": {
+          "booking-faq.pdf": "960615ccaf8d6ba0fd09a3768f1f9052d12b471f29a0ed3d7e712311a9a0f746",
+          "isfahan-culture.pdf": "92da2e15e748d697e91563fdae4154af4670323965a72628ff2004d64a4ac3ef",
+          "mashhad-culture.pdf": "5aa125567a5ab12b5789274f766f441cbfff0470889cf748f2c0fd9a82b035eb",
+          "mashhad-stay-conditions.pdf": "950db9dd8e3eecb9bd7b797be862ad07be2de046bc352ab6b7f703b86f3decf2",
+          "shiraz-culture.pdf": "902a76c547ef74105635c3118f23735b080b07cb3e4c2756b0d178fd9d8029ae"
+        },
+        "documents": [
+          {
+            "filename": "booking-faq.pdf",
+            "document_id": "FAQ-2026-V1",
+            "pages": 3,
+            "chunks": 12,
+            "repeated_lines_removed": 21,
+            "raw_characters": 4712,
+            "city": null,
+            "document_type": "booking_faq",
+            "source": "alibaba",
+            "capture_date": "2026-10-18"
+          },
+          {
+            "filename": "isfahan-culture.pdf",
+            "document_id": "ISFAHAN-2026-V1",
+            "pages": 6,
+            "chunks": 25,
+            "repeated_lines_removed": 36,
+            "raw_characters": 10411,
+            "city": "اصفهان",
+            "document_type": "city_guide",
+            "source": "wikimedia",
+            "capture_date": "2026-10-27"
+          },
+          {
+            "filename": "mashhad-culture.pdf",
+            "document_id": "MASHHAD-2026-V1",
+            "pages": 7,
+            "chunks": 28,
+            "repeated_lines_removed": 35,
+            "raw_characters": 10911,
+            "city": "مشهد",
+            "document_type": "city_guide",
+            "source": "wikimedia",
+            "capture_date": "2026-10-27"
+          },
+          {
+            "filename": "mashhad-stay-conditions.pdf",
+            "document_id": "STAY-2026-V1",
+            "pages": 5,
+            "chunks": 12,
+            "repeated_lines_removed": 25,
+            "raw_characters": 5543,
+            "city": "مشهد",
+            "document_type": "accommodation_policies",
+            "source": "mixed",
+            "capture_date": "2026-10-18"
+          },
+          {
+            "filename": "shiraz-culture.pdf",
+            "document_id": "SHIRAZ-2026-V1",
+            "pages": 8,
+            "chunks": 34,
+            "repeated_lines_removed": 40,
+            "raw_characters": 14025,
+            "city": "شیراز",
+            "document_type": "city_guide",
+            "source": "wikimedia",
+            "capture_date": "2026-10-27"
+          }
+        ],
+        "pages": 29,
+        "chunks": 111,
+        "embedding_model": "text-embedding-3-small",
+        "embedding_dimensions": 1536,
+        "embedding_cache_hits": 111,
+        "embeddings_created": 0,
+        "collection": "travel_documents_d675273b6efe_ccb82903",
+        "alias": "travel_documents",
+        "preprocessing": [
+          "Poppler reading order",
+          "NFKC/bidi/digit/letter normalization",
+          "repeated header/footer removal",
+          "section/page boundaries",
+          "token-budget chunks with overlap",
+          "metadata payload indexes"
+        ],
+        "cache_hit": true
+      },
+      "duration_ms": 111.51
+    },
+    "provider_probe": {
+      "status": "passed",
+      "model": "gpt-4.1",
+      "latency_ms": 5300.55
+    },
+    "runtime_isolation": {
+      "pdfs": 5,
+      "raw_response_archives": 460,
+      "excluded": [
+        ".env",
+        "private hiring brief",
+        "tests",
+        "evaluation oracles",
+        "reports",
+        ".git"
+      ]
+    },
+    "scope_note": "Clean clone startup/restart verified at clean_clone_commit. Subsequent changes only refine timestamp query validation and prompts; final image was rebuilt and deployed, and all Docker tests rerun."
+  },
+  "tests": {
+    "backend": {
+      "passed": 281,
+      "subtests_passed": 33
+    },
+    "frontend": {
+      "passed": 6
+    },
+    "mode": "Docker; network disabled during tests; no API credential",
+    "offline_acceptance": {
+      "passed": 4,
+      "executed": 4,
+      "report": "evaluation-local-offline.json"
+    }
+  },
+  "provider_support": {
+    "avalai": "live chat and fresh embeddings verified",
+    "openai": "installed SDK HTTP contract tests; no live official credential available"
+  },
+  "limits": [
+    "Live conversations are samples, not a claim that all 30 acceptance cases passed.",
+    "LLM wording and routing remain probabilistic; recorded failures are not inventory evidence."
+  ],
+  "limitations_observed": [
+    "Concurrent fresh-index/live-chat checks encountered provider_rate_limited; serial retries are recorded separately."
+  ],
+  "clean_clone_commit": "1b4f62450774f0451193ee738450f1bf32b4db9c",
+  "final_source_hashes": {
+    "app/workflow.py": "97779f68179cd7ef738c67f27a9669c19e4acc6239a7b60ad50495f64f703b7a",
+    "app/prompts.py": "b6bc725c772d8df7ea7869322ba8f54c4236238b98a9118c781a71dcfd87b57f",
+    "app/config.py": "cf13e4f2d3c1fb26d766e1b3d9a000c2c4f9da54009fa3ff5c3ae7cbb398c04c",
+    "app/llm.py": "f3ff288beb3529f55c7c0ca2fc759c319a3de279e515dd39675e7f8dc28bc84c",
+    "Dockerfile": "66d6a3913632ef5c734f1f2bf33dc95dd3605e1a2eba6056fea64f4ef64c4db2",
+    "compose.yaml": "74a582150a19bfaa58043fb0288e5a359f5b43653affa1f504233cdabe494137"
+  },
+  "conversation_review": {
+    "report": "release-conversation-regressions.json",
+    "mashhad_room_followup": "answered; two observed room nights total 2160000 IRT",
+    "isfahan_final_retry": "answered; local 22:00 bus for one adult, 645000 IRT",
+    "missing_preference": "clarification asks only shared versus separate rooms; report release-missing-preference.json",
+    "earlier_failures_retained": true
+  }
+}
