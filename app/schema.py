@@ -74,12 +74,12 @@ CREATE INDEX ix_stay_search ON stay_rates(property_id,service_date,availability,
 CREATE INDEX ix_coverage_search ON coverage(source,mode,origin_fa,destination_fa,service_date);
 """
 
-SCHEMA_CONTEXT = """پایگاه داده سفر «همسفر»، گردآوری واقعی از صفحات عمومی؛ تاریخ مرجع گفتگو 2026-10-27.
+SCHEMA_CONTEXT = """پایگاه داده سفر «همسفر»، گردآوری واقعی از صفحات عمومی؛ روز مرجع از تنظیمات گفتگو می‌آید.
 شناسه منبع دقیق: eghamat24=اقامت۲۴/اقامت بیست‌وچهار، alibaba=علی‌بابا، safarmarket=سفرمارکت.
 records.entity_type فقط چهار مقدار واقعی property، offer، route و content دارد. تمام transport_offers و stay_rates رکورد offer هستند؛ 'transport'، 'flight'، 'stay' یا 'hotel' نوع موجودیت رکورد نیستند.
 records.source و sources.id همین نام‌های انگلیسی‌اند؛ '24' یا نام فارسی مقدار ستون source نیست.
 کلید اصلی records فقط id است. ستون record_id متعلق به properties/transport_offers/stay_rates است؛ در زیرپرس‌وجوی records از r.id با alias صریح استفاده کن.
-قیمت‌ها و ظرفیت‌ها مشاهده تاریخی 2026-10-18 هستند، نه استعلام زنده یا تضمین رزرو.
+زمان ثبت قیمت و ظرفیت از records.observed_at هر رکورد خوانده می‌شود؛ این داده استعلام زنده یا تضمین رزرو نیست.
 فقط SELECT خواندنی روی جدول‌های زیر مجاز است. نام ستون‌ها انگلیسی و شهر/شرح فارسی‌اند:
 """ + "\n".join(name + "(" + ", ".join(columns) + ")" for name, columns in TABLE_COLUMNS.items()) + """
 

@@ -18,14 +18,14 @@ from app.llm import ProviderError
 from app.observability import Observability, TraceRecorder
 from app.prompts import CITATION_REPAIR, COORDINATOR, JSON_REPAIR, SQL_REPAIR, SYNTHESIS
 from app.normalization import normalize_text
+from app.calendar import canonical_date, build_calendar_context, persian_date, render_persian_answer
 
 
-MAX_CALCULATOR_CALLS = 4
-STRUCTURED_SNAPSHOT_CAPTURED_ON = "2026-10-18"
+MAX_CALCULATOR_CALLS = 8
 
 
 class TripContext(BaseModel):
-    """Explicit, model-extracted slots; unknown values are never default bookings."""
+    """وضعیت معلوم سفر که مدل از گفتگو استخراج می‌کند؛ مقدار نامعلوم به معنی رزرو یا انتخاب پیش‌فرض نیست."""
     model_config = ConfigDict(extra="forbid", strict=True)
     origin: str | None
     destination: str | None
@@ -50,19 +50,13 @@ class TripContext(BaseModel):
     def valid_date(cls, value):
         if value is None:
             return None
-        value = normalize_text(value)
-        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
-            raise ValueError("Use an explicit Gregorian ISO date")
-        parsed = date.fromisoformat(value)
-        if not 1900 <= parsed.year <= 2200:
-            raise ValueError("Calendar must be explicit")
-        return parsed.isoformat()
+        return canonical_date(normalize_text(value))
 
     @field_validator("children_ages")
     @classmethod
     def valid_ages(cls, ages):
         if ages is not None and any(not 0 <= age <= 17 for age in ages):
-            raise ValueError("Invalid child age")
+            raise ValueError("سن کودک در بازه معتبر نیست.")
         return ages
 
 
@@ -72,7 +66,7 @@ SQLBatch = Annotated[list[SQLText], Field(min_length=1, max_length=3)]
 
 class CoordinatorPlan(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
-    route: Literal["documents", "database", "combined", "clarification"]
+    route: Literal["conversation", "documents", "database", "combined", "clarification"]
     needs_documents: bool
     document_query: str | None = Field(max_length=1600)
     sql: SQLText | SQLBatch | None
@@ -82,6 +76,8 @@ class CoordinatorPlan(BaseModel):
     trip_context: TripContext
     requires_exact_transport: bool
     requires_complete_stay: bool
+    cleared_slots: list[str] = Field(default_factory=list, max_length=20)
+    conversation_reply: str | None = Field(default=None, max_length=2500)
 
 
 class Answer(BaseModel):
@@ -89,6 +85,7 @@ class Answer(BaseModel):
     status: Literal["answered", "insufficient_evidence", "clarification"]
     answer: str = Field(min_length=1, max_length=10000)
     source_ids: list[str] = Field(max_length=12)
+    option_ids: list[str] = Field(default_factory=list, max_length=20)
 
 
 class SQLRepair(BaseModel):
@@ -117,6 +114,11 @@ class WorkflowState(TypedDict, total=False):
     error: dict
     quote_evidence: dict
     quote_blocked: bool
+    calendar_context: dict
+    prior_trip_context: dict
+    prior_offered_options: list[dict]
+    offered_options: list[dict]
+    candidate_options: list[dict]
 
 
 def structured_format(name: str, model: type[BaseModel]) -> dict:
@@ -124,7 +126,24 @@ def structured_format(name: str, model: type[BaseModel]) -> dict:
     def strict_objects(node):
         if isinstance(node, dict):
             node.pop("default", None)
+            node.pop("title", None)
             if node.get("type") == "object" and "properties" in node:
+                descriptions = {"route": "مسیر انتخاب‌شده برای ادامه درخواست", "trip_context": "وضعیت معلوم و معتبر سفر",
+                    "origin": "شهر مبدأ", "destination": "شهر مقصد", "mode": "شیوه حمل‌ونقل", "departure_date": "روز رفت با تاریخ میلادی استاندارد",
+                    "return_date": "روز برگشت با تاریخ میلادی استاندارد", "checkin": "روز ورود اقامت", "checkout": "روز خروج اقامت",
+                    "adults": "تعداد بزرگسال", "rooms": "تعداد اتاق", "children_ages": "سن کودکان", "budget_amount": "مقدار بودجه اعلام‌شده",
+                    "budget_currency": "واحد بودجه", "property_id": "شناسه داخلی ملک انتخاب‌شده", "room_id": "شناسه اتاق انتخاب‌شده",
+                    "rate_plan_id": "شناسه پلن نرخ انتخاب‌شده", "selected_transport_ids": "شناسه حرکت‌های واقعاً انتخاب‌شده", "selected_stay_ids": "شناسه نرخ‌های واقعاً انتخاب‌شده",
+                    "needs_documents": "آیا شاهد سندی لازم است", "document_query": "پرسش کوتاه فارسی برای بازیابی سند", "sql": "پرس‌وجوی خواندنی تولیدشده",
+                    "requires_calculator": "آیا محاسبه ابزار لازم است", "clarification": "پرسش طبیعی برای ابهام ضروری", "reject_reason": "علت رد درخواست غیرمجاز",
+                    "requires_exact_transport": "آیا حرکت زمان‌دار واقعی لازم است", "requires_complete_stay": "آیا همه شب‌های اقامت باید بررسی شوند",
+                    "cleared_slots": "نام فیلدهایی که کاربر صریحاً خواسته پاک شوند", "conversation_reply": "پاسخ طبیعی خود مدل فقط برای گفتگوی بدون ابزار", "status": "وضعیت پاسخ", "answer": "متن طبیعی فارسی برای مسافر",
+                    "source_ids": "شناسه سندهای واقعاً پشتیبان ادعا", "option_ids": "شناسه گزینه‌های واقعاً عرضه‌شده به ترتیب نمایش"}
+                for field, details in node["properties"].items():
+                    # A reference must stand alone in the provider's strict
+                    # subset; its Persian description lives on the definition.
+                    if field in descriptions and "$ref" not in details:
+                        details["description"] = descriptions[field]
                 node["required"] = list(node["properties"])
                 node["additionalProperties"] = False
             for value in node.values():
@@ -137,19 +156,32 @@ def structured_format(name: str, model: type[BaseModel]) -> dict:
         "name": name, "strict": True, "schema": schema}}
 
 
-def calculator_tool_for_question(question: str) -> dict:
+def calculator_tool_for_question(question: str, required_currency: str | None = None) -> dict:
     """Advertise requested output currency without mutating the shared tool."""
     definition = deepcopy(CALCULATOR_TOOL)
     normalized = normalize_text(question)
     toman = re.search(r"تومان|\bIRT\b|\btomans?\b", normalized, re.I)
     rial = re.search(r"ریال|\bIRR\b|\brials?\b", normalized, re.I)
-    if toman and not rial:
+    if required_currency == "IRT" or (toman and not rial):
         definition["function"]["parameters"]["properties"]["unit"]["enum"] = ["تومان", "IRT", "درصد", "%", ""]
         definition["function"]["description"] += " درخواست فعلی خروجی تومان دارد؛ جمع قیمت‌های *_irr را در همان فرمول کامل بر10 تقسیم کن و با واحد تومان/IRT برگردان؛ ابتدا جمع ریالی نساز. درصد یا واحد خالی فقط برای نسبت‌هاست."
     return definition
 
 
-def grounded_answer_format(sources: list[dict]) -> dict:
+def monetary_display_policy(question: str, results: list[dict]) -> str | None:
+    """Derive a display-unit contract from actual typed monetary evidence."""
+    monetary = any(isinstance(value, (int, float)) and not isinstance(value, bool)
+        for result in results if not result.get("evidence_warning") for row in result_dict_rows(result)
+        for column, value in row.items() if column.lower().endswith("_irr"))
+    if not monetary:
+        return None
+    text = normalize_text(question)
+    rial = bool(re.search(r"ریال|\bIRR\b|\brials?\b", text, re.I))
+    toman = bool(re.search(r"تومان|\bIRT\b|\btomans?\b", text, re.I))
+    return "mixed" if rial and toman else "IRR" if rial else "IRT"
+
+
+def grounded_answer_format(sources: list[dict], offered_options=None) -> dict:
     response_format = structured_format("grounded_answer", Answer)
     identifiers = list(dict.fromkeys(source["source_id"] for source in sources))
     field = response_format["json_schema"]["schema"]["properties"]["source_ids"]
@@ -159,6 +191,12 @@ def grounded_answer_format(sources: list[dict]) -> dict:
         # An empty enum is invalid JSON Schema. An empty array is valid and
         # exactly right when the request has SQL evidence but no PDF sources.
         field["maxItems"] = 0
+    options = response_format["json_schema"]["schema"]["properties"]["option_ids"]
+    identities = [option["option_id"] for option in (offered_options or [])]
+    if identities:
+        options["items"] = {"type": "string", "enum": identities}
+    else:
+        options["maxItems"] = 0
     return response_format
 
 
@@ -179,53 +217,6 @@ def requires_pdf_citations(state: dict) -> bool:
     return bool(plan.needs_documents and (state.get("route", plan.route) == "documents" or not usable_sql))
 
 
-def format_chosen_citations(answer: Answer, valid_ids: set[str], needs_documents: bool) -> Answer:
-    """Add markers for already chosen valid source IDs; choose no new evidence."""
-    error = citation_error(answer, valid_ids, needs_documents)
-    if error:
-        raise ProviderError(error, "ارجاع‌های انتخاب‌شده پاسخ معتبر نیستند.")
-    if (answer.status == "answered" and answer.source_ids and
-            not re.search(r"\[S\d+\]", answer.answer)):
-        markers = " ".join(f"[{identity}]" for identity in dict.fromkeys(answer.source_ids))
-        return answer.model_copy(update={"answer": answer.answer.rstrip() + " " + markers})
-    return answer
-
-
-def append_quote_context(answer: str, *, snapshot: dict, trip_context: dict,
-                         sql_results: list[dict], calculations: list[dict]) -> str:
-    """Attach factual observation context after model/citation validation.
-
-    Dates and source identities come from validated state and executed evidence,
-    never supplier names or prices inferred from the question/model wording.
-    """
-    usable = [result for result in sql_results if not result.get("evidence_warning")]
-    if not calculations or not usable:
-        return answer
-    captured = snapshot.get("captured_on")
-    lines = ["زمینه نقل‌قول: " + (
-        f"نرخ‌ها و موجودی‌ها مربوط به snapshot ثبت‌شده در {captured} هستند؛ " if captured else
-        "نرخ‌ها و موجودی‌ها مربوط به مشاهده ثبت‌شده منبع هستند؛ ") +
-        "موجودی فعلی یا امکان رزرو امروز تأیید نشده است و پیش از رزرو باید دوباره بررسی شود."]
-    dates = [(label, trip_context.get(field)) for field, label in (
-        ("departure_date", "رفت"), ("return_date", "برگشت"), ("checkin", "ورود"), ("checkout", "خروج"))]
-    if any(value for _, value in dates):
-        lines.append("تاریخ‌های درخواست: " + "؛ ".join(f"{label}: {value}" for label, value in dates if value) + ".")
-    origins = []
-    for result in usable:
-        for source in result.get("record_sources", []):
-            if not isinstance(source, dict) or not source.get("source"):
-                continue
-            identity = (" ".join(str(source["source"]).split()),
-                        " ".join(str(source.get("observed_at") or "").split()))
-            if identity not in origins:
-                origins.append(identity)
-    if origins:
-        lines.append("منبع و زمان مشاهده رکوردها: " + "؛ ".join(
-            f"{source} (مشاهده: {observed})" if observed else source for source, observed in origins) + ".")
-    footer = "\n\n" + "\n".join(lines)
-    return answer if answer.rstrip().endswith(footer.strip()) else answer.rstrip() + footer
-
-
 def factual_text(answer: str) -> str:
     return normalize_text(re.sub(r"\[S\d+\]", "", answer))
 
@@ -243,7 +234,7 @@ def assistant_message(response: dict) -> dict:
 def parse_json(message: dict, model: type[BaseModel]):
     content = message.get("content")
     if not isinstance(content, str) or message.get("tool_calls"):
-        raise ValueError("Structured response required")
+        raise ValueError("پاسخ ساخت‌یافته لازم است.")
     return model.model_validate_json(content, strict=True)
 
 
@@ -340,11 +331,19 @@ def stay_quote_evidence(rows: list[dict], trip: TripContext) -> dict:
                        "nights": nights, "rooms": trip.rooms, "complete_observed": not reasons,
                        "reasons": list(dict.fromkeys(reasons)), "unknown_restrictions": sorted(unknown),
                        "nightly_amounts_irr": [row["amount_irr"] for row in sorted(entries, key=lambda row: row["service_date"])]})
-    eligible = any(group["complete_observed"] for group in groups)
+    eligible_groups = {(group["property_id"], group["room_id"], group["rate_plan_id"])
+                       for group in groups if group["complete_observed"]}
+    eligible_ids = {row["record_id"] for row in rows if row.get("record_id") and
+                    (str(row["property_id"]), str(row["room_id"]), str(row["rate_plan_id"])) in eligible_groups}
+    eligible = bool(eligible_groups)
     selected_missing = set(trip.selected_stay_ids) - {row.get("record_id") for row in rows}
     if selected_missing:
-        return {"blocked": True, "groups": groups, "reasons": ["بخشی از نرخ‌های انتخاب‌شده در شواهد همین اقامت وجود ندارد."]}
-    return {"blocked": not eligible, "groups": groups,
+        return {"blocked": True, "groups": groups, "eligible_record_ids": sorted(eligible_ids),
+                "reasons": ["بخشی از نرخ‌های انتخاب‌شده در شواهد همین اقامت وجود ندارد."]}
+    if set(trip.selected_stay_ids) - eligible_ids:
+        return {"blocked": True, "groups": groups, "eligible_record_ids": sorted(eligible_ids),
+                "reasons": ["نرخ‌های انتخاب‌شده به اقامت کامل با ظرفیت و محدودیت‌های معتبر تعلق ندارند."]}
+    return {"blocked": not eligible, "groups": groups, "eligible_record_ids": sorted(eligible_ids),
             "reasons": [] if eligible else list(dict.fromkeys(reason for group in groups for reason in group["reasons"]))}
 
 
@@ -377,6 +376,81 @@ def transport_quote_evidence(rows: list[dict], trip: TripContext) -> dict:
             "reason": "برای همه مسیرها/تاریخ‌ها و شناسه‌های انتخاب‌شده سرویس دقیق با ظرفیت کافی نداریم." if blocked else None}
 
 
+def validate_prior_trip(value) -> dict:
+    if not value:
+        return {}
+    defaults = {name: [] if name in {"selected_transport_ids", "selected_stay_ids"} else None for name in TripContext.model_fields}
+    try:
+        return TripContext.model_validate({**defaults, **dict(value)}, strict=True).model_dump(exclude_none=True)
+    except (ValidationError, ValueError, TypeError):
+        raise ProviderError("invalid_conversation_context", "اطلاعات ذخیره‌شده سفر معتبر نیست؛ گفتگو باید با وضعیت معتبر ادامه پیدا کند.") from None
+
+
+def grounded_options(results: list[dict]) -> list[dict]:
+    """Selectable identities and order come only from successful SQL evidence."""
+    options, seen, stays = [], set(), {}
+    for result_index, result in enumerate(results):
+        if result.get("evidence_warning"):
+            continue
+        metadata = {item.get("id"): item for item in result.get("record_sources", []) if isinstance(item, dict)}
+        for row_index, row in enumerate(result_dict_rows(result)):
+            identity = row.get("record_id") or row.get("id")
+            if not isinstance(identity, str) or not identity:
+                continue
+            basis = row.get("price_basis")
+            if basis == "per_room_per_night" and all(row.get(key) for key in ("property_id", "room_id", "rate_plan_id")):
+                group = (row["property_id"], row["room_id"], row["rate_plan_id"])
+                if group in stays:
+                    item = stays[group]
+                    if identity not in item["record_ids"]:
+                        item["record_ids"].append(identity)
+                        item["nights"].append({"service_date": row.get("service_date"), "amount_irr": row.get("amount_irr"), "inventory": row.get("inventory")})
+                    continue
+                item = {"option_id": identity, "kind": "stay", "record_ids": [identity],
+                        "property_id": row["property_id"], "room_id": row["room_id"], "rate_plan_id": row["rate_plan_id"],
+                        "room_name": row.get("room_name"), "rate_plan_name": row.get("rate_plan_name"),
+                        "name_fa": metadata.get(row["property_id"], metadata.get(identity, {})).get("name_fa"),
+                        "nights": [{"service_date": row.get("service_date"), "amount_irr": row.get("amount_irr"), "inventory": row.get("inventory")}],
+                        "occupancy": row.get("occupancy"), "price_basis": basis}
+                stays[group] = item
+            elif row.get("offer_kind") in {"departure", "daily_fare_aggregate"}:
+                item = {"option_id": identity, "kind": "transport", **{key: row.get(key) for key in (
+                    "record_id", "mode", "origin_fa", "destination_fa", "service_date", "departure_at", "arrival_at", "amount_irr",
+                    "availability", "available_seats", "operator_name", "offer_kind", "price_basis")},
+                    "name_fa": metadata.get(identity, {}).get("name_fa")}
+            elif row.get("name_fa") or metadata.get(identity, {}).get("name_fa"):
+                item = {"option_id": identity, "kind": "property", "record_id": identity,
+                        "name_fa": row.get("name_fa") or metadata[identity].get("name_fa"), "city_fa": row.get("city_fa")}
+            else:
+                continue
+            if identity in seen:
+                continue
+            seen.add(identity)
+            item["evidence"] = {"result_index": result_index, "row_index": row_index}
+            options.append(item)
+            if len(options) >= 20:
+                break
+    return options[:20]
+
+
+def eligible_quote_options(options: list[dict], plan: CoordinatorPlan, evidence: dict) -> list[dict]:
+    """Keep raw factual listings intact; quote identities must pass their component checks."""
+    stays = set(evidence.get("stay", {}).get("eligible_record_ids", []))
+    departures = set(evidence.get("transport", {}).get("eligible_record_ids", []))
+    return [option for option in options
+            if not (plan.requires_complete_stay and option["kind"] == "stay" and
+                    (not option.get("record_ids") or not set(option["record_ids"]).issubset(stays)))
+            and not (plan.requires_exact_transport and option["kind"] == "transport" and
+                     option["option_id"] not in departures)]
+
+
+def model_clarification(plan: CoordinatorPlan) -> str:
+    text = plan.clarification
+    if not isinstance(text, str) or not text.strip():
+        raise ProviderError("invalid_model_output", "مدل برای مسیر رفع ابهام، پرسش معتبر ارائه نکرد.")
+    return text
+
+
 class WorkflowService:
     def __init__(self, settings, llm, sql, retriever):
         self.settings, self.llm, self.sql, self.retriever = settings, llm, sql, retriever
@@ -404,8 +478,21 @@ class WorkflowService:
             await state["recorder"].add("llm", "retry", event.get("message", "تلاش مجدد محدود"),
                                          data={key: event[key] for key in ("attempt", "delay_seconds", "code") if key in event})
 
-        response = await self.llm.complete(messages, emit=provider_event, **kwargs)
+        call_id, started = str(uuid.uuid4()), time.perf_counter()
+        await state["recorder"].add("model_call", "started", "پیام‌ها و تنظیمات فراخوانی مدل ثبت شدند.",
+            data={"call_id": call_id, "messages": deepcopy(messages), "response_format": kwargs.get("response_format"),
+                  "tools": kwargs.get("tools"), "tool_choice": kwargs.get("tool_choice"),
+                  "max_tokens": kwargs.get("max_tokens"), "temperature": kwargs.get("temperature", 0),
+                  "model": getattr(self.settings, "llm_model", None)})
+        try:
+            response = await self.llm.complete(messages, emit=provider_event, **kwargs)
+        except ProviderError as error:
+            await state["recorder"].add("model_call", "error", error.message, started=started,
+                data={"call_id": call_id, "code": error.code})
+            raise
         usage = response.get("usage") or {}
+        await state["recorder"].add("model_call", "completed", "پاسخ و مصرف همین فراخوانی مدل ثبت شدند.", started=started,
+            data={"call_id": call_id, "response": response, "usage": usage})
         if any(isinstance(usage.get(key), int) for key in ("prompt_tokens", "completion_tokens")):
             state["usage"]["responses_with_usage"] += 1
         for key in ("prompt_tokens", "completion_tokens"):
@@ -434,6 +521,8 @@ class WorkflowService:
         await state["recorder"].add("coordinator", "started", "انتخاب مسیر و آماده‌سازی پرس‌وجو آغاز شد.")
         messages = [{"role": "system", "content": COORDINATOR.format(
             as_of=self.settings.as_of, schema=self.sql.schema_context())},
+                    {"role": "system", "content": "تاریخ‌ها با محاسبه قطعی تقویم آماده شده‌اند؛ فردا و تاریخ شمسی را از این نگاشت بخوان، نه از حافظه: " + json.dumps(state["calendar_context"], ensure_ascii=False)},
+                    {"role": "system", "content": "وضعیت معتبر سفر و گزینه‌های واقعاً عرضه‌شده در نوبت قبلی؛ ترتیب گزینه‌ها به پاسخ قبلی متصل است و همه انتخاب‌ها باید دوباره با داده بررسی شوند: " + json.dumps({"trip_context": state["prior_trip_context"], "offered_options": state["prior_offered_options"]}, ensure_ascii=False)},
                     *state["history"], {"role": "user", "content": state["question"]}]
         if hasattr(self.sql, "entity_context"):
             context_text = state["question"] + "\n" + "\n".join(message["content"] for message in state["history"][-4:])
@@ -452,6 +541,21 @@ class WorkflowService:
                 CoordinatorPlan, "coordinator_lookup_correction", repair=False)
             if not plan.reject_reason and not plan.sql:
                 raise ProviderError("missing_entity_lookup", "وجود یا نبود شناسه بدون اجرای جستجوی دقیق قابل تأیید نیست.")
+        preserved = {"origin", "destination", "mode", "departure_date", "return_date", "checkin", "checkout", "adults", "rooms", "children_ages", "budget_amount", "budget_currency"}
+        for field in plan.cleared_slots:
+            if field not in TripContext.model_fields:
+                raise ProviderError("invalid_model_output", "مدل فیلد نامعتبری را برای پاک‌کردن وضعیت سفر انتخاب کرد.")
+            setattr(plan.trip_context, field, [] if field in {"selected_transport_ids", "selected_stay_ids"} else None)
+        for field in preserved - set(plan.cleared_slots):
+            if getattr(plan.trip_context, field) is None and field in state["prior_trip_context"]:
+                setattr(plan.trip_context, field, state["prior_trip_context"][field])
+        changed = any(field in state["prior_trip_context"] and getattr(plan.trip_context, field) != state["prior_trip_context"][field]
+                      for field in ("origin", "destination", "mode", "departure_date", "return_date", "checkin", "checkout"))
+        if changed:
+            state["prior_offered_options"] = []
+        if plan.route == "conversation" and not plan.reject_reason:
+            plan.sql, plan.needs_documents, plan.requires_calculator = None, False, False
+            plan.requires_complete_stay, plan.requires_exact_transport = False, False
         # Reconcile compatible declared capabilities, without reclassifying the
         # question or discarding a generated, independently guarded query.
         if not plan.reject_reason and ((plan.route == "documents" and plan.sql) or
@@ -461,11 +565,12 @@ class WorkflowService:
             plan.document_query = plan.document_query or state["question"][:1600]
             await state["recorder"].add("coordinator", "normalized", "برنامه سازگارِ سند و داده برای اجرای هر دو منبع یکپارچه شد.",
                 data={"previous_route": previous_route, "route": "combined", "sql_preserved": bool(plan.sql)})
-        policy_requested = re.search(r"(?:راهنما|سند|اسناد|سیاست|آیین\s*نامه|قوانین|قاعده|کنسلی|شرایط اقامت)", normalize_text(state["question"]))
-        if not plan.reject_reason and plan.sql and policy_requested and plan.route != "clarification":
-            plan.route, plan.needs_documents = "combined", True
-            plan.document_query = plan.document_query or state["question"][:1600]
         state["plan"], state["route"] = plan, plan.route
+        if plan.route == "clarification" and not plan.reject_reason:
+            model_clarification(plan)
+        if plan.route == "conversation" and plan.conversation_reply and not plan.reject_reason:
+            state.update(terminal=True, status="answered", answer=plan.conversation_reply,
+                         cited_ids=[], offered_options=[])
         if plan.reject_reason:
             state.update(terminal=True, status="rejected", answer=plan.reject_reason,
                          error={"code": "unsupported_write_request", "message": plan.reject_reason})
@@ -672,6 +777,8 @@ class WorkflowService:
                 "clarification_hint": state["plan"].clarification,
                 "trip_context": state["plan"].trip_context.model_dump(),
                 "quote_evidence": state["quote_evidence"], "quote_blocked": state["quote_blocked"],
+                "calendar_context": state["calendar_context"], "offered_options": state["candidate_options"],
+                "source_snapshot": {"captured_on": getattr(self.settings, "source_observed_date", None)},
                 "documents": [{key: source.get(key) for key in
                                ("source_id", "document_id", "page", "section", "text", "source", "source_url", "source_urls", "observed_at", "city", "property_id")} for source in state["sources"]],
                 "sql_results": [result for result in state["sql_results"] if not result.get("evidence_warning")],
@@ -687,13 +794,13 @@ class WorkflowService:
                                allowed_ids=json.dumps(allowed_ids, ensure_ascii=False))}]
         # No tools are provided: this call may correct attribution only.
         message = await self._chat(state, repair_messages,
-                                   response_format=grounded_answer_format(state["sources"]), max_tokens=2400)
+                                   response_format=grounded_answer_format(state["sources"], state["candidate_options"]), max_tokens=2400)
         try:
             corrected = parse_json(message, Answer)
         except (ValueError, ValidationError):
             raise ProviderError("invalid_source_reference", "قالب ارجاع پاسخ مدل پس از یک تلاش اصلاح معتبر نبود.") from None
         error = citation_error(corrected, set(allowed_ids), requires_pdf_citations(state))
-        if error or corrected.status != status_before or factual_text(corrected.answer) != facts_before:
+        if error or corrected.status != status_before or factual_text(corrected.answer) != facts_before or corrected.option_ids != answer.option_ids:
             raise ProviderError(error or "invalid_source_reference", "ارجاع‌ها پس از یک تلاش اصلاح معتبر نشدند یا متن واقعی پاسخ تغییر کرد.")
         await state["recorder"].add("source_validation", "completed", "ارجاع‌ها اصلاح شدند؛ شواهد و نتایج ابزار تغییری نکردند.",
                                      data={"source_ids": corrected.source_ids})
@@ -704,7 +811,7 @@ class WorkflowService:
         started = time.perf_counter()
         plan = state["plan"]
         if plan.route == "clarification" and not state["sql_results"]:
-            state.update(status="clarification", answer=plan.clarification or "برای ادامه، شناسه یا منظور دقیق درخواست را مشخص کنید.")
+            state.update(status="clarification", answer=model_clarification(plan))
             return state
         if plan.needs_documents and not state["sources"] and not state["sql_results"]:
             state.update(status="error" if state["warnings"] else "insufficient_evidence",
@@ -712,14 +819,44 @@ class WorkflowService:
             if state["warnings"]:
                 state["error"] = state["warnings"][0]
             return state
+        state["candidate_options"] = eligible_quote_options(grounded_options(state["sql_results"]), plan, state["quote_evidence"])
+        dates = [value for result in state["sql_results"] if not result.get("evidence_warning") for row in result_dict_rows(result)
+                 for key, value in row.items() if key in {"service_date", "checkin", "checkout"} and isinstance(value, str)]
+        dates.extend(value for key, value in plan.trip_context.model_dump().items() if key in {"departure_date", "return_date", "checkin", "checkout"} and value)
+        times = []
+        for result in state["sql_results"]:
+            if result.get("evidence_warning"):
+                continue
+            for row in result_dict_rows(result):
+                for key, value in row.items():
+                    if key in {"departure_at", "arrival_at", "checkin_time", "checkout_time"} and isinstance(value, str):
+                        match = re.search(r"(?:T|^)([0-2]\d:[0-5]\d)", value)
+                        if match:
+                            times.append(match[1])
+        state["calendar_context"] = build_calendar_context(self.settings.as_of, state["question"], dates=dates, times=times)
         await state["recorder"].add("synthesis", "started", "پاسخ با شواهد و ابزار محاسبه در صورت نیاز ساخته می‌شود.")
         messages = [{"role": "system", "content": SYNTHESIS.format(as_of=self.settings.as_of)},
                     *state["history"], {"role": "user", "content": json.dumps(self._evidence(state), ensure_ascii=False)}]
-        calculator_definition = calculator_tool_for_question(state["question"])
+        display_currency = monetary_display_policy(state["question"], state["sql_results"])
+        if state["quote_blocked"]:
+            display_currency = "IRR"
+        if display_currency in {"IRT", "mixed"} and plan.route != "clarification":
+            plan.requires_calculator = True
+            plan.route, state["route"] = "combined", "combined"
+            await state["recorder"].add("currency_policy", "completed", "نمایش مبلغ‌های ریالی به تومان به محاسبه واقعی سپرده شد.",
+                data={"display_currency": display_currency, "requires_calculator": True})
+        currency_message = "قرارداد نمایش مبلغ: " + (
+            "خروجی مبلغ‌ها تومان است؛ هر مبلغی که از ستون‌های ریالی نشان می‌دهی باید در همین نوبت با ابزار واقعی به تومان تبدیل شود. جمع تعداد مسافر یا شب را هم در فرمول ابزار نگه دار؛ محاسبه ذهنی مجاز نیست." if display_currency == "IRT" else
+            "کاربر مبلغ خام ریالی خواسته است؛ مبلغ‌های داده را با همان واحد ریال نشان بده و بی‌درخواست به تومان تبدیل نکن." if display_currency == "IRR" else
+            "کاربر هر دو واحد را خواسته است؛ تبدیل واحد فقط با ابزار واقعی انجام می‌شود." if display_currency == "mixed" else
+            "در شواهد این نوبت مبلغ ریالی برای نمایش وجود ندارد.")
+        messages.insert(1, {"role": "system", "content": currency_message})
+        calculator_definition = calculator_tool_for_question(state["question"], required_currency=display_currency)
         allowed_units = calculator_definition["function"]["parameters"]["properties"]["unit"].get("enum")
+        messages[-1] = {"role": "user", "content": json.dumps(self._evidence(state), ensure_ascii=False)}
         called_ids, tool_count, repaired_json, calc_reminder = set(), 0, False, False
         for _ in range(MAX_CALCULATOR_CALLS + 3):
-            kwargs = {"response_format": grounded_answer_format(state["sources"]), "max_tokens": 2400}
+            kwargs = {"response_format": grounded_answer_format(state["sources"], state["candidate_options"]), "max_tokens": 2400}
             if plan.requires_calculator and tool_count < MAX_CALCULATOR_CALLS and not state["quote_blocked"]:
                 # A structurally checked quote must use arithmetic rather than
                 # letting a small model substitute a mentally calculated answer.
@@ -782,33 +919,25 @@ class WorkflowService:
                     messages.extend([{"role": "assistant", "content": message.get("content") or ""},
                                      {"role": "user", "content": "محاسبه این درخواست باید با ابزار calculate انجام شود؛ اگر داده لازم ناقص است به‌جای عدد نهایی، insufficient_evidence و علت دقیق بده."}])
                     continue
-                answer.status = "insufficient_evidence"
-                answer.answer = "برای این درخواست، محاسبه معتبر ابزار فراهم نشد؛ عدد نهایی قابل تأیید نیست. نتیجه SQL در بخش داده قابل بررسی است."
+                raise ProviderError("invalid_model_output", "مدل بدون نتیجه معتبر ابزار محاسبه، پاسخ تأییدشده اعلام کرد.")
             if state["quote_blocked"] and answer.status == "answered":
-                answer.status = "insufficient_evidence"
-                reasons = state["quote_evidence"].get("stay", {}).get("reasons", [])
-                transport_reason = state["quote_evidence"].get("transport", {}).get("reason")
-                if transport_reason:
-                    reasons = [*reasons, transport_reason]
-                answer.answer = "نقل‌قول کامل با این شواهد قابل تأیید نیست: " + "؛ ".join(reasons or ["داده لازم برای تاریخ، ظرفیت یا نوع سرویس کافی نیست."])
+                raise ProviderError("invalid_model_output", "مدل با وجود رد ساختاری شواهد نقل‌قول، پاسخ تأییدشده اعلام کرد.")
             valid_ids = {source["source_id"] for source in state["sources"]}
             pdf_required = requires_pdf_citations(state)
             if citation_error(answer, valid_ids, pdf_required):
                 answer = await self._repair_citations(state, messages, answer)
-            formatted = format_chosen_citations(answer, valid_ids, pdf_required)
-            if formatted.answer != answer.answer:
-                await state["recorder"].add("source_validation", "formatted", "ارجاع‌های معتبر انتخاب‌شده مدل، بدون تغییر ادعاها به متن افزوده شدند.",
-                    data={"source_ids": list(dict.fromkeys(answer.source_ids))})
-            answer = formatted
             if plan.route == "clarification" and answer.status == "answered":
                 answer.status = "clarification"
-                answer.answer = plan.clarification or "برای جلوگیری از انتخاب گزینه سفر اشتباه، شناسه، تاریخ یا منظور دقیق را مشخص کنید."
+                answer.answer = model_clarification(plan)
             if pdf_required and not state["sources"]:
                 answer.status = "insufficient_evidence"
-            answer.answer = append_quote_context(answer.answer,
-                snapshot={"captured_on": STRUCTURED_SNAPSHOT_CAPTURED_ON},
-                trip_context=plan.trip_context.model_dump(exclude_none=True),
-                sql_results=state["sql_results"], calculations=state["calculations"])
+            available_options = {option["option_id"]: option for option in state["candidate_options"]}
+            if not set(answer.option_ids).issubset(available_options):
+                raise ProviderError("invalid_option_reference", "مدل گزینه‌ای را معرفی کرد که در نتیجه واقعی داده وجود ندارد.")
+            chosen = [deepcopy(available_options[identity]) for identity in dict.fromkeys(answer.option_ids)]
+            for index, option in enumerate(chosen):
+                option["ordinal"] = index + 1
+            state["offered_options"] = chosen if state["sql_results"] else state["prior_offered_options"]
             state.update(status=answer.status, answer=answer.answer, cited_ids=list(dict.fromkeys(answer.source_ids)))
             await state["recorder"].add("synthesis", "completed", "پاسخ نهایی و ارجاع‌ها بررسی شدند.", started=started,
                                          data={"status": answer.status, "source_ids": state["cited_ids"], "calculator_calls": tool_count})
@@ -820,7 +949,8 @@ class WorkflowService:
                                      data={"status": state.get("status", "error"), "route": state.get("route", "clarification")})
         return state
 
-    async def run(self, question, history=None, retrieval_mode="hybrid", filters=None, emit=None) -> dict:
+    async def run(self, question, history=None, retrieval_mode="hybrid", filters=None, emit=None,
+                  conversation_state=None, offered_options=None) -> dict:
         started, request_id = time.perf_counter(), str(uuid.uuid4())
         recorder = TraceRecorder(request_id, self.observability, emit)
         state: WorkflowState = {
@@ -832,6 +962,9 @@ class WorkflowService:
             "retrieval_diagnostics": {}, "usage": {"llm_calls": 0, "prompt_tokens": 0,
                 "completion_tokens": 0, "responses_with_usage": 0}, "terminal": False,
             "quote_evidence": {}, "quote_blocked": False,
+            "prior_trip_context": validate_prior_trip(conversation_state),
+            "prior_offered_options": deepcopy(list(offered_options or [])[:20]), "offered_options": [], "candidate_options": [],
+            "calendar_context": build_calendar_context(self.settings.as_of, question if isinstance(question, str) else ""),
         }
         with self.observability.request_scope(request_id):
             try:
@@ -851,12 +984,14 @@ class WorkflowService:
                 await recorder.add("workflow", "error", message, data={"code": "workflow_error"})
         cited = set(state.get("cited_ids", []))
         result = {"request_id": request_id, "status": state.get("status", "error"),
-                  "answer": state.get("answer", "پاسخ قابل تأیید ساخته نشد."), "route": state.get("route", "clarification"),
+                  "answer": render_persian_answer(state.get("answer", "پاسخ قابل تأیید ساخته نشد.")), "route": state.get("route", "clarification"),
                   "sources": [source for source in state["sources"] if source["source_id"] in cited],
                   "sql_results": state["sql_results"], "calculations": state["calculations"],
-                  "conversation_state": state["plan"].trip_context.model_dump(exclude_none=True) if state.get("plan") else {},
-                  "quote_evidence": state["quote_evidence"],
-                  "snapshot": {"captured_on": STRUCTURED_SNAPSHOT_CAPTURED_ON, "as_of": self.settings.as_of,
+                  "conversation_state": state["plan"].trip_context.model_dump(exclude_none=True) if state.get("plan") else state["prior_trip_context"],
+                  "quote_evidence": state["quote_evidence"], "source_ids": list(state.get("cited_ids", [])),
+                  "offered_options": state["offered_options"] or (state["prior_offered_options"] if not state["sql_results"] else []),
+                  "calendar_context": state["calendar_context"],
+                  "snapshot": {"captured_on": getattr(self.settings, "source_observed_date", None), "as_of": self.settings.as_of,
                                "requires_revalidation": True, "live_availability_confirmed": False},
                   "trace": recorder.events,
                   "metrics": {"duration_ms": round((time.perf_counter() - started) * 1000, 2),

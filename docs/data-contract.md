@@ -12,7 +12,7 @@ prepopulated database or evaluation answers.
 
 Ingestion separates `inventory_probe` and `collection_status` diagnostics from
 business records. Source records contain prices observed on **2026-10-18**;
-service dates can be later. The conversation reference date is **2026-10-27**.
+service dates can be later. The default simulated conversation date is **2026-11-16**. It is independent of the observation date.
 `available` describes the earlier observation, not a held room or seat today.
 Quotes require source revalidation before booking; the assistant cannot reserve,
 pay for or guarantee inventory.

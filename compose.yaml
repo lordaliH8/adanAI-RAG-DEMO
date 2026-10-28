@@ -36,21 +36,16 @@ services:
       start_period: 120s
 
   ui:
-    image: hamsafar-demo:local
+    image: hamsafar-demo-ui:local
     build:
-      context: .
-    command: ["streamlit", "run", "ui/app.py", "--server.address=0.0.0.0", "--server.port=8501", "--browser.gatherUsageStats=false"]
-    environment:
-      BACKEND_URL: http://api:8000
-      BACKEND_PUBLIC_URL: http://localhost:8000
-      STREAMLIT_BROWSER_GATHER_USAGE_STATS: "false"
+      context: ./frontend
     ports:
-      - "127.0.0.1:8501:8501"
+      - "127.0.0.1:8501:80"
     depends_on:
       api:
         condition: service_started
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/_stcore/health', timeout=3)"]
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/health"]
       interval: 15s
       timeout: 5s
       retries: 5

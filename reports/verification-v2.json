@@ -1,0 +1,93 @@
+{
+  "verified_at": "2026-10-28T06:17:08.403811+00:00",
+  "execution": "Actual AvalAI gpt-4.1 requests; no fixture answers supplied to runtime",
+  "configuration": {
+    "simulation_date": "2026-11-16",
+    "simulation_date_fa": "۲۵ آبان ۱۴۰۵",
+    "simulation_calendar": "jalali",
+    "source_observed_date": "2026-10-18",
+    "status": "ready",
+    "model": "gpt-4.1",
+    "provider_host": "api.avalai.org",
+    "provider_configured": true,
+    "api_base_path": ""
+  },
+  "checks": {
+    "all_live_turns_completed": true,
+    "greeting_one_model_call_no_business_tools": true,
+    "missing_preferences_asked_conversationally": true,
+    "tomorrow_resolved_from_fixed_simulation_date": true,
+    "document_answer_has_pdf_evidence_without_sql": true,
+    "multiple_actual_flight_choices": true,
+    "listing_uses_native_calculator": true,
+    "second_option_identity_preserved": true,
+    "selected_total_matches_observed_fare_times_passengers": true,
+    "no_visible_machine_source_markers": true,
+    "conversation_messages_persisted": true
+  },
+  "checks_passed": 11,
+  "live_assistant_turns": 6,
+  "evidence": [
+    "conversation-v2-live.json",
+    "conversation-v2-clarification.json"
+  ],
+  "selected_option_check": {
+    "option_ordinal": 2,
+    "record_id": "6f62050c356ba9a923399a30",
+    "observed_fare_irr": 123221000,
+    "passengers": 2,
+    "expected_total_toman": "24644200",
+    "actual_calculations": [
+      {
+        "tool": "calculate",
+        "tool_call_id": "call_fpCvoU6wroyDVEAgI2Zs8Lt8",
+        "expression": "123221000*2/10",
+        "value": "24644200",
+        "unit": "تومان",
+        "precision": 0
+      }
+    ]
+  },
+  "scope": "Mechanical checks plus manual review of these conversations. This is not a claim that all 30 acceptance cases passed live.",
+  "latency_note": "The current 30-second provider pacing makes multi-call requests slow; the UI streams execution stages.",
+  "local_validation": {
+    "python_tests_passed": 243,
+    "python_subtests_passed": 33,
+    "python_skipped": 0,
+    "frontend_tests_passed": 6,
+    "docker_builds": [
+      "api",
+      "ui"
+    ],
+    "offline_guard_fault_groups_passed": 4,
+    "unit_evidence": "unit-tests.xml",
+    "offline_evidence": "evaluation-v2-offline.json"
+  },
+  "final_guard_regressions": [
+    "Null clarification cannot become a canned business question",
+    "Missing required calculator cannot become an answered quote",
+    "Blocked quote cannot become an answered quote",
+    "Unavailable selected room cannot be unblocked by an unrelated valid room",
+    "Quote option IDs must belong to structurally eligible groups"
+  ],
+  "final_runtime_health": {
+    "ready": true,
+    "as_of": "2026-11-16",
+    "records": 8050,
+    "chunks": 111
+  },
+  "frontend_health": "ok",
+  "manual_browser_verification": {
+    "provider_test": "Home button showed Model connection verified, gpt-4.1, 9.5 s",
+    "verified": [
+      "Minimal home and fixed simulation date",
+      "Persisted conversation reload",
+      "Persian line breaks and newest reply above composer",
+      "Clickable request-specific nodes with actual Farsi prompts",
+      "Native calculation input/output",
+      "Structured supplier source link",
+      "PDF page and original revision source links"
+    ],
+    "reset": "Reset was exercised before final conversations; raw sources retained and 8050 records/111 chunks rebuilt"
+  }
+}

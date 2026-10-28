@@ -34,3 +34,13 @@ class SearchRequest(BaseModel):
     mode: Literal["dense", "lexical", "hybrid", "hybrid_rerank"] = "hybrid"
     limit: int = Field(6, ge=1, le=12)
     filters: RetrievalFilters = Field(default_factory=RetrievalFilters)
+
+
+class ConversationCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+    title: str | None = Field(default=None, max_length=120)
+
+
+class ConversationMessage(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+    question: str = Field(min_length=2, max_length=2000)

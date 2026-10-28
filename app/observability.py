@@ -11,7 +11,7 @@ from typing import Any
 
 _REQUEST_ID = ContextVar("hamsafar_request_id", default="")
 _LOG = logging.getLogger("hamsafar.execution")
-_PRIVATE_KEY = re.compile(r"authorization|api.?key|secret|password|access.?token", re.I)
+_PRIVATE_KEY = re.compile(r"authorization|api.?key|secret|password|(?:access|refresh|id).?token|^(?:set-)?cookie$", re.I)
 
 
 def secret_value(value: Any) -> str:
@@ -21,27 +21,70 @@ def secret_value(value: Any) -> str:
 
 
 class Redactor:
-    def __init__(self, secrets=()):
+    def __init__(self, secrets=(), *, max_bytes=2_000_000, max_depth=40, max_string_chars=250_000):
         self.secrets = tuple(str(v) for v in secrets if v and len(str(v)) >= 4)
+        self.max_bytes, self.max_depth, self.max_string_chars = max_bytes, max_depth, max_string_chars
 
     def text(self, value: str) -> str:
         for secret in self.secrets:
             value = value.replace(secret, "[REDACTED]")
         return re.sub(r"Bearer\s+[^\s\"']+", "Bearer [REDACTED]", value, flags=re.I)
 
-    def clean(self, value: Any, depth: int = 0) -> Any:
-        if depth > 7:
-            return "[bounded]"
-        if isinstance(value, dict):
-            return {str(k): "[REDACTED]" if _PRIVATE_KEY.search(str(k)) else self.clean(v, depth + 1)
-                    for k, v in list(value.items())[:50]}
-        if isinstance(value, (list, tuple)):
-            return [self.clean(v, depth + 1) for v in value[:100]]
-        if isinstance(value, str):
-            return self.text(value)[:8000]
-        if value is None or isinstance(value, (int, float, bool)):
-            return value
-        return self.text(str(value))[:200]
+    def clean(self, value: Any, depth: int = 0, *, max_bytes: int | None = None) -> Any:
+        # Preserve real prompts, nested tool messages and schemas. Bound the whole
+        # payload rather than silently cutting every message at 8,000 characters.
+        remaining, truncated = self.max_bytes if max_bytes is None else min(self.max_bytes, max_bytes), False
+        marker = "[TRUNCATED: technical trace budget exceeded]"
+
+        def clean_text(text):
+            nonlocal remaining, truncated
+            text = self.text(text)
+            if len(text) > self.max_string_chars:
+                text, truncated = text[:self.max_string_chars], True
+                text += marker
+            encoded = text.encode("utf-8")
+            if len(encoded) > remaining:
+                text, truncated = encoded[:max(0, remaining)].decode("utf-8", errors="ignore") + marker, True
+            remaining -= min(len(encoded), max(remaining, 0))
+            return text
+
+        def visit(item, level):
+            nonlocal remaining, truncated
+            if level > self.max_depth or remaining <= 0:
+                truncated = True
+                return marker
+            if isinstance(item, dict):
+                result = {}
+                for index, (key, child) in enumerate(item.items()):
+                    if index >= 2000 or remaining <= 0:
+                        truncated = True
+                        result["_trace_truncated"] = True
+                        break
+                    key = clean_text(str(key))
+                    result[key] = "[REDACTED]" if _PRIVATE_KEY.search(key) else visit(child, level + 1)
+                    remaining -= 4
+                return result
+            if isinstance(item, (list, tuple)):
+                result = []
+                for index, child in enumerate(item):
+                    if index >= 2000 or remaining <= 0:
+                        truncated = True
+                        result.append(marker)
+                        break
+                    result.append(visit(child, level + 1))
+                    remaining -= 1
+                return result
+            if isinstance(item, str):
+                return clean_text(item)
+            if item is None or isinstance(item, (int, float, bool)):
+                remaining -= len(str(item)) + 1
+                return item
+            return clean_text(str(item))
+
+        result = visit(value, depth)
+        if truncated and isinstance(result, dict):
+            result["_trace_truncated"] = True
+        return result
 
 
 async def deliver(emit, event: dict) -> None:
@@ -119,13 +162,20 @@ class TraceRecorder:
     def __init__(self, request_id: str, observability: Observability, emit=None):
         self.request_id, self.observability, self.emit = request_id, observability, emit
         self.events: list[dict] = []
+        self._trace_bytes = 0
 
     async def add(self, step: str, status: str, message: str, *, started=None, data=None):
-        event = self.observability.redactor.clean({
+        payload = {
             "step": step, "status": status, "message": message,
             "duration_ms": round((time.perf_counter() - started) * 1000, 2) if started else 0,
             "data": data or {},
-        })
+        }
+        budget = 1_600_000 - self._trace_bytes
+        if budget < 2000:
+            payload["data"] = {"_trace_truncated": True, "reason": "Technical trace byte budget exceeded."}
+        event = self.observability.redactor.clean(payload, max_bytes=max(2000, budget))
+        import json
+        self._trace_bytes += len(json.dumps(event, ensure_ascii=False).encode("utf-8"))
         if len(self.events) < 100:
             self.events.append(event)
         _LOG.info("request_id=%s step=%s status=%s duration_ms=%s",

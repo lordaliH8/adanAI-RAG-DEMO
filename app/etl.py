@@ -324,7 +324,7 @@ def initialize_database(settings, *, force=False) -> dict:
                 consistent = db.execute("PRAGMA quick_check").fetchone()[0] == "ok" and not db.execute("PRAGMA foreign_key_check").fetchall()
             if isinstance(previous, dict) and previous.get("fingerprint") == fingerprint and version == MIGRATION_VERSION \
                     and consistent and all(counts[k] == previous["tables"][k]["records"] for k in counts):
-                return {**previous, "cache_hit": True}
+                return {**previous, "cache_hit": True, "as_of": settings.as_of}
         except (sqlite3.Error, KeyError, TypeError):
             pass
     tables, report = read_tables(settings.raw_dir)
@@ -353,7 +353,9 @@ def initialize_database(settings, *, force=False) -> dict:
     report.update({"stage": "relational_ingestion", "migration_version": MIGRATION_VERSION,
                    "pipeline_version": PIPELINE_VERSION, "fingerprint": fingerprint, "source_hashes": hashes,
                    "records": len(tables["records"]), "relational_rows": sum(len(v) for v in tables.values()),
-                   "canonical_currency": "IRR", "observed_date": "2026-10-18", "as_of": settings.as_of,
+                   "canonical_currency": "IRR",
+                   "observed_date": min((row["observed_at"][:10] for row in tables["records"] if row.get("observed_at")), default=None),
+                   "as_of": settings.as_of,
                    "normalization": ["explicit IRR/IRT→integer IRR", "typed Gregorian dates and zoned departures",
                                      "source-qualified stable IDs", "verified duplicate equality", "FK and unique room/plan/date checks",
                                      "diagnostic records separated from business facts"],

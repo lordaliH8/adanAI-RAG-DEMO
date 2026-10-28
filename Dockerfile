@@ -21,10 +21,8 @@ RUN python -c "import tiktoken; tiktoken.get_encoding('cl100k_base')"
 # The application image contains business inputs only, with no authoring sources,
 # evaluation answers, reports, credentials, Git history, or local caches.
 COPY app/ ./app/
-COPY ui/ ./ui/
 COPY data/ ./data/
-COPY .streamlit/config.toml ./.streamlit/config.toml
 RUN mkdir -p /app/var
 
-EXPOSE 8000 8501
+EXPOSE 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

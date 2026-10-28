@@ -5,10 +5,6 @@
 !uv.lock
 !app/
 !app/**
-!ui/
-!ui/**
-!.streamlit/
-!.streamlit/config.toml
 !data/
 !data/README.md
 !data/raw/

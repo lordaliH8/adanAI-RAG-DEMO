@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
+from datetime import date
 
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -25,7 +27,7 @@ class Settings(BaseSettings):
     retrieval_top_k: int = Field(6, ge=2, le=12)
     chunk_max_tokens: int = Field(320, ge=100, le=700)
     chunk_overlap_tokens: int = Field(40, ge=0, le=100)
-    as_of: str = "2026-10-27"
+    as_of: str = "2026-11-16"
     max_history_messages: int = 10
     pdftotext_bin: str = "pdftotext"
     langfuse_enabled: bool = False
@@ -48,6 +50,14 @@ class Settings(BaseSettings):
     @property
     def chunks_path(self) -> Path:
         return self.state_dir / "chunks.json"
+
+    @property
+    def source_observed_date(self) -> str | None:
+        manifest = self.data_dir / "source-manifest.json"
+        if not manifest.exists():
+            return None
+        value = json.loads(manifest.read_text(encoding="utf-8")).get("observed_date")
+        return date.fromisoformat(value).isoformat() if value else None
 
 
 def get_settings() -> Settings:
