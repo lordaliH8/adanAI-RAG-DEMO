@@ -12,15 +12,9 @@
 /output/
 /tmp/
 
-# Exploratory probes and superseded live baselines are not final evidence.
-/reports/provider-smoke*.json
-/reports/evaluation-baseline.json
-/reports/*baseline*.json
-/reports/*smoke*.json
-/reports/screenshots/
-/reports/first-live-*.json
-/reports/live-combined-verified.json
-/reports/*.tmp
+# Local evaluation output and development artifacts.
+/reports/
+/tools/data-authoring/
 
 # Python / Node / editor caches and build products.
 __pycache__/

@@ -1,5 +1,4 @@
 {
-  "copied_from": "torob-trip-demo public-source archive",
   "sources": {
     "alibaba.jsonl": {
       "sha256": "f30fc2d354a995b20c34c6752cfd96d419eb87a921619d205ccba99707268a85",
@@ -20,7 +19,5 @@
     }
   },
   "observed_date": "2026-10-18",
-  "copied_at": "2026-10-27",
-  "note": "Source JSONL and hashed response bodies only; no populated SQLite, embeddings, prebuilt chunks, or answer fixtures.",
   "raw_response_files": 460
 }

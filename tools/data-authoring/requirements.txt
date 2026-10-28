@@ -1,3 +1,0 @@
-# Optional source capture and PDF audit; not runtime application dependencies.
-beautifulsoup4==4.14.3
-pypdf==6.10.0
