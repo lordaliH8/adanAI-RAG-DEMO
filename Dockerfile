@@ -1,4 +1,4 @@
-FROM python:3.12-slim@sha256:5b8b1421ccb6a525860a77863c049eab5847076cda34e030c75a80c58faf3f3c
+FROM python:3.12-slim@sha256:5b8b1421ccb6a525860a77863c049eab5847076cda34e030c75a80c58faf3f3c AS application
 
 COPY --from=ghcr.io/astral-sh/uv:0.12.2@sha256:069a51314a7bb6031777a9273205fe1b0b19e914ef418207d1338b268df641dd /uv /uvx /usr/local/bin/
 
@@ -24,5 +24,15 @@ COPY app/ ./app/
 COPY data/ ./data/
 RUN mkdir -p /app/var
 
+# Separate target for offline checks; neither tests nor answer specifications are
+# copied into the default runtime image. Poppler and tokenizer data are shared.
+FROM application AS tests
+RUN uv sync --frozen --group dev
+COPY .env.example ./.env.example
+COPY tests/ ./tests/
+COPY evaluation/ ./evaluation/
+CMD ["python", "-m", "pytest", "-q", "-p", "no:cacheprovider"]
+
+FROM application AS runtime
 EXPOSE 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

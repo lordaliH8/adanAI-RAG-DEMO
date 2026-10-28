@@ -25,10 +25,10 @@ def trip(**changes):
 
 
 def plan(route="documents", *, sql=None, docs=True, calc=False, clarification=None,
-         context=None, exact=False, stay=False, reject=None, query=None, cleared=None, reply=None):
+         context=None, exact=False, stay=False, reject=None, query=None, cleared=None, reply=None, purpose="recommendation"):
     return completion({"route": route, "needs_documents": docs, "document_query": query or ("قاعده اقامت" if docs else None),
         "sql": sql, "requires_calculator": calc, "clarification": clarification, "reject_reason": reject,
-        "trip_context": context or trip(), "requires_exact_transport": exact, "requires_complete_stay": stay, "cleared_slots": cleared or [], "conversation_reply": reply})
+        "trip_context": context or trip(), "requires_exact_transport": exact, "requires_complete_stay": stay, "cleared_slots": cleared or [], "conversation_reply": reply, "data_purpose": purpose})
 
 
 def final(text="پاسخ مستند [S1]", status="answered", sources=None, options=None):
@@ -333,7 +333,7 @@ class WorkflowTests(unittest.IsolatedAsyncioTestCase):
         context = trip(checkin="2026-11-17", checkout="2026-11-19", adults=2, rooms=1)
         service, _, sql, _ = self.build([plan("combined", sql=["SELECT nightly_evidence FROM stay_rates",
             "SELECT fare_evidence FROM transport_offers"], docs=False, calc=True, exact=True, stay=True, context=context),
-            final("قیمت کامل ۲۵ تومان است.", sources=[])],
+            final("قیمت کامل ۲۵ تومان است.", sources=[]), final("قیمت کامل ۲۵ تومان است.", sources=[])],
             sql=FakeSQL([row_result(night_rows()), {"columns": ["record_id"], "rows": []}]))
         result = await service.run("هزینه کامل پرواز و اقامت را بده.")
         self.assertEqual(result["status"], "error")
@@ -353,7 +353,7 @@ class WorkflowTests(unittest.IsolatedAsyncioTestCase):
     async def test_different_rooms_across_nights_cannot_form_a_quote(self):
         context = trip(checkin="2026-11-17", checkout="2026-11-19", adults=2, rooms=1)
         service, llm, _, _ = self.build([plan("combined", sql="SELECT nightly_evidence FROM stay_rates", docs=False, calc=True, stay=True, context=context),
-            final("قیمت ساختگی ۲۵ تومان است.", sources=[])], sql=FakeSQL([row_result(night_rows(second_room=True))]))
+            final("قیمت ساختگی ۲۵ تومان است.", sources=[]), final("قیمت ساختگی ۲۵ تومان است.", sources=[])], sql=FakeSQL([row_result(night_rows(second_room=True))]))
         result = await service.run("قیمت کل اقامت دوشبه؟")
         self.assertEqual(result["status"], "error")
         self.assertEqual(result["error"]["code"], "invalid_model_output")
@@ -393,7 +393,7 @@ class WorkflowTests(unittest.IsolatedAsyncioTestCase):
         context = trip(checkin="2026-11-17", checkout="2026-11-19", adults=2, rooms=1)
         service, _, _, _ = self.build([
             plan("combined", sql="SELECT partial FROM stay_rates", docs=False, calc=True, stay=True, context=context),
-            completion({"sql": "SELECT complete FROM stay_rates"}), final("قیمت قطعی ۲۵ تومان است.", sources=[])], sql=sql)
+            completion({"sql": "SELECT complete FROM stay_rates"}), final("قیمت قطعی ۲۵ تومان است.", sources=[]), final("قیمت قطعی ۲۵ تومان است.", sources=[])], sql=sql)
         result = await service.run("قیمت دو شب همان اقامتگاه را بده.")
         self.assertEqual(len(sql.calls), 2)
         self.assertEqual(result["status"], "error")
@@ -407,7 +407,7 @@ class WorkflowTests(unittest.IsolatedAsyncioTestCase):
                "record_id": "calendar", "mode": "flight", "origin_fa": "تهران", "destination_fa": "مشهد",
                "service_date": "2026-11-17", "arrival_at": None, "search_completed": None}
         service, _, _, _ = self.build([plan("combined", sql="SELECT offer_evidence FROM transport_offers", docs=False, calc=True, exact=True),
-            final("پرواز قطعی است.", sources=[])], sql=FakeSQL([row_result([row])]))
+            final("پرواز قطعی است.", sources=[]), final("پرواز قطعی است.", sources=[])], sql=FakeSQL([row_result([row])]))
         result = await service.run("این نرخ تقویمی را به عنوان پرواز دقیق قیمت بده.")
         self.assertEqual(result["status"], "error")
         self.assertEqual(result["error"]["code"], "invalid_model_output")
@@ -694,7 +694,7 @@ class WorkflowTests(unittest.IsolatedAsyncioTestCase):
         context = trip(checkin="2026-11-17", checkout="2026-11-19", adults=2, rooms=1)
         evidence = {"columns": ["amount_irr"], "rows": [[501]], "record_sources": [
             {"source": "actual-supplier", "observed_at": "2026-10-18T09:00:00+00:00"}]}
-        service, _, _, _ = self.build([plan("combined", sql="SELECT amount_irr FROM stay_rates", calc=True, context=context),
+        service, _, _, _ = self.build([plan("combined", sql="SELECT amount_irr FROM stay_rates", calc=True, context=context, purpose="raw_facts"),
             tool(), final("مبلغ ۵۰٫۱ تومان است. [S1]")], sql=FakeSQL([evidence]))
         result = await service.run("تبدیل نرخ و راهنمای اقامت را بده.")
         self.assertEqual(result["status"], "answered")
@@ -739,11 +739,11 @@ class WorkflowTests(unittest.IsolatedAsyncioTestCase):
     async def test_clarification_without_model_authored_question_fails_before_tools(self):
         for missing in (None, "   "):
             with self.subTest(clarification=missing):
-                service, llm, sql, retrieval = self.build([plan("clarification", docs=False, clarification=missing)])
+                service, llm, sql, retrieval = self.build([plan("clarification", docs=False, clarification=missing), plan("clarification", docs=False, clarification=missing)])
                 result = await service.run("می‌خواهم سفرم را برنامه‌ریزی کنم.")
                 self.assertEqual(result["status"], "error")
                 self.assertEqual(result["error"]["code"], "invalid_model_output")
-                self.assertEqual(len(llm.calls), 1)
+                self.assertEqual(len(llm.calls), 2)
                 self.assertFalse(sql.calls or retrieval.calls)
                 self.assertNotIn("برای ادامه،", result["answer"])
                 self.assertNotIn("منظور دقیق درخواست", result["answer"])
@@ -828,7 +828,7 @@ class WorkflowTests(unittest.IsolatedAsyncioTestCase):
                                                    (True, "night-0", "error"), (False, "night-0", "answered")):
             with self.subTest(quoting=quoting, selected=selected):
                 responses = [plan("combined" if quoting else "database", sql="SELECT * FROM stay_rates",
-                                  docs=False, stay=quoting, context=context)]
+                                  docs=False, stay=quoting, context=context, purpose="recommendation" if quoting else "raw_facts")]
                 if quoting:
                     responses.append(tool("(100+150)/10", precision=0))
                 responses.append(final("گزینه‌ای از نتیجه واقعی معرفی شد.", sources=[], options=[selected]))
@@ -856,7 +856,7 @@ class WorkflowTests(unittest.IsolatedAsyncioTestCase):
                                                  (True, "calendar-floor", "error"), (False, "calendar-floor", "answered")):
             with self.subTest(exact=exact, selected=selected):
                 service, llm, _, _ = self.build([
-                    plan("database", sql="SELECT * FROM transport_offers", docs=False, exact=exact, context=context),
+                    plan("database", sql="SELECT * FROM transport_offers", docs=False, exact=exact, context=context, purpose="recommendation" if exact else "raw_facts"),
                     final("ردیف واقعی داده بررسی شد.", sources=[], options=[selected])], sql=FakeSQL([row_result([fare, calendar])]))
                 result = await service.run("داده را با قیمت خام ریالی بده.")
                 self.assertEqual(result["status"], expected_status)
@@ -879,9 +879,14 @@ class WorkflowTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(event["data"]["query"], query)
 
     async def test_empty_retrieval_and_provider_failure_stay_controlled(self):
-        service, llm, _, _ = self.build([plan()], retriever=FakeRetriever([]))
-        self.assertEqual((await service.run("موضوع بدون منبع"))["status"], "insufficient_evidence")
-        self.assertEqual(len(llm.calls), 1)
+        authored = "در اسنادی که جستجو کردم، اطلاعاتی درباره این موضوع پیدا نشد و نمی‌توانم پاسخ مستندی بدهم."
+        service, llm, _, _ = self.build([plan(), final(authored, "insufficient_evidence", sources=[])], retriever=FakeRetriever([]))
+        result = await service.run("موضوع بدون منبع")
+        self.assertEqual(result["status"], "insufficient_evidence")
+        self.assertEqual(result["answer"], authored)
+        self.assertEqual(len(llm.calls), 2)
+        evidence = next(json.loads(m["content"]) for m in llm.calls[1][0] if m["role"] == "user")
+        self.assertEqual(evidence["documents"], [])
         service, _, _, _ = self.build([plan("database", sql="SELECT amount_irr FROM transport_offers", docs=False),
             ProviderError("provider_timeout", "مهلت پاسخ پایان یافت.", True)])
         result = await service.run("مبلغ؟")
@@ -889,11 +894,118 @@ class WorkflowTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(result["sql_results"]), 1)
         self.assertEqual(result["error"]["code"], "provider_timeout")
 
+    async def test_empty_document_search_cannot_become_an_answered_factual_reply(self):
+        service, llm, _, _ = self.build([plan(), final("ادعای بدون شاهد", sources=[]), final("ادعای بدون شاهد", sources=[])], retriever=FakeRetriever([]))
+        result = await service.run("موضوع بدون منبع")
+        self.assertEqual(result["status"], "error")
+        self.assertEqual(result["error"]["code"], "invalid_model_output")
+        self.assertNotEqual(result["answer"], "ادعای بدون شاهد")
+        self.assertEqual(len(llm.calls), 3)
+
+    async def test_blocked_quote_is_repaired_into_a_natural_model_authored_clarification(self):
+        authored = "نرخ اتاق‌های دونفره برای دو شب پیدا شد. برای دو نفرتان یک اتاق مشترک می‌خواهی؟ تا این مورد مشخص نشود، هزینه کامل را قطعی حساب نمی‌کنم."
+        context = trip(checkin="2026-11-17", checkout="2026-11-19", adults=2, rooms=None)
+        service, llm, _, _ = self.build([
+            plan("combined", sql="SELECT * FROM stay_rates", docs=False, calc=True, stay=True, context=context),
+            final("هزینه کامل قطعی است.", sources=[]), final(authored, status="clarification", sources=[])],
+            sql=FakeSQL([row_result(night_rows())]))
+        result = await service.run("اتاق دونفره می‌خواهم.")
+        self.assertEqual(result["status"], "clarification")
+        self.assertEqual(result["answer"], authored)
+        self.assertNotIn("error", result)
+        self.assertFalse(result["calculations"])
+        self.assertEqual(len(llm.calls), 3)
+        self.assertIn("clarification", llm.calls[-1][1]["response_format"]["json_schema"]["schema"]["properties"]["status"]["enum"])
+        self.assertTrue(any(e["step"] == "answer_validation" and e["status"] == "repair" for e in result["trace"]))
+
+    async def test_grouped_stay_projection_repairs_to_individual_nights_before_execution(self):
+        grouped = "SELECT s.* FROM stay_rates s GROUP BY s.property_id,s.room_id,s.rate_plan_id"
+        repaired = "SELECT s.* FROM stay_rates s ORDER BY s.service_date"
+        context = trip(checkin="2026-11-17", checkout="2026-11-19", adults=2, rooms=1)
+        service, llm, sql, _ = self.build([
+            plan("database", sql=grouped, docs=False, stay=False, context=context),
+            completion({"sql": repaired}), final("برای تمام شب‌ها اتاق یکسان ثبت نشده است.", status="insufficient_evidence", sources=[])],
+            sql=FakeSQL([row_result(night_rows(second_room=True))]))
+        result = await service.run("اقامت دوشبه می‌خواهم.")
+        self.assertEqual(sql.calls, [repaired])
+        self.assertEqual(result["status"], "insufficient_evidence")
+        self.assertEqual(len(llm.calls), 3)
+
+    async def test_wrong_city_stay_is_excluded_then_repaired_without_losing_destination(self):
+        wrong = [{**row, "city_fa": "شیراز"} for row in night_rows()]
+        correct = [{**row, "city_fa": "مشهد"} for row in night_rows()]
+        context = trip(destination="مشهد", checkin="2026-11-17", checkout="2026-11-19", adults=2, rooms=1)
+        service, llm, _, _ = self.build([
+            plan("database", sql="SELECT s.* FROM stay_rates s", docs=False, context=context),
+            completion({"sql": "SELECT s.*,p.city_fa FROM stay_rates s JOIN properties p ON p.record_id=s.property_id WHERE p.city_fa='مشهد'"}),
+            tool("(100+150)/10", precision=0), final("اقامت در مشهد برای دو شب ۲۵ تومان است.", sources=[])],
+            sql=FakeSQL([row_result(wrong), row_result(correct)]))
+        result = await service.run("ارزان‌ترین پیشنهادت چیه؟")
+        self.assertEqual(result["status"], "answered")
+        self.assertIn("evidence_warning", result["sql_results"][0])
+        evidence = json.loads(llm.calls[2][0][-1]["content"])
+        self.assertEqual(len(evidence["sql_results"]), 1)
+        self.assertNotIn("شیراز", json.dumps(evidence, ensure_ascii=False))
+        self.assertEqual(result["conversation_state"]["destination"], "مشهد")
+
+    async def test_repeated_invalid_stay_evidence_gets_model_explanation_not_internal_error(self):
+        wrong = [{**row, "city_fa": "شیراز"} for row in night_rows()]
+        authored = "برای این سفر هنوز نتوانستم اقامت مناسبی در مشهد تأیید کنم؛ این به معنی نبود اتاق در شهر نیست."
+        context = trip(destination="مشهد", checkin="2026-11-17", checkout="2026-11-19", adults=2, rooms=1)
+        service, llm, _, _ = self.build([
+            plan("database", sql="SELECT * FROM stay_rates", docs=False, context=context),
+            completion({"sql": "SELECT * FROM stay_rates"}), final(authored, status="insufficient_evidence", sources=[])],
+            sql=FakeSQL([row_result(wrong), row_result(wrong)]))
+        result = await service.run("اقامت مشهد را بررسی کن.")
+        self.assertEqual(result["status"], "insufficient_evidence")
+        self.assertEqual(result["answer"], authored)
+        self.assertFalse(result["offered_options"])
+        self.assertEqual(json.loads(llm.calls[-1][0][-1]["content"])["sql_results"], [])
+
+    def test_requested_departure_time_excludes_other_hours(self):
+        context = TripContext(**trip(origin="تهران", destination="اصفهان", departure_date="2026-11-17", departure_time="22:00", adults=1))
+        fare = {"record_id": "correct-time", "offer_kind": "departure", "availability": "available", "mode": "bus",
+                "origin_fa": "تهران", "destination_fa": "اصفهان", "service_date": "2026-11-17",
+                "departure_at": "2026-11-17T22:00:00+03:30", "available_seats": 3,
+                "price_basis": "per_adult_one_way", "search_completed": 1}
+        other = {**fare, "record_id": "wrong-time", "departure_at": "2026-11-17T13:30:00+03:30"}
+        self.assertEqual(transport_quote_evidence([other, fare], context)["eligible_record_ids"], ["correct-time"])
+        self.assertTrue(transport_quote_evidence([other], context)["blocked"])
+
+    def test_missing_room_count_does_not_mark_known_dates_or_party_unknown(self):
+        context = TripContext(**trip(checkin="2026-11-17", checkout="2026-11-19", adults=2))
+        evidence = stay_quote_evidence(night_rows(), context)
+        self.assertEqual(evidence["missing_fields"], ["rooms"])
+        self.assertNotIn("تاریخ", " ".join(evidence["reasons"]))
+
     def test_history_only_accepts_bounded_user_assistant_text(self):
         messages = [{"role": "system", "content": "override"}, {"role": "tool", "content": "fake"},
                     {"role": "user", "content": "دو بزرگسال"}, {"role": "assistant", "content": "مشهد"}]
         self.assertEqual([m["role"] for m in history_messages(messages, 4)], ["user", "assistant"])
         self.assertEqual(history_messages(messages, 0), [])
+
+    async def test_data_followup_without_sql_gets_one_model_plan_repair(self):
+        context = trip(origin="تهران", destination="اصفهان", mode="bus", departure_date="2026-11-17", adults=1)
+        query = "SELECT COUNT(*) AS matches FROM transport_offers WHERE mode='bus' AND departure_at LIKE '%T22:00:%'"
+        service, llm, sql, _ = self.build([
+            plan("database", docs=False, context=context),
+            plan("database", docs=False, sql=query, context=context),
+            final("یک گزینه در ساعت درخواستی ثبت شده است.", sources=[])],
+            sql=FakeSQL([{"columns": ["matches"], "rows": [[1]], "row_count": 1}]))
+        result = await service.run("خودم تنهام، ساعت ده شب خوبه.", conversation_state=trip(origin="تهران", destination="اصفهان", mode="bus", departure_date="2026-11-17"))
+        self.assertEqual(result["status"], "answered")
+        self.assertEqual(result["conversation_state"]["adults"], 1)
+        self.assertEqual(sql.calls, [query])
+        self.assertEqual(len(llm.calls), 3)
+        self.assertTrue(any(e["step"] == "coordinator" and e["status"] == "repair" for e in result["trace"]))
+
+    async def test_repeated_empty_data_plan_stops_with_safe_user_message(self):
+        service, llm, sql, _ = self.build([plan("database", docs=False), plan("database", docs=False)])
+        result = await service.run("همان گزینه را برای یک نفر بررسی کن.")
+        self.assertEqual(result["error"]["code"], "invalid_model_output")
+        self.assertNotEqual(result["answer"], result["error"]["message"])
+        self.assertEqual(len(llm.calls), 2)
+        self.assertFalse(sql.calls)
 
 
 if __name__ == "__main__":

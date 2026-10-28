@@ -2,7 +2,7 @@ name: hamsafar-demo
 
 services:
   qdrant:
-    image: qdrant/qdrant:v1.20.0
+    image: qdrant/qdrant:v1.20.0@sha256:9bfc89f9914fc14876a88c05270685921a55b8877b254a98bcc1cc2f0a424cd2
     volumes:
       - travel_qdrant:/qdrant/storage
 
@@ -10,10 +10,6 @@ services:
     image: hamsafar-demo:local
     build:
       context: .
-    command:
-      - sh
-      - -c
-      - python -m app.bootstrap && exec uvicorn app.main:app --host 0.0.0.0 --port 8000
     env_file:
       - .env
     environment:

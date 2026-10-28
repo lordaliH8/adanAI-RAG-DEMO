@@ -31,6 +31,7 @@ class TripContext(BaseModel):
     destination: str | None
     mode: Literal["flight", "bus", "train"] | None = None
     departure_date: str | None
+    departure_time: str | None = Field(default=None, pattern=r"^(?:[01]\d|2[0-3]):[0-5]\d$")
     return_date: str | None
     checkin: str | None
     checkout: str | None
@@ -76,6 +77,7 @@ class CoordinatorPlan(BaseModel):
     trip_context: TripContext
     requires_exact_transport: bool
     requires_complete_stay: bool
+    data_purpose: Literal["recommendation", "raw_facts", "aggregate"] = "recommendation"
     cleared_slots: list[str] = Field(default_factory=list, max_length=20)
     conversation_reply: str | None = Field(default=None, max_length=2500)
 
@@ -130,13 +132,14 @@ def structured_format(name: str, model: type[BaseModel]) -> dict:
             if node.get("type") == "object" and "properties" in node:
                 descriptions = {"route": "مسیر انتخاب‌شده برای ادامه درخواست", "trip_context": "وضعیت معلوم و معتبر سفر",
                     "origin": "شهر مبدأ", "destination": "شهر مقصد", "mode": "شیوه حمل‌ونقل", "departure_date": "روز رفت با تاریخ میلادی استاندارد",
-                    "return_date": "روز برگشت با تاریخ میلادی استاندارد", "checkin": "روز ورود اقامت", "checkout": "روز خروج اقامت",
+                    "return_date": "روز برگشت با تاریخ میلادی استاندارد", "departure_time": "ساعت دقیق رفت به وقت محلی با قالب بیست‌وچهارساعته", "checkin": "روز ورود اقامت", "checkout": "روز خروج اقامت",
                     "adults": "تعداد بزرگسال", "rooms": "تعداد اتاق", "children_ages": "سن کودکان", "budget_amount": "مقدار بودجه اعلام‌شده",
                     "budget_currency": "واحد بودجه", "property_id": "شناسه داخلی ملک انتخاب‌شده", "room_id": "شناسه اتاق انتخاب‌شده",
                     "rate_plan_id": "شناسه پلن نرخ انتخاب‌شده", "selected_transport_ids": "شناسه حرکت‌های واقعاً انتخاب‌شده", "selected_stay_ids": "شناسه نرخ‌های واقعاً انتخاب‌شده",
                     "needs_documents": "آیا شاهد سندی لازم است", "document_query": "پرسش کوتاه فارسی برای بازیابی سند", "sql": "پرس‌وجوی خواندنی تولیدشده",
                     "requires_calculator": "آیا محاسبه ابزار لازم است", "clarification": "پرسش طبیعی برای ابهام ضروری", "reject_reason": "علت رد درخواست غیرمجاز",
                     "requires_exact_transport": "آیا حرکت زمان‌دار واقعی لازم است", "requires_complete_stay": "آیا همه شب‌های اقامت باید بررسی شوند",
+                    "data_purpose": "هدف داده: پیشنهاد سفر، مشاهده صریح واقعیت خام یا آمار تجمیعی",
                     "cleared_slots": "نام فیلدهایی که کاربر صریحاً خواسته پاک شوند", "conversation_reply": "پاسخ طبیعی خود مدل فقط برای گفتگوی بدون ابزار", "status": "وضعیت پاسخ", "answer": "متن طبیعی فارسی برای مسافر",
                     "source_ids": "شناسه سندهای واقعاً پشتیبان ادعا", "option_ids": "شناسه گزینه‌های واقعاً عرضه‌شده به ترتیب نمایش"}
                 for field, details in node["properties"].items():
@@ -275,8 +278,11 @@ def document_search_query(question: str, rewritten: str | None) -> str:
 
 def stay_quote_evidence(rows: list[dict], trip: TripContext) -> dict:
     """Check structural night compatibility, never compute or invent prices."""
-    if not all((trip.checkin, trip.checkout, trip.adults, trip.rooms)):
-        return {"blocked": True, "reasons": ["تاریخ ورود/خروج، تعداد بزرگسال یا تعداد اتاق برای نقل‌قول کامل نیست."], "groups": []}
+    labels = {"checkin": "تاریخ ورود", "checkout": "تاریخ خروج", "adults": "تعداد بزرگسال", "rooms": "تعداد اتاق"}
+    missing = [field for field in labels if getattr(trip, field) is None]
+    if missing:
+        return {"blocked": True, "missing_fields": missing,
+                "reasons": ["فقط این اطلاعات کاربر نامعلوم است: " + "، ".join(labels[field] for field in missing)], "groups": []}
     begin, end = date.fromisoformat(trip.checkin), date.fromisoformat(trip.checkout)
     nights = (end - begin).days
     if not 1 <= nights <= 90:
@@ -365,7 +371,8 @@ def transport_quote_evidence(rows: list[dict], trip: TripContext) -> dict:
     for label, origin, destination, day in legs:
         matches = [row for row in candidates if (origin is None or row.get("origin_fa") == origin)
                    and (destination is None or row.get("destination_fa") == destination)
-                   and (day is None or row.get("service_date") == day)]
+                   and (day is None or row.get("service_date") == day)
+                   and (label != "outbound" or not trip.departure_time or str(row.get("departure_at", ""))[11:16] == trip.departure_time)]
         ids = list(dict.fromkeys(row["record_id"] for row in matches))
         result.append({"leg": label, "origin": origin, "destination": destination, "service_date": day,
                        "eligible_record_ids": ids})
@@ -533,6 +540,16 @@ class WorkflowService:
                 await state["recorder"].add("entity_linker", "completed", "شناسه و نام کاندیدها از کاتالوگ واقعی بررسی شد.", data={"entities": entities})
         plan = await self._structured(state, messages, CoordinatorPlan, "coordinator_plan")
         exact_id = re.search(r"\b[a-fA-F0-9]{24}\b|(?:شناسه|کد|رکورد|property_id|room_id)\s*[:=]?\s*\d+", normalize_text(state["question"]))
+        missing_query = not plan.sql and (plan.route == "database" or
+            (plan.route == "combined" and (not plan.needs_documents or plan.requires_complete_stay or plan.requires_exact_transport)))
+        missing_question = plan.route == "clarification" and not (plan.clarification or "").strip() and not exact_id
+        if not plan.reject_reason and (missing_query or missing_question):
+            await state["recorder"].add("coordinator", "repair", "برنامه ناقص برای یک اصلاح محدود به مدل برگردانده شد.",
+                data={"code": "missing_query" if missing_query else "missing_clarification", "attempt": 1})
+            plan = await self._structured(state, [*messages,
+                {"role": "assistant", "content": plan.model_dump_json()},
+                {"role": "user", "content": "برنامه قبلی با مسیر انتخابی سازگار نیست. اگر پاسخ به داده قیمت، ظرفیت یا سرویس نیاز دارد، SQL خواندنی واقعی را با حفظ زمینه گفتگو و تغییر تازه کاربر تولید کن؛ null کافی نیست. اگر یک ورودی ضروری نامعلوم است، مسیر clarification و متن سؤال طبیعی خودت را بده. فقط برای گفتگوی معمولی و سؤال صرفاً سندی، پایگاه داده لازم نیست. برای فیلتر ساعت یا تعداد، انتخاب قبلی را دوباره از داده بررسی کن؛ قیمت یا موجودی از تاریخچه حدس زده نشود. همه کلیدهای ساختار هماهنگ‌کننده را برگردان."}],
+                CoordinatorPlan, "coordinator_plan", repair=False)
         if not plan.reject_reason and plan.route == "clarification" and not plan.sql and exact_id:
             await state["recorder"].add("coordinator", "repair", "شناسه دقیق باید پیش از ادعای نبود با SQL بررسی شود.")
             plan = await self._structured(state, [*messages,
@@ -625,6 +642,18 @@ class WorkflowService:
                     import sqlglot
                     from sqlglot import exp
                     tree = sqlglot.parse_one(query, read="sqlite")
+                    tables = {table.name.lower() for table in tree.find_all(exp.Table)}
+                    has_money = any(column.name.lower().endswith("_irr") for column in tree.find_all(exp.Column)) or \
+                        any(isinstance(item, exp.Star) or isinstance(item, exp.Column) and isinstance(item.this, exp.Star)
+                            for item in getattr(tree, "expressions", []))
+                    if plan.data_purpose == "recommendation" and has_money and plan.trip_context.checkin and plan.trip_context.checkout and tables & {"stay_rates", "properties"}:
+                        plan.requires_complete_stay = True
+                        plan.requires_calculator = True
+                    if plan.data_purpose == "recommendation" and has_money and plan.trip_context.origin and plan.trip_context.destination and plan.trip_context.departure_date and "transport_offers" in tables:
+                        plan.requires_exact_transport = True
+                    if plan.requires_complete_stay and isinstance(tree, exp.Select) and tree.args.get("group") is not None \
+                            and any(table.name.lower() == "stay_rates" for table in tree.find_all(exp.Table)):
+                        raise ProviderError("incomplete_travel_evidence", "نقل‌قول اقامت به ردیف واقعی تک‌تک شب‌ها نیاز دارد؛ GROUP BY در خروجی نهایی، شب‌ها و محدودیت‌هایشان را فشرده می‌کند. می‌توان گروه‌های واجد شرایط را در زیرپرس‌وجو یا CTE پیدا کرد، اما خروجی نهایی باید به ردیف‌های اصلی نرخ همان گروه‌ها متصل شود و همه ستون‌های هر شب را برگرداند. قیمت هر شب را از یک ردیف نماینده تکرار نکن.")
                     for comparison in tree.find_all(exp.EQ):
                         left, right = comparison.this, comparison.expression
                         if isinstance(right, exp.Column) and isinstance(left, (exp.Literal, exp.Boolean)):
@@ -662,10 +691,18 @@ class WorkflowService:
                     if missing:
                         result["evidence_warning"] = "Missing component evidence: " + ", ".join(missing)
                         raise ProviderError("incomplete_travel_evidence", "برای جزء همین پرس‌وجو SELECT نهایی باید این ستون‌ها را برگرداند: " + ", ".join(missing))
-                    successful.append(result)
                     if hasattr(self.sql, "source_metadata"):
                         identities = [row.get(field) for row in rows for field in ("record_id", "property_id")]
                         result["record_sources"] = await asyncio.to_thread(self.sql.source_metadata, identities)
+                    if plan.data_purpose == "recommendation" and tables & {"stay_rates", "properties"} and plan.trip_context.destination:
+                        source_cities = {item["id"]: item.get("city_fa") for item in result.get("record_sources", [])}
+                        wrong_city = [row for row in rows if (city := row.get("city_fa") or source_cities.get(row.get("property_id")))
+                                      and normalize_text(city) != normalize_text(plan.trip_context.destination)]
+                        if wrong_city:
+                            result["evidence_warning"] = "Stay results contain properties outside the requested destination"
+                            raise ProviderError("incomplete_travel_evidence", "نرخ اقامت خارج از مقصد معتبر گفتگو برگشته است. مقصد درخواست " + plan.trip_context.destination +
+                                " است؛ نرخ‌های اقامت را از طریق stay_rates.property_id به properties.record_id و شهر ملک محدود کن. ارزان‌تر بودن ملک در شهر دیگر، جایگزین مقصد کاربر نیست. همه ردیف‌های شب و ستون‌های شواهد را حفظ کن.")
+                    successful.append(result)
                     await state["recorder"].add("database_specialist", "completed", "SQL اعتبارسنجی و اجرا شد.", started=started,
                         data={"sql": result.get("sql", query), "row_count": result.get("row_count", len(result.get("rows", []))),
                               "truncated": bool(result.get("truncated", False)), "repair_used": bool(attempt),
@@ -698,9 +735,17 @@ class WorkflowService:
                         ], SQLRepair, "sql_repair", repair=False)
                         query = fixed.sql
                         continue
+                    if code == "incomplete_travel_evidence":
+                        # Keep rejected rows in the inspector only. The model
+                        # can explain an incomplete search using valid components.
+                        state["warnings"].append({"code": code, "message": "بررسی این بخش از سفر شاهد قابل اتکا نداد؛ نمی‌توان از آن نبود قطعی سرویس یا قیمت نهایی را نتیجه گرفت."})
+                        state["quote_blocked"] = True
+                        await state["recorder"].add("sql_guard", "rejected", message,
+                            started=started, data={"code": code, "sql": query, "query_index": query_index + 1})
+                        break
                     security = code in {"unknown_table", "unsafe_query", "multiple_statements", "recursive_cte", "disallowed_function"}
                     state.update(terminal=True, status="rejected" if security else "error",
-                        answer=message, error={"code": code, "message": message})
+                        answer=message if security else "جستجوی این بخش از سفر کامل نشد؛ فعلاً نمی‌توانم نتیجه قابل اتکایی برای آن بدهم. لطفاً دوباره امتحان کن.", error={"code": code, "message": message})
                     await state["recorder"].add("sql_guard", "rejected" if security else "error", message,
                         started=started, data={"code": code, "sql": query, "query_index": query_index + 1})
                     return state
@@ -714,7 +759,7 @@ class WorkflowService:
         if plan.requires_complete_stay:
             stay_rows = [row for row in rows if row.get("price_basis") == "per_room_per_night"]
             state["quote_evidence"]["stay"] = stay_quote_evidence(stay_rows, plan.trip_context)
-            state["quote_blocked"] = state["quote_evidence"]["stay"]["blocked"]
+            state["quote_blocked"] = state.get("quote_blocked", False) or state["quote_evidence"]["stay"]["blocked"]
             groups = [group for group in state["quote_evidence"]["stay"].get("groups", []) if group["complete_observed"]]
             if len(groups) == 1 and not plan.trip_context.selected_stay_ids:
                 group = groups[0]
@@ -813,11 +858,10 @@ class WorkflowService:
         if plan.route == "clarification" and not state["sql_results"]:
             state.update(status="clarification", answer=model_clarification(plan))
             return state
-        if plan.needs_documents and not state["sources"] and not state["sql_results"]:
-            state.update(status="error" if state["warnings"] else "insufficient_evidence",
-                         answer="شاهد کافی در اسناد در دسترس پیدا نشد. برای پاسخ قابل اتکا به سند مرتبط یا اطلاعات دقیق‌تر نیاز است.")
-            if state["warnings"]:
-                state["error"] = state["warnings"][0]
+        if plan.needs_documents and not state["sources"] and not state["sql_results"] and state["warnings"]:
+            # Infrastructure failures have controlled technical errors. Successful
+            # empty searches reach synthesis with the actual empty evidence instead.
+            state.update(status="error", error=state["warnings"][0], answer=state["warnings"][0]["message"])
             return state
         state["candidate_options"] = eligible_quote_options(grounded_options(state["sql_results"]), plan, state["quote_evidence"])
         dates = [value for result in state["sql_results"] if not result.get("evidence_warning") for row in result_dict_rows(result)
@@ -846,6 +890,7 @@ class WorkflowService:
             await state["recorder"].add("currency_policy", "completed", "نمایش مبلغ‌های ریالی به تومان به محاسبه واقعی سپرده شد.",
                 data={"display_currency": display_currency, "requires_calculator": True})
         currency_message = "قرارداد نمایش مبلغ: " + (
+            "شواهد برای نقل‌قول کامل کافی نیستند؛ اگر مبلغ خام مشخصی را توضیح می‌دهی، همان ریال ثبت‌شده را با دامنه روشن بگو. تبدیل ذهنی، جمع نهایی یا تکرار قیمت یک شب برای شب دیگر مجاز نیست. علت کمبود را روشن کن؛ مقدار نامعلوم کاربر به معنی نبود اتاق یا سرویس نیست." if state["quote_blocked"] else
             "خروجی مبلغ‌ها تومان است؛ هر مبلغی که از ستون‌های ریالی نشان می‌دهی باید در همین نوبت با ابزار واقعی به تومان تبدیل شود. جمع تعداد مسافر یا شب را هم در فرمول ابزار نگه دار؛ محاسبه ذهنی مجاز نیست." if display_currency == "IRT" else
             "کاربر مبلغ خام ریالی خواسته است؛ مبلغ‌های داده را با همان واحد ریال نشان بده و بی‌درخواست به تومان تبدیل نکن." if display_currency == "IRR" else
             "کاربر هر دو واحد را خواسته است؛ تبدیل واحد فقط با ابزار واقعی انجام می‌شود." if display_currency == "mixed" else
@@ -855,8 +900,11 @@ class WorkflowService:
         allowed_units = calculator_definition["function"]["parameters"]["properties"]["unit"].get("enum")
         messages[-1] = {"role": "user", "content": json.dumps(self._evidence(state), ensure_ascii=False)}
         called_ids, tool_count, repaired_json, calc_reminder = set(), 0, False, False
+        evidence_repair = False
         for _ in range(MAX_CALCULATOR_CALLS + 3):
             kwargs = {"response_format": grounded_answer_format(state["sources"], state["candidate_options"]), "max_tokens": 2400}
+            if state["quote_blocked"] or evidence_repair:
+                kwargs["response_format"]["json_schema"]["schema"]["properties"]["status"]["enum"] = ["insufficient_evidence", "clarification"]
             if plan.requires_calculator and tool_count < MAX_CALCULATOR_CALLS and not state["quote_blocked"]:
                 # A structurally checked quote must use arithmetic rather than
                 # letting a small model substitute a mentally calculated answer.
@@ -920,17 +968,31 @@ class WorkflowService:
                                      {"role": "user", "content": "محاسبه این درخواست باید با ابزار calculate انجام شود؛ اگر داده لازم ناقص است به‌جای عدد نهایی، insufficient_evidence و علت دقیق بده."}])
                     continue
                 raise ProviderError("invalid_model_output", "مدل بدون نتیجه معتبر ابزار محاسبه، پاسخ تأییدشده اعلام کرد.")
-            if state["quote_blocked"] and answer.status == "answered":
-                raise ProviderError("invalid_model_output", "مدل با وجود رد ساختاری شواهد نقل‌قول، پاسخ تأییدشده اعلام کرد.")
             valid_ids = {source["source_id"] for source in state["sources"]}
             pdf_required = requires_pdf_citations(state)
+            unsupported = ("incomplete_quote" if state["quote_blocked"] else
+                           "missing_document_evidence" if pdf_required and not state["sources"] else None)
+            if unsupported and answer.status == "answered":
+                if evidence_repair:
+                    raise ProviderError("invalid_model_output", "پاسخ مدل پس از اصلاح محدود همچنان از شواهد موجود پشتیبانی نمی‌شود.")
+                evidence_repair = True
+                await state["recorder"].add("answer_validation", "repair", "پاسخ برای توضیح طبیعیِ کمبود شاهد به مدل برگردانده شد.",
+                    data={"code": unsupported, "attempt": 1})
+                messages.extend([{"role": "assistant", "content": message.get("content") or ""},
+                    {"role": "user", "content": "پاسخ قبلی با شواهد همین نوبت سازگار نیست؛ این بازخورد فنی را در متن کاربر تکرار نکن. "
+                     "با تکیه بر همان شواهد، پاسخ طبیعی و کامل فارسی را اصلاح کن: موارد واقعاً پیدا شده را توضیح بده، سپس دقیقاً بگو چه چیزی برای تکمیل خواسته کافی نیست. "
+                     "اگر یک ورودی ضروری کاربر نامعلوم است، status=clarification و فقط همان پرسش لازم را بپرس؛ بودجه اختیاری را مانع معرفی ارزان‌ترین گزینه نکن. "
+                     "اگر شاهد یا موجودی کافی نداریم، status=insufficient_evidence بده و نبود داده را با نبود قطعی سرویس یکی نکن. "
+                     "جمع نهایی سفر یا مبلغ محاسبه‌نشده، قیمت تاریخچه بدون تأیید دوباره و گزینه نامعتبر معرفی نکن؛ هیچ دستور داخلی، نام guard یا پیام اعتبارسنجی را در جواب چاپ نکن. "
+                     "status=answered مجاز نیست. شواهد و علت بررسی: " + json.dumps({
+                         "reason": unsupported, "quote_evidence": state["quote_evidence"],
+                         "trip_context": plan.trip_context.model_dump()}, ensure_ascii=False)}])
+                continue
             if citation_error(answer, valid_ids, pdf_required):
                 answer = await self._repair_citations(state, messages, answer)
             if plan.route == "clarification" and answer.status == "answered":
                 answer.status = "clarification"
                 answer.answer = model_clarification(plan)
-            if pdf_required and not state["sources"]:
-                answer.status = "insufficient_evidence"
             available_options = {option["option_id"]: option for option in state["candidate_options"]}
             if not set(answer.option_ids).issubset(available_options):
                 raise ProviderError("invalid_option_reference", "مدل گزینه‌ای را معرفی کرد که در نتیجه واقعی داده وجود ندارد.")
@@ -975,7 +1037,9 @@ class WorkflowService:
                 raise
             except ProviderError as error:
                 state = getattr(recorder, "current_state", state)
-                state.update(status="error", answer=error.message, error={"code": error.code, "message": error.message})
+                visible = ("نتوانستم پاسخ قابل اتکایی برای این درخواست آماده کنم. لطفاً دوباره تلاش کن؛ جزئیات فنی خطا در بخش جزئیات در دسترس است."
+                           if error.code.startswith(("invalid_", "missing_source")) else error.message)
+                state.update(status="error", answer=visible, error={"code": error.code, "message": error.message})
                 await recorder.add("workflow", "error", error.message, data={"code": error.code})
             except Exception:
                 state = getattr(recorder, "current_state", state)

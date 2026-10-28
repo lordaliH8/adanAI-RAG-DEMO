@@ -12,6 +12,7 @@ import httpx
 from langchain_core.messages import convert_to_messages, convert_to_openai_messages
 from langchain_openai import ChatOpenAI
 
+from app.config import placeholder_key
 from app.observability import Observability, deliver, secret_value
 
 
@@ -85,16 +86,17 @@ def retry_delay(error: Exception, attempt: int) -> float:
 
 
 class LLMClient:
-    def __init__(self, settings):
+    def __init__(self, settings, *, http_client: httpx.AsyncClient | None = None):
         self.settings = settings
-        self._key = secret_value(settings.llm_api_key)
+        key = secret_value(settings.llm_api_key).strip()
+        self._key = "" if placeholder_key(key) else key
         self._base_url = str(settings.llm_base_url).rstrip("/")
         self._retries = max(0, min(int(settings.llm_max_retries), 3))
         self._interval = max(0.0, float(settings.llm_min_interval_seconds))
         self._gate = asyncio.Semaphore(1)
         self._last_start = 0.0
         self.observability = Observability(settings)
-        self._http = httpx.AsyncClient(timeout=float(settings.llm_timeout_seconds),
+        self._http = http_client or httpx.AsyncClient(timeout=float(settings.llm_timeout_seconds),
                                        limits=httpx.Limits(max_connections=4, max_keepalive_connections=2))
         self._chat = ChatOpenAI(
             model=str(settings.llm_model), api_key=self._key or "not-configured",
@@ -107,7 +109,7 @@ class LLMClient:
 
     async def _request(self, operation, *, kind: str, emit=None):
         if not self._key:
-            raise ProviderError("provider_not_configured", "کلید دسترسی مدل تنظیم نشده است.")
+            raise ProviderError("provider_not_configured", "کلید دسترسی مدل تنظیم نشده است؛ LLM_API_KEY را برای ارائه‌دهنده انتخاب‌شده تنظیم کنید. برای OpenAI می‌توان از OPENAI_API_KEY هم استفاده کرد.")
         for attempt in range(self._retries + 1):
             try:
                 async with self._gate:
@@ -186,11 +188,14 @@ class LLMClient:
         dimension = int(getattr(self.settings, "embedding_dimensions", 1536))
         for offset in range(0, len(texts), batch_size):
             batch = texts[offset:offset + batch_size]
+            body = {"model": str(self.settings.embedding_model), "input": batch, "encoding_format": "float"}
+            if str(self.settings.embedding_model).startswith("text-embedding-3-"):
+                body["dimensions"] = dimension
 
             async def request_batch():
                 response = await self._http.post(
                     f"{self._base_url}/embeddings", headers={"Authorization": f"Bearer {self._key}"},
-                    json={"model": str(self.settings.embedding_model), "input": batch})
+                    json=body)
                 response.raise_for_status()
                 return response.json()
 

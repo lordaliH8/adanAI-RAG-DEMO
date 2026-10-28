@@ -5,6 +5,11 @@
 !uv.lock
 !app/
 !app/**
+!tests/
+!tests/*.py
+!evaluation/
+!evaluation/*.py
+!evaluation/cases.json
 !data/
 !data/README.md
 !data/raw/
@@ -19,4 +24,5 @@
 **/*.py[cod]
 **/.env*
 .env*
+!.env.example
 **/.DS_Store
